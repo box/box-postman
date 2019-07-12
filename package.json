@@ -1,0 +1,15 @@
+{
+  "name": "postman",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@stoplight/json-ref-resolver": "^2.0.3",
+    "openapi-to-postmanv2": "cbetta/openapi-to-postman#90-fix-nested-server-paths",
+    "tslib": "^1.10.0"
+  },
+  "scripts": {
+    "build": "node convert.js",
+    "test": "node test.js"
+  }
+}
