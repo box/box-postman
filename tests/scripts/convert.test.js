@@ -1,6 +1,7 @@
 const { convert, convertAll } = require('../../src/scripts/convert')
 
 const fs = require('fs')
+const source = fs.readFileSync('./tests/examples/box-openapi.json')
 
 describe('.convert', () => {
   afterEach(() => {
@@ -13,7 +14,7 @@ describe('.convert', () => {
     process.env.LOCALES = 'en'
     process.env.EN_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
 
-    fs.readFileSync = () => fs.readFileSync('./tests/examples/box-openapi.json')
+    fs.readFileSync = () => source
     fs.writeFileSync = jest.fn()
 
     await convert()
@@ -33,7 +34,7 @@ describe('.convertAll', () => {
     process.env.EN_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
     process.env.JP_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
 
-    fs.readFileSync = () => fs.readFileSync('./tests/examples/box-openapi.json')
+    fs.readFileSync = () => source
     fs.writeFileSync = jest.fn()
 
     await convertAll()

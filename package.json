@@ -23,6 +23,7 @@
     "dotenv": "^8.0.0",
     "fs-extra": "^8.1.0",
     "jest": "^24.8.0",
+    "jsonpath": "^1.0.2",
     "openapi-to-postmanv2": "cbetta/openapi-to-postman#90-fix-nested-server-paths",
     "standard": "^13.0.2",
     "tslib": "^1.10.0"
@@ -30,12 +31,13 @@
   "scripts": {
     "clean": "rm -rf ./.sources/* ./build/*.json",
     "pull": "node -e 'require(\"./src/scripts/pull.js\").pullAll()'",
-    "prebuild": "yarn pull && yarn lint",
+    "prebuild": "yarn pull",
     "prebuild:all": "yarn prebuild",
     "convert": "node -e 'require(\"./src/scripts/convert.js\").convert()'",
     "convert:all": "node -e 'require(\"./src/scripts/convert.js\").convertAll()'",
     "build": "yarn convert",
     "build:all": "yarn convert:all",
+    "pretest": "yarn lint",
     "test": "jest",
     "lint": "standard --env jest"
   },
