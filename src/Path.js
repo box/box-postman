@@ -1,33 +1,39 @@
 const SOURCES_PATH = `.sources`
 
 class Path {
-  constructor(type, locale) {
-    if (!type) { throw 'Missing parameter: No type found' }
-    if (!locale) { throw 'Missing parameter: No locale found' }
+  constructor (type, locale) {
+    if (!type) { throw Error('Missing parameter: No type found') }
+    if (!locale) { throw Error('Missing parameter: No locale found') }
 
     this.type = type
     this.locale = locale
+
+    this.LOCALE = locale.toUpperCase()
+    this.folder = process.env[`${this.LOCALE}_${this.type}_PATH`]
+    this.isLocal = !!this.folder
   }
 
-  translate() {
+  translate () {
     this.validate()
 
-    const LOCALE = this.locale.toUpperCase()
-    const path = process.env[`${LOCALE}_${this.type}_PATH`]
-    if (path) { return path }
+    if (this.isLocal) { return }
 
-    const repo = process.env[`${LOCALE}_${this.type}_REPO`]
+    const repo = process.env[`${this.LOCALE}_${this.type}_REPO`]
+    const [source, branch] = repo.split('#')
     const id = Buffer.from(repo).toString('hex')
-    return `./${SOURCES_PATH}/${id}/`
+
+    this.folder = `./${SOURCES_PATH}/${id}/`
+    this.source = source
+    this.branch = branch
   }
 
-  // PRIVATE 
+  // PRIVATE
 
-  validate() {
+  validate () {
     const LOCALES = process.env.LOCALES || ''
     const locales = LOCALES.split(',')
     if (locales.includes(this.locale)) { return }
-    throw "Invalid parameter: locale not found in registered environment variables"
+    throw Error('Invalid parameter: locale not found in registered environment variables')
   }
 }
 

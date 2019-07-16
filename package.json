@@ -28,13 +28,16 @@
     "tslib": "^1.10.0"
   },
   "scripts": {
-    "clean": "rm -rf ./.sources/*",
-    "pull": "node ./src/scripts/pull.js",
+    "clean": "rm -rf ./.sources/* ./build/*.json",
+    "pull": "node -e 'require(\"./src/scripts/pull.js\").pullAll()'",
     "prebuild": "yarn pull && yarn lint",
-    "convert": "node -e 'require(\"./src/scripts/convert.js\")()'",
+    "prebuild:all": "yarn prebuild",
+    "convert": "node -e 'require(\"./src/scripts/convert.js\").convert()'",
+    "convert:all": "node -e 'require(\"./src/scripts/convert.js\").convertAll()'",
     "build": "yarn convert",
+    "build:all": "yarn convert:all",
     "test": "jest",
-    "lint": "standard --env jest ./src/**/*.js ./tests/**/*.js"
+    "lint": "standard --env jest"
   },
   "private": true
 }

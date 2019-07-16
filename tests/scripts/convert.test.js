@@ -1,28 +1,44 @@
-const convert = require('../../src/scripts/convert')
-const OpenAPI = require('../../src/OpenAPI')
-const Path = require('../../src/Path')
+const { convert, convertAll } = require('../../src/scripts/convert')
 
-jest.mock('../../src/OpenAPI')
-jest.mock('../../src/Path')
+const fs = require('fs')
 
 describe('.convert', () => {
-  beforeEach(() => {
-    OpenAPI.mockClear()
+  afterEach(() => {
+    delete process.env.LOCALES
+    delete process.env.EN_OAS3_REPO
   })
 
-  test('should call the converter with the translated path', () => {
+  test('should convert a openapi spec to a collection', async () => {
     process.argv = ['/path/to/node', 'en']
-    Path.mockImplementationOnce(() => ({
-      translate: jest.fn(() => '.sources/68747470733a2f2')
-    }))
+    process.env.LOCALES = 'en'
+    process.env.EN_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
 
-    convert()
+    fs.readFileSync = () => fs.readFileSync('./tests/examples/box-openapi.json')
+    fs.writeFileSync = jest.fn()
 
-    const openapi = OpenAPI.mock.instances[0]
-    expect(openapi.convert).toHaveBeenCalled()
-    expect(openapi.constructor).toHaveBeenCalledWith('.sources/68747470733a2f2/openapi.json')
+    await convert()
 
-    const path = Path.mock.instances[0]
-    expect(path.constructor).toHaveBeenCalledWith('OAS3', 'en')
+    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
+  })
+})
+
+describe('.convertAll', () => {
+  afterEach(() => {
+    delete process.env.LOCALES
+    delete process.env.EN_OAS3_REPO
+  })
+
+  test('should convert all openapi spec to collections', async () => {
+    process.env.LOCALES = 'en,jp'
+    process.env.EN_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
+    process.env.JP_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
+
+    fs.readFileSync = () => fs.readFileSync('./tests/examples/box-openapi.json')
+    fs.writeFileSync = jest.fn()
+
+    await convertAll()
+
+    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
+    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.jp.json', expect.any(String))
   })
 })
