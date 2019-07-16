@@ -22,15 +22,19 @@
     "@stoplight/json-ref-resolver": "^2.0.3",
     "dotenv": "^8.0.0",
     "fs-extra": "^8.1.0",
+    "jest": "^24.8.0",
     "openapi-to-postmanv2": "cbetta/openapi-to-postman#90-fix-nested-server-paths",
+    "standard": "^13.0.2",
     "tslib": "^1.10.0"
   },
   "scripts": {
     "clean": "rm -rf ./.sources/*",
     "pull": "node ./src/scripts/pull.js",
-    "prebuild": "yarn pull",
-    "build": "node convert.js",
-    "test": "node test.js"
+    "prebuild": "yarn pull && yarn lint",
+    "convert": "node -e 'require(\"./src/scripts/convert.js\")()'",
+    "build": "yarn convert",
+    "test": "jest",
+    "lint": "standard --env jest ./src/**/*.js ./tests/**/*.js"
   },
   "private": true
 }

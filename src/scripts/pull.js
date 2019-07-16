@@ -3,7 +3,7 @@ require('dotenv').config()
 const fs = require('fs-extra')
 const { spawnSync } = require('child_process')
 
-// define all locales 
+// define all locales
 const locales = process.env.LOCALES.split(',')
 
 // pull in all repos
@@ -23,17 +23,17 @@ const pull = async (type, list) => {
 
     // if the clone already exists, pull
     if (fs.existsSync(destination)) {
-      const { stderr, stdout } = await spawnSync('git',  
+      const { stderr, stdout } = await spawnSync('git',
         ['pull'], { cwd: destination })
 
-      // eslint-disable-next-line 
+      // eslint-disable-next-line
       console.log(stderr.toString())
       // eslint-disable-next-line
       console.log(stdout.toString())
-    }
-    // otherwise perform a new clone
-    else {
-      const { stderr, stdout } = await spawnSync('git',  
+
+      // otherwise perform a new clone
+    } else {
+      const { stderr, stdout } = await spawnSync('git',
         ['clone', '--depth', 1, '--branch', branch, source, destination])
 
       // eslint-disable-next-line
