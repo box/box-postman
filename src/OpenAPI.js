@@ -1,12 +1,13 @@
 const fs = require('fs')
-const util = require('util')
+// const util = require('util')
 const jp = require('jsonpath')
-const uuid = require('uuid')
+// const uuid = require('uuid')
 
-const OpenAPI2Postman = require('openapi-to-postmanv2')
-const openAPI2Postman = util.promisify(OpenAPI2Postman.convert)
+const Collection = require('./Collection')
+// const OpenAPI2Postman = require('openapi-to-postmanv2')
+// const openAPI2Postman = util.promisify(OpenAPI2Postman.convert)
 
-const VERB_PRIORITY = ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+// const VERB_PRIORITY = ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
 
 class OpenAPI {
   constructor (filename) {
@@ -18,8 +19,9 @@ class OpenAPI {
   async convert () {
     this.readOpenAPI()
     this.filterOpenAPI()
-    await this.createCollection()
-    this.groupCollectionByTags()
+    this.createCollection()
+    // this.groupCollectionByTags()
+    // this.unsetBaseUrlVariable()
     return this.collection
   }
 
@@ -49,69 +51,81 @@ class OpenAPI {
   }
 
   async createCollection () {
-    const result = await openAPI2Postman(
-      {
-        type: 'string',
-        data: this.openapi
-      },
-      {}
-    )
-    this.collection = result.output[0].data
+    this.collection = new Collection(this.openapi).process()
+    // const result = await openAPI2Postman(
+    //   {
+    //     type: 'string',
+    //     data: this.openapi
+    //   },
+    //   {}
+    // )
+    // this.collection = result.output[0].data
   }
 
-  groupCollectionByTags () {
-    this.populateItems(this.collection.item)
-    this.convertTagsToValuesAndSort()
-    this.convertTagItemsByVerb()
-    this.collection.item = this.tags
-  }
+  // groupCollectionByTags () {
+  //   this.populateItems(this.collection.item)
+  //   this.convertTagsToValuesAndSort()
+  //   this.convertTagItemsByVerb()
+  //   this.collection.item = this.tags
+  // }
 
-  populateItems (items) {
-    items.forEach(entry => {
-      if (entry.item) {
-        this.populateItems(entry.item)
-      } else {
-        const tag = this.tagFor(entry)
-        this.prepareCollectionTag(tag)
-        this.appendEntry(tag, entry)
-      }
-    })
-  }
+  // populateItems (items) {
+  //   items.forEach(entry => {
+  //     if (entry.item) {
+  //       this.populateItems(entry.item)
+  //     } else {
+  //       const tag = this.tagFor(entry)
+  //       this.prepareCollectionTag(tag)
+  //       this.appendEntry(tag, entry)
+  //     }
+  //   })
+  // }
 
-  tagFor (entry) {
-    const nodes = jp.query(this.openapi, `$.paths[*][?(@.summary=="${entry.name}")]`)
-    const referenceCategory = nodes[0]['x-box-reference-category']
-    const tags = jp.query(this.openapi, `$.tags[*]`).filter(tag => tag['x-box-reference-category'] === referenceCategory)
-    return tags[0].name
-  }
+  // tagFor (entry) {
+  //   const nodes = jp.query(this.openapi, `$.paths[*][?(@.summary=="${entry.name}")]`)
+  //   const referenceCategory = nodes[0]['x-box-reference-category']
+  //   const tags = jp.query(this.openapi, `$.tags[*]`).filter(tag => tag['x-box-reference-category'] === referenceCategory)
+  //   return tags[0].name
+  // }
 
-  prepareCollectionTag (tag) {
-    if (!Object.keys(this.tags).includes(tag)) {
-      this.tags[tag] = {
-        id: uuid.v4(),
-        name: tag,
-        item: []
-      }
-    }
-  }
+  // prepareCollectionTag (tag) {
+  //   if (!Object.keys(this.tags).includes(tag)) {
+  //     this.tags[tag] = {
+  //       id: uuid.v4(),
+  //       name: tag,
+  //       item: []
+  //     }
+  //   }
+  // }
 
-  appendEntry (tag, item) {
-    this.tags[tag].item.push(item)
-  }
+  // appendEntry (tag, item) {
+  //   this.tags[tag].item.push(item)
+  // }
 
-  convertTagsToValuesAndSort () {
-    this.tags = Object.values(this.tags).sort((a, b) => {
-      return a.name > b.name ? 1 : -1
-    })
-  }
+  // convertTagsToValuesAndSort () {
+  //   this.tags = Object.values(this.tags).sort((a, b) => {
+  //     return a.name > b.name ? 1 : -1
+  //   })
+  // }
 
-  convertTagItemsByVerb () {
-    this.tags.forEach(tag => (
-      tag.item.sort((a, b) =>
-        VERB_PRIORITY.indexOf(a.request.method) - VERB_PRIORITY.indexOf(b.request.method)
-      )
-    ))
-  }
+  // convertTagItemsByVerb () {
+  //   this.tags.forEach(tag => (
+  //     tag.item.sort((a, b) =>
+  //       VERB_PRIORITY.indexOf(a.request.method) - VERB_PRIORITY.indexOf(b.request.method)
+  //     )
+  //   ))
+  // }
+
+  // unsetBaseUrlVariable () {
+  //   this.collection.variable = this.collection.variable.filter(variable => variable.name === 'baseUrl')
+  //   jp.apply(this.collection, '$..request.url', (item) => {
+  //     if (!item.host === ['{{baseUrl}}']) { return item }
+  //     item.host = ['api', 'box', 'com']
+  //     item.protocol = 'https'
+  //     item.path.unshift('2.0')
+  //     return item
+  //   })
+  // }
 }
 
 module.exports = OpenAPI

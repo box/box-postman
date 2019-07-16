@@ -64,4 +64,15 @@ describe('.convert', () => {
         [{ 'Restore file': null }] }
     ] })
   })
+
+  test('should hard code the base URL', async () => {
+    const filename = './tests/examples/box-openapi-with-tags.json'
+    const openapi = new OpenAPI(filename)
+    const collection = await openapi.convert()
+
+    expect(collection.variable).toHaveLength(0)
+    expect(collection.item[2].item[1].request.url.protocol).toBe('https')
+    expect(collection.item[2].item[1].request.url.path[0]).toBe('2.0')
+    expect(collection.item[2].item[1].request.url.host).toEqual(['api', 'box', 'com'])
+  })
 })
