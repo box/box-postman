@@ -6,6 +6,8 @@ const uuid = require('uuid')
 const OpenAPI2Postman = require('openapi-to-postmanv2')
 const openAPI2Postman = util.promisify(OpenAPI2Postman.convert)
 
+const VERB_PRIORITY = ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+
 class OpenAPI {
   constructor (filename) {
     this.filename = filename
@@ -59,8 +61,9 @@ class OpenAPI {
 
   groupCollectionByTags () {
     this.populateItems(this.collection.item)
-    const tags = Object.values(this.tags)
-    this.collection.item = tags.sort((a, b) => (a.name > b.name ? 1 : -1))
+    this.convertTagsToValuesAndSort()
+    this.convertTagItemsByVerb()
+    this.collection.item = this.tags
   }
 
   populateItems (items) {
@@ -94,6 +97,20 @@ class OpenAPI {
 
   appendEntry (tag, item) {
     this.tags[tag].item.push(item)
+  }
+
+  convertTagsToValuesAndSort () {
+    this.tags = Object.values(this.tags).sort((a, b) => {
+      return a.name > b.name ? 1 : -1
+    })
+  }
+
+  convertTagItemsByVerb () {
+    this.tags.forEach(tag => (
+      tag.item.sort((a, b) =>
+        VERB_PRIORITY.indexOf(a.request.method) - VERB_PRIORITY.indexOf(b.request.method)
+      )
+    ))
   }
 }
 
