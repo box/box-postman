@@ -1,6 +1,7 @@
 const fs = require('fs')
 const util = require('util')
 const jp = require('jsonpath')
+const uuid = require('uuid')
 
 const OpenAPI2Postman = require('openapi-to-postmanv2')
 const openAPI2Postman = util.promisify(OpenAPI2Postman.convert)
@@ -9,12 +10,14 @@ class OpenAPI {
   constructor (filename) {
     this.filename = filename
     this.openapi = null
+    this.tags = {}
   }
 
   async convert () {
     this.readOpenAPI()
     this.filterOpenAPI()
     await this.createCollection()
+    this.groupCollectionByTags()
     return this.collection
   }
 
@@ -45,10 +48,50 @@ class OpenAPI {
 
   async createCollection () {
     const result = await openAPI2Postman(
-      { type: 'string', data: this.openapi },
+      {
+        type: 'string',
+        data: this.openapi
+      },
       {}
     )
     this.collection = result.output[0].data
+  }
+
+  groupCollectionByTags () {
+    this.populateItems(this.collection.item)
+    this.collection.item = Object.values(this.tags)
+  }
+
+  populateItems (items) {
+    items.forEach(entry => {
+      if (entry.item) {
+        this.populateItems(entry.item)
+      } else {
+        const tag = this.tagFor(entry)
+        this.prepareCollectionTag(tag)
+        this.appendEntry(tag, entry)
+      }
+    })
+  }
+
+  tagFor (entry) {
+    const nodes = jp.query(this.openapi, `$.paths[*][?(@.summary=="${entry.name}")]`)
+    const tags = nodes[0].tags
+    return tags[0]
+  }
+
+  prepareCollectionTag (tag) {
+    if (!Object.keys(this.tags).includes(tag)) {
+      this.tags[tag] = {
+        id: uuid.v4(),
+        name: tag,
+        item: []
+      }
+    }
+  }
+
+  appendEntry (tag, item) {
+    this.tags[tag].item.push(item)
   }
 }
 
