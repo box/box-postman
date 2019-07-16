@@ -24,7 +24,7 @@ describe('.convert', () => {
     const filename = './tests/examples/box-openapi.json'
     const openapi = new OpenAPI(filename)
     const collection = await openapi.convert()
-    expect(collection.item).toHaveLength(31)
+    expect(collection.item).toHaveLength(52)
   })
 
   test('should exclude items marked as excluded', async () => {
@@ -52,15 +52,16 @@ describe('.convert', () => {
         [{ 'Authorize a user': null },
           { 'Request an access token': null },
           { 'Revoke an access token': null }] },
+      { Downloads:
+        [{ 'Download a file': null }] },
       { Files:
         [{ 'Get a file': null },
           { 'Update a file': null },
-          { 'Delete a file': null },
-          { 'Download a file': null }] },
-      { Trash:
-        [{ 'Restore file': null }] },
-      { 'File Uploads':
-        [{ 'Upload a file version': null }] }
+          { 'Delete a file': null }] },
+      { 'Simple Uploads':
+        [{ 'Upload a file version': null }] },
+      { 'Trashed Files':
+        [{ 'Restore file': null }] }
     ] })
   })
 })

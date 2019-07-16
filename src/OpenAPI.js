@@ -59,7 +59,8 @@ class OpenAPI {
 
   groupCollectionByTags () {
     this.populateItems(this.collection.item)
-    this.collection.item = Object.values(this.tags)
+    const tags = Object.values(this.tags)
+    this.collection.item = tags.sort((a, b) => (a.name > b.name ? 1 : -1))
   }
 
   populateItems (items) {
@@ -76,8 +77,9 @@ class OpenAPI {
 
   tagFor (entry) {
     const nodes = jp.query(this.openapi, `$.paths[*][?(@.summary=="${entry.name}")]`)
-    const tags = nodes[0].tags
-    return tags[0]
+    const referenceCategory = nodes[0]['x-box-reference-category']
+    const tags = jp.query(this.openapi, `$.tags[*]`).filter(tag => tag['x-box-reference-category'] === referenceCategory)
+    return tags[0].name
   }
 
   prepareCollectionTag (tag) {

@@ -23,185 +23,6 @@
     }
   ],
   "paths": {
-    "/authorize": {
-      "get": {
-        "operationId": "get_authorize",
-        "summary": "Authorize a user",
-        "description": "Authorize a user by sending them through the [Box](https://box.com)\nwebsite and request their permission to act on their behalf.\n\nThis is the first step when authenticating a user using\nOAuth 2.0. To request a user's authorization to use the Box APIs\non their behalf you will need to send a user to the URL with this\nformat.",
-        "tags": [
-          "Authorization"
-        ],
-        "x-box-reference-category": "authorization",
-        "security": [],
-        "servers": [
-          {
-            "url": "https://account.box.com/api/oauth2",
-            "description": "Server for client-side authentication"
-          }
-        ],
-        "parameters": [
-          {
-            "name": "response_type",
-            "description": "The type of response we'd like to receive.",
-            "in": "query",
-            "example": "5idyGSFuf54zrvKm",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "token",
-              "enum": [
-                "code"
-              ]
-            }
-          },
-          {
-            "name": "client_id",
-            "description": "The Client ID of the application that is requesting to authenticate\nthe user. To get the Client ID for your application, log in to your\nBox developer console and click the **Edit Application** link for\nthe application you're working with. In the OAuth2 Parameters section\nof the configuration page, find the item labeled **client_id**. The\ntext of that item is your application's Client ID.",
-            "in": "query",
-            "example": "ly1nj6n11vionaie65emwzk575hnnmrk",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "redirect_uri",
-            "description": "The URL to which Box redirects the browser after the user has granted\nor rejected the application permission. This URL must match the\nredirect URL in the configuration of your application. It must be a\nvalid HTTPS URL and it needs to be able to handle the redirection to\ncomplete the next step in the OAuth2 flow.",
-            "in": "query",
-            "example": "http://example.com/auth/callback",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "url"
-            }
-          },
-          {
-            "name": "state",
-            "description": "A custom string of your choice. Box will pass the same string to\nthe redirect URL when authentication is complete. This parameter\ncan be used to identify a user on redirect, as well as protect\nagainst hijacked sessions and other attacks.",
-            "in": "query",
-            "example": "my_state",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "scope",
-            "description": "A comma-separated list of application scopes you'd like to\nauthenticate the user for. This defaults to all the scopes configured\nfor the application in its configuration page.",
-            "in": "query",
-            "example": "admin_readwrite",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Does not return any data, but rather should be used in the browser.",
-            "content": {
-              "text/html": {
-                "schema": {
-                  "type": "string",
-                  "format": "html"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/oauth2/token": {
-      "post": {
-        "operationId": "post_oauth2_token",
-        "summary": "Request an access token",
-        "description": "Request an Access Token using either a client-side obtained OAuth2\nauthorization code or a server-side JWT assertion.\n\nAn Access Token is a string that enables Box to verify that a\nrequest belongs to an authorized session. In the normal order of\noperations you will begin by requesting authentication from the\n[authorize](#get-authorize) endpoint and Box will send you an\nauthorization code.\n\nYou will then send this code to this endpoint to exchange it for\nan Access Token. The returned Access Token can then be used to to make\nBox API calls.",
-        "tags": [
-          "Authorization"
-        ],
-        "servers": [
-          {
-            "url": "https://api.box.com",
-            "description": "Server for server-side authentication"
-          }
-        ],
-        "x-box-reference-category": "authorization",
-        "security": [],
-        "requestBody": {
-          "content": {
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/TokenRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Returns a new Access Token that can be used to make authenticated\nAPI calls by passing along the token in a authorization header as\nfollows `Authorization: Bearer <Token>`.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AccessToken"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "An authentication error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OAuth2Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/oauth2/revoke": {
-      "post": {
-        "operationId": "post_oauth2_revoke",
-        "summary": "Revoke an access token",
-        "description": "Revoke an active Access Token, effectively logging a user out\nthat has been previously authenticated.",
-        "tags": [
-          "Authorization"
-        ],
-        "servers": [
-          {
-            "url": "https://api.box.com",
-            "description": "Server for server-side authentication"
-          }
-        ],
-        "x-box-reference-category": "authorization",
-        "security": [],
-        "requestBody": {
-          "content": {
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/TokenRevocationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Returns an empty response when the token was successfully revoked."
-          },
-          "400": {
-            "description": "An authentication error.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/OAuth2Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/files/{file_id}": {
       "get": {
         "operationId": "get_files_id",
@@ -713,6 +534,185 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Files"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/authorize": {
+      "get": {
+        "operationId": "get_authorize",
+        "summary": "Authorize a user",
+        "description": "Authorize a user by sending them through the [Box](https://box.com)\nwebsite and request their permission to act on their behalf.\n\nThis is the first step when authenticating a user using\nOAuth 2.0. To request a user's authorization to use the Box APIs\non their behalf you will need to send a user to the URL with this\nformat.",
+        "tags": [
+          "Authorization"
+        ],
+        "x-box-reference-category": "authorization",
+        "security": [],
+        "servers": [
+          {
+            "url": "https://account.box.com/api/oauth2",
+            "description": "Server for client-side authentication"
+          }
+        ],
+        "parameters": [
+          {
+            "name": "response_type",
+            "description": "The type of response we'd like to receive.",
+            "in": "query",
+            "example": "5idyGSFuf54zrvKm",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "token",
+              "enum": [
+                "code"
+              ]
+            }
+          },
+          {
+            "name": "client_id",
+            "description": "The Client ID of the application that is requesting to authenticate\nthe user. To get the Client ID for your application, log in to your\nBox developer console and click the **Edit Application** link for\nthe application you're working with. In the OAuth2 Parameters section\nof the configuration page, find the item labeled **client_id**. The\ntext of that item is your application's Client ID.",
+            "in": "query",
+            "example": "ly1nj6n11vionaie65emwzk575hnnmrk",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "redirect_uri",
+            "description": "The URL to which Box redirects the browser after the user has granted\nor rejected the application permission. This URL must match the\nredirect URL in the configuration of your application. It must be a\nvalid HTTPS URL and it needs to be able to handle the redirection to\ncomplete the next step in the OAuth2 flow.",
+            "in": "query",
+            "example": "http://example.com/auth/callback",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "url"
+            }
+          },
+          {
+            "name": "state",
+            "description": "A custom string of your choice. Box will pass the same string to\nthe redirect URL when authentication is complete. This parameter\ncan be used to identify a user on redirect, as well as protect\nagainst hijacked sessions and other attacks.",
+            "in": "query",
+            "example": "my_state",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scope",
+            "description": "A comma-separated list of application scopes you'd like to\nauthenticate the user for. This defaults to all the scopes configured\nfor the application in its configuration page.",
+            "in": "query",
+            "example": "admin_readwrite",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Does not return any data, but rather should be used in the browser.",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "format": "html"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth2/token": {
+      "post": {
+        "operationId": "post_oauth2_token",
+        "summary": "Request an access token",
+        "description": "Request an Access Token using either a client-side obtained OAuth2\nauthorization code or a server-side JWT assertion.\n\nAn Access Token is a string that enables Box to verify that a\nrequest belongs to an authorized session. In the normal order of\noperations you will begin by requesting authentication from the\n[authorize](#get-authorize) endpoint and Box will send you an\nauthorization code.\n\nYou will then send this code to this endpoint to exchange it for\nan Access Token. The returned Access Token can then be used to to make\nBox API calls.",
+        "tags": [
+          "Authorization"
+        ],
+        "servers": [
+          {
+            "url": "https://api.box.com",
+            "description": "Server for server-side authentication"
+          }
+        ],
+        "x-box-reference-category": "authorization",
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns a new Access Token that can be used to make authenticated\nAPI calls by passing along the token in a authorization header as\nfollows `Authorization: Bearer <Token>`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessToken"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "An authentication error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oauth2/revoke": {
+      "post": {
+        "operationId": "post_oauth2_revoke",
+        "summary": "Revoke an access token",
+        "description": "Revoke an active Access Token, effectively logging a user out\nthat has been previously authenticated.",
+        "tags": [
+          "Authorization"
+        ],
+        "servers": [
+          {
+            "url": "https://api.box.com",
+            "description": "Server for server-side authentication"
+          }
+        ],
+        "x-box-reference-category": "authorization",
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRevocationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns an empty response when the token was successfully revoked."
+          },
+          "400": {
+            "description": "An authentication error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuth2Error"
                 }
               }
             }
