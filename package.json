@@ -1,15 +1,36 @@
 {
-  "name": "postman",
+  "name": "box-postman-collection",
   "version": "1.0.0",
   "main": "index.js",
-  "license": "MIT",
+  "license": "Apache-2.0",
+  "author": "Box Developer Relations <devrel@box.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/box/postman.git"
+  },
+  "keywords": [
+    "postman",
+    "collection",
+    "api",
+    "box"
+  ],
+  "bugs": {
+    "url": "https://github.com/box/postman/issues"
+  },
+  "homepage": "https://box.dev/",
   "dependencies": {
     "@stoplight/json-ref-resolver": "^2.0.3",
+    "dotenv": "^8.0.0",
+    "fs-extra": "^8.1.0",
     "openapi-to-postmanv2": "cbetta/openapi-to-postman#90-fix-nested-server-paths",
     "tslib": "^1.10.0"
   },
   "scripts": {
+    "clean": "rm -rf ./.sources/*",
+    "pull": "node ./src/scripts/pull.js",
+    "prebuild": "yarn pull",
     "build": "node convert.js",
     "test": "node test.js"
-  }
+  },
+  "private": true
 }
