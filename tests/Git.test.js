@@ -1,8 +1,14 @@
-const cp = require('child_process')
-
 jest.mock('child_process')
+jest.mock('fs')
+
+const cp = require('child_process')
+const fs = require('fs')
 
 const Git = require('../src/Git')
+
+afterEach(() => {
+  jest.resetModules()
+})
 
 describe('#constructor', () => {
   test('should accept a path', () => {
@@ -29,16 +35,14 @@ describe('.pull', () => {
 
     console.log = jest.fn()
 
-    const fs = {
-      existsSync: () => false
-    }
+    fs.existsSync = () => false
 
     cp.spawnSync.mockReturnValue({
       stderr: Buffer.alloc(0),
       stdout: Buffer.alloc(0)
     })
 
-    const git = new Git(path, fs)
+    const git = new Git(path)
     await git.pull()
 
     expect(cp.spawnSync).toHaveBeenCalledWith('git', ['clone', '--depth', 1, '--branch', 'branch', 'source', 'destination'])
@@ -51,16 +55,14 @@ describe('.pull', () => {
       source: 'source'
     }
 
-    const fs = {
-      existsSync: () => true
-    }
+    fs.existsSync = () => true
 
     cp.spawnSync.mockReturnValue({
       stderr: Buffer.alloc(0),
       stdout: Buffer.alloc(0)
     })
 
-    const git = new Git(path, fs)
+    const git = new Git(path)
     await git.pull()
 
     expect(cp.spawnSync).toHaveBeenCalledWith('git', ['pull'], { cwd: 'destination' })

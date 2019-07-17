@@ -1,14 +1,14 @@
-const Collection = require('./Collection')
 const fs = require('fs')
+
+const Collection = require('./Collection')
 
 // const VERB_PRIORITY = ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
 
 class OpenAPI {
-  constructor (filename, _fs = fs) {
+  constructor (filename) {
     this.filename = filename
     this.openapi = null
     this.tags = {}
-    this.fs = _fs
   }
 
   async convert () {
@@ -20,7 +20,7 @@ class OpenAPI {
   // private
 
   readOpenAPI () {
-    const source = this.fs.readFileSync(this.filename).toString()
+    const source = fs.readFileSync(this.filename).toString()
     this.openapi = JSON.parse(source)
   }
 

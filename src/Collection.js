@@ -261,8 +261,7 @@ class Collection {
   }
 
   urlencoded (endpoint) {
-    if (this.mode(endpoint) !== 'urlencoded') { return null }
-    if (!endpoint.requestBody) { return null }
+    if (this.mode(endpoint) !== 'urlencoded' || !endpoint.requestBody) { return null }
 
     const itemName = endpoint.requestBody.content['application/x-www-form-urlencoded'].schema['$ref'].split('/schemas/')[1]
     const item = this.openapi.components.schemas[itemName]
@@ -277,8 +276,7 @@ class Collection {
   }
 
   formdata (endpoint) {
-    if (this.mode(endpoint) !== 'formdata') { return null }
-    if (!endpoint.requestBody) { return null }
+    if (this.mode(endpoint) !== 'formdata' || !endpoint.requestBody) { return null }
 
     const schema = endpoint.requestBody.content['multipart/form-data'].schema
 

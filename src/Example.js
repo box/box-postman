@@ -8,10 +8,6 @@ class Example {
     return JSON.stringify(this.sample, null, 2)
   }
 
-  flatStringify () {
-    return JSON.stringify(this.sample)
-  }
-
   // private
 
   generate (props = {}, required = []) {

@@ -1,14 +1,17 @@
+jest.mock('fs')
+
 const fs = require('fs')
+const actualFs = jest.requireActual('fs')
+const source = actualFs.readFileSync('./tests/examples/box-openapi.json')
 
 const {
   convert,
   convertAll
 } = require('../../src/scripts/convert')
 
-const source = fs.readFileSync('./tests/examples/box-openapi.json')
-
 describe('.convert', () => {
   afterEach(() => {
+    jest.resetModules()
     delete process.env.LOCALES
     delete process.env.EN_OAS3_REPO
   })
@@ -18,19 +21,18 @@ describe('.convert', () => {
     process.env.LOCALES = 'en'
     process.env.EN_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
 
-    const fsMock = {
-      readFileSync: () => source,
-      writeFileSync: jest.fn()
-    }
+    fs.readFileSync = () => source
+    fs.writeFileSync = jest.fn()
 
-    await convert(undefined, fsMock)
+    await convert()
 
-    expect(fsMock.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
+    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
   })
 })
 
 describe('.convertAll', () => {
   afterEach(() => {
+    jest.resetModules()
     delete process.env.LOCALES
     delete process.env.EN_OAS3_REPO
   })
@@ -40,14 +42,12 @@ describe('.convertAll', () => {
     process.env.EN_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
     process.env.JP_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
 
-    const fsMock = {
-      readFileSync: () => source,
-      writeFileSync: jest.fn()
-    }
+    fs.readFileSync = () => source
+    fs.writeFileSync = jest.fn()
 
-    await convertAll(fsMock)
+    await convertAll()
 
-    expect(fsMock.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
-    expect(fsMock.writeFileSync).toHaveBeenCalledWith('./build/collection.jp.json', expect.any(String))
+    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
+    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.jp.json', expect.any(String))
   })
 })
