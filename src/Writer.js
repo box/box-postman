@@ -1,12 +1,11 @@
-const fs = require('fs')
-
 class Writer {
-  constructor (collection) {
+  constructor (collection, fs) {
     this.collection = collection
+    this.fs = fs
   }
 
   dump (filename) {
-    fs.writeFileSync(
+    this.fs.writeFileSync(
       filename,
       JSON.stringify(this.collection, null, 2)
     )

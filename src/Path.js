@@ -9,6 +9,7 @@ class Path {
     this.locale = locale
 
     this.LOCALE = locale.toUpperCase()
+
     this.folder = process.env[`${this.LOCALE}_${this.type}_PATH`]
     this.isLocal = !!this.folder
   }

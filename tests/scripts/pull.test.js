@@ -1,10 +1,8 @@
-const { pullAll } = require('../../src/scripts/pull')
-
 const cp = require('child_process')
-const fs = require('fs-extra')
 
 jest.mock('child_process')
-jest.mock('fs')
+
+const { pullAll } = require('../../src/scripts/pull')
 
 describe('.pullAll', () => {
   afterEach(() => {
@@ -19,13 +17,14 @@ describe('.pullAll', () => {
     process.env.JP_OAS3_PATH = '/Users/cbetta/code/box/box-openapi/dev/'
 
     console.log = jest.fn()
-    fs.existsSync.mockReturnValue(false)
+    const fs = { existsSync: () => false }
+
     cp.spawnSync.mockReturnValue({
       stderr: Buffer.alloc(0),
       stdout: Buffer.alloc(0)
     })
 
-    await pullAll()
+    await pullAll(fs)
 
     expect(cp.spawnSync).toHaveBeenCalledWith('git', ['clone', '--depth', 1, '--branch', 'en', 'https://github.com/box/box-openapi.git', './.sources/68747470733a2f2f6769746875622e636f6d2f626f782f626f782d6f70656e6170692e67697423656e/'])
   })

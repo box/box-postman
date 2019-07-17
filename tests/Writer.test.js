@@ -14,7 +14,7 @@ describe('#constructor', () => {
 describe('.dump', () => {
   test('should write the collection to disk', () => {
     const collection = { items: [] }
-    const writer = new Writer(collection)
+    const writer = new Writer(collection, fs)
     writer.dump('path/to/file')
     expect(fs.writeFileSync).toHaveBeenCalledWith(
       'path/to/file',

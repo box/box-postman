@@ -19,14 +19,10 @@
   },
   "homepage": "https://box.dev/",
   "dependencies": {
-    "@stoplight/json-ref-resolver": "^2.0.3",
     "dotenv": "^8.0.0",
-    "fs-extra": "^8.1.0",
     "jest": "^24.8.0",
     "jsonpath": "^1.0.2",
-    "openapi-to-postmanv2": "cbetta/openapi-to-postman#90-fix-nested-server-paths",
     "standard": "^13.0.2",
-    "tslib": "^1.10.0",
     "uuid": "^3.3.2"
   },
   "scripts": {

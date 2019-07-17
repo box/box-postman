@@ -1,6 +1,10 @@
-const { convert, convertAll } = require('../../src/scripts/convert')
-
 const fs = require('fs')
+
+const {
+  convert,
+  convertAll
+} = require('../../src/scripts/convert')
+
 const source = fs.readFileSync('./tests/examples/box-openapi.json')
 
 describe('.convert', () => {
@@ -14,12 +18,14 @@ describe('.convert', () => {
     process.env.LOCALES = 'en'
     process.env.EN_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
 
-    fs.readFileSync = () => source
-    fs.writeFileSync = jest.fn()
+    const fsMock = {
+      readFileSync: () => source,
+      writeFileSync: jest.fn()
+    }
 
-    await convert()
+    await convert(undefined, fsMock)
 
-    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
+    expect(fsMock.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
   })
 })
 
@@ -34,12 +40,14 @@ describe('.convertAll', () => {
     process.env.EN_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
     process.env.JP_OAS3_REPO = 'https://github.com/box/box-openapi.git#en'
 
-    fs.readFileSync = () => source
-    fs.writeFileSync = jest.fn()
+    const fsMock = {
+      readFileSync: () => source,
+      writeFileSync: jest.fn()
+    }
 
-    await convertAll()
+    await convertAll(fsMock)
 
-    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
-    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.jp.json', expect.any(String))
+    expect(fsMock.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
+    expect(fsMock.writeFileSync).toHaveBeenCalledWith('./build/collection.jp.json', expect.any(String))
   })
 })
