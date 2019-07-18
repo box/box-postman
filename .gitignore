@@ -4,3 +4,4 @@ collection.json
 .build
 coverage
 build/*.json
+.env

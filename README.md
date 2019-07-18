@@ -29,9 +29,12 @@ To create a new build of the English and Japanese Postman Collections.
 ```sh
 # clone the repo
 git clone https://github.com/box/box-postman.git
+# enter the repo
 cd box-postman
 # install yarn
 npm install -g yarn
+# create the environment
+cp .env.example .env
 # install all dependencies
 yarn install
 # build a specific locale
