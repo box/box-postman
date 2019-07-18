@@ -29,7 +29,7 @@
     "uuid": "^3.3.2"
   },
   "scripts": {
-    "clean": "rm -rf ./.sources/* ./build/*.json",
+    "clean": "rm -rf ./.sources ./.build",
     "pull": "node -e 'require(\"./src/scripts/pull.js\").pullAll()'",
     "prebuild": "yarn pull",
     "prebuild:all": "yarn prebuild",

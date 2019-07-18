@@ -1,5 +1,6 @@
 node_modules
 collection.json
 .sources
+.build
 coverage
 build/*.json

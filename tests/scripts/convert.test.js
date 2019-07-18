@@ -26,7 +26,7 @@ describe('.convert', () => {
 
     await convert()
 
-    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
+    expect(fs.writeFileSync).toHaveBeenCalledWith('./.build/collection.en.json', expect.any(String))
   })
 })
 
@@ -47,7 +47,7 @@ describe('.convertAll', () => {
 
     await convertAll()
 
-    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.en.json', expect.any(String))
-    expect(fs.writeFileSync).toHaveBeenCalledWith('./build/collection.jp.json', expect.any(String))
+    expect(fs.writeFileSync).toHaveBeenCalledWith('./.build/collection.en.json', expect.any(String))
+    expect(fs.writeFileSync).toHaveBeenCalledWith('./.build/collection.jp.json', expect.any(String))
   })
 })

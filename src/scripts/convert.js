@@ -6,7 +6,7 @@ const Writer = require('../Writer')
 
 const OPENAPI_FILENAME = 'openapi.json'
 const OPENAPI_TYPE = 'OAS3'
-const OUTPUT_FOLDER = './build'
+const OUTPUT_FOLDER = './.build'
 
 const convert = async (locale = process.argv[1]) => {
   const path = new Path(OPENAPI_TYPE, locale)
@@ -16,7 +16,8 @@ const convert = async (locale = process.argv[1]) => {
   const openapi = new OpenAPI(filename, locale)
   const collection = await openapi.convert()
   const writer = new Writer(collection)
-  writer.dump(`${OUTPUT_FOLDER}/collection.${locale}.json`)
+
+  writer.dump(OUTPUT_FOLDER, `collection.${locale}.json`)
 }
 
 const convertAll = async () => {

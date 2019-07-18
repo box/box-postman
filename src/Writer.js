@@ -5,9 +5,13 @@ class Writer {
     this.collection = collection
   }
 
-  dump (filename) {
+  dump (folder, filename) {
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder)
+    }
+
     fs.writeFileSync(
-      filename,
+      `${folder}/${filename}`,
       JSON.stringify(this.collection, null, 2)
     )
   }
