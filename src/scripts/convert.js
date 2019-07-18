@@ -13,7 +13,7 @@ const convert = async (locale = process.argv[1]) => {
   path.translate()
 
   const filename = `${path.folder}/${OPENAPI_FILENAME}`
-  const openapi = new OpenAPI(filename)
+  const openapi = new OpenAPI(filename, locale)
   const collection = await openapi.convert()
   const writer = new Writer(collection)
   writer.dump(`${OUTPUT_FOLDER}/collection.${locale}.json`)

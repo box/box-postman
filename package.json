@@ -19,9 +19,12 @@
   },
   "homepage": "https://box.dev/",
   "dependencies": {
+    "@stoplight/json-ref-resolver": "^2.0.3",
+    "deepmerge": "^4.0.0",
     "dotenv": "^8.0.0",
     "jest": "^24.8.0",
-    "jsonpath": "^1.0.2",
+    "jsonpath-plus": "^0.20.1",
+    "remove-markdown": "^0.3.0",
     "standard": "^13.0.2",
     "uuid": "^3.3.2"
   },

@@ -1,7 +1,7 @@
 class Example {
-  constructor (body, openapi) {
+  constructor (schema, openapi) {
     this.openapi = openapi
-    this.sample = this.generate(body.properties, body.required)
+    this.sample = this.value(schema)
   }
 
   stringify () {
@@ -10,12 +10,10 @@ class Example {
 
   // private
 
-  generate (props = {}, required = []) {
+  generate (props) {
     const output = {}
     Object.entries(props).forEach(([key, prop]) => {
-      // if (required.includes(key)) {
       output[key] = this.value(prop)
-      // }
     })
     return output
   }
@@ -23,12 +21,10 @@ class Example {
   value (prop) {
     if (prop.example) {
       return prop.example
-    } else if (prop.type === 'object') {
-      return this.generate(prop.properties, prop.required)
-    } else if (prop.type === 'array' && prop.items['$ref']) {
-      const name = prop.items['$ref'].split('schemas/')[1]
-      const item = this.openapi.components.schemas[name]
-      return [this.generate(item.properties, item.required)]
+    } else if (prop.properties && prop.type !== 'string') {
+      return this.generate(prop.properties)
+    } else if (prop.type === 'array' && prop.items['x-box-resource-id']) {
+      return [this.generate(prop.items.properties)]
     }
   }
 }

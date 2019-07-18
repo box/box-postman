@@ -1,7 +1,75 @@
 const uuid = require('uuid')
 const { URL } = require('url')
+const rmMD = require('remove-markdown')
 
 const Example = require('./Example')
+
+const VERB_PRIORITY = ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+
+const STATUSES = {
+  100: 'Continue',
+  101: 'Switching Protocols',
+  102: 'Processing',
+  200: 'OK',
+  201: 'Created',
+  202: 'Accepted',
+  203: 'Non-authoritative Information',
+  204: 'No Content',
+  205: 'Reset Content',
+  206: 'Partial Content',
+  207: 'Multi-Status',
+  208: 'Already Reported',
+  226: 'IM Used',
+  300: 'Multiple Choices',
+  301: 'Moved Permanently',
+  302: 'Found',
+  303: 'See Other',
+  304: 'Not Modified',
+  305: 'Use Proxy',
+  307: 'Temporary Redirect',
+  308: 'Permanent Redirect',
+  400: 'Bad Request',
+  401: 'Unauthorized',
+  402: 'Payment Required',
+  403: 'Forbidden',
+  404: 'Not Found',
+  405: 'Method Not Allowed',
+  406: 'Not Acceptable',
+  407: 'Proxy Authentication Required',
+  408: 'Request Timeout',
+  409: 'Conflict',
+  410: 'Gone',
+  411: 'Length Required',
+  412: 'Precondition Failed',
+  413: 'Payload Too Large',
+  414: 'Request-URI Too Long',
+  415: 'Unsupported Media Type',
+  416: 'Requested Range Not Satisfiable',
+  417: 'Expectation Failed',
+  421: 'Misdirected Request',
+  422: 'Unprocessable Entity',
+  423: 'Locked',
+  424: 'Failed Dependency',
+  426: 'Upgrade Required',
+  428: 'Precondition Required',
+  429: 'Too Many Requests',
+  431: 'Request Header Fields Too Large',
+  444: 'Connection Closed Without Response',
+  451: 'Unavailable For Legal Reasons',
+  499: 'Client Closed Request',
+  500: 'Internal Server Error',
+  501: 'Not Implemented',
+  502: 'Bad Gateway',
+  503: 'Service Unavailable',
+  504: 'Gateway Timeout',
+  505: 'HTTP Version Not Supported',
+  506: 'Variant Also Negotiates',
+  507: 'Insufficient Storage',
+  508: 'Loop Detected',
+  510: 'Not Extended',
+  511: 'Network Authentication Required',
+  599: 'Network Connect Timeout Error'
+}
 
 /**
  * Our own opinionated OpenAPI to Postman converter
@@ -12,8 +80,9 @@ class Collection {
    *
    * @param {Object} openapi
    */
-  constructor (openapi) {
+  constructor (openapi, locale) {
     this.openapi = openapi
+    this.locale = locale
   }
 
   /**
@@ -51,6 +120,7 @@ class Collection {
     this.createFolders()
     this.insertEndpoints()
     this.pruneEmptyFolders()
+    this.sortVerbs()
     return this.folders
   }
 
@@ -97,12 +167,28 @@ class Collection {
     const item = {
       id: uuid.v4(),
       name: endpoint.summary,
-      description: endpoint.description,
-      request: this.request(verb, path, endpoint)
+      description: this.description(endpoint),
+      request: this.request(verb, path, endpoint),
+      response: this.response(endpoint)
     }
 
     const parent = this.findSubFolder(endpoint['x-box-reference-category'])
     parent.item.push(item)
+  }
+
+  description (endpoint) {
+    const description = rmMD(endpoint.description.split('\n')[0])
+    const slug = endpoint.operationId.replace(/_/g, '-')
+    const category = this.category(endpoint)
+    const link = `https://box.dev/${this.locale}/reference/${category}/#${slug}`
+    return `${description}\n\n${link}`
+  }
+
+  category (endpoint) {
+    const subcategory = Object.entries(this.openapi.tags)
+      .filter(tag => tag[1]['x-box-reference-category'] === endpoint['x-box-reference-category'])[0][1]
+
+    return subcategory['x-box-reference-parent-category']
   }
 
   pruneEmptyFolders () {
@@ -112,12 +198,20 @@ class Collection {
     }).filter(folder => folder.item.length > 0)
   }
 
+  sortVerbs () {
+    this.folders.forEach(folder => (
+      folder.item.forEach(subfolder => {
+        subfolder.item.sort((a, b) => VERB_PRIORITY.indexOf(a.request.method) - VERB_PRIORITY.indexOf(b.request.method))
+      })
+    ))
+  }
+
   request (verb, path, endpoint) {
     return {
       url: this.url(path, endpoint),
       auth: this.auth(endpoint),
       method: verb.toUpperCase(),
-      description: endpoint.description,
+      description: this.description(endpoint),
       header: this.header(endpoint),
       body: this.body(endpoint)
     }
@@ -263,14 +357,13 @@ class Collection {
   urlencoded (endpoint) {
     if (this.mode(endpoint) !== 'urlencoded' || !endpoint.requestBody) { return null }
 
-    const itemName = endpoint.requestBody.content['application/x-www-form-urlencoded'].schema['$ref'].split('/schemas/')[1]
-    const item = this.openapi.components.schemas[itemName]
+    const schema = endpoint.requestBody.content['application/x-www-form-urlencoded'].schema
 
-    return Object.entries(item.properties)
+    return Object.entries(schema.properties)
       .map(([key, prop]) => ({
         key: key,
         value: prop.example,
-        disabled: !item.required.includes(key),
+        disabled: !schema.required.includes(key),
         description: prop.description
       }))
   }
@@ -293,6 +386,49 @@ class Collection {
         description: prop.description
       }
     })
+  }
+
+  response (endpoint) {
+    return Object.entries(endpoint.responses).map(([code, response]) => ({
+      id: uuid.v4(),
+      name: this.responseName(code, response),
+      headers: this.responseHeaders(response),
+      body: this.responseBody(response),
+      code: code,
+      status: STATUSES[code]
+    }))
+  }
+
+  responseName (code, response) {
+    return `[${code}] ${response.description.split('\n')[0]}`
+  }
+
+  responseHeaders (response) {
+    if (!response.headers && !response.content) { return null }
+    if (!response.headers) { response.headers = {} }
+
+    const headers = Object.entries(response.headers)
+      .map(([name, header]) => ({
+        key: name,
+        value: header.example,
+        description: header.description
+      }))
+
+    if (response.content) {
+      headers.push({
+        key: 'Content-Type',
+        value: Object.keys(response.content)[0]
+      })
+    }
+
+    return headers
+  }
+
+  responseBody (response) {
+    if (!(response.content && response.content['application/json'])) { return }
+    const schema = response.content['application/json'].schema
+
+    return new Example(schema, this.openapi).stringify()
   }
 
   /**
