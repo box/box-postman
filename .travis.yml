@@ -10,6 +10,8 @@ deploy:
   provider: script
   script: yarn release:all
   on:
-    branch: "master"
+    branch: master
     node: 11
-  
+notifications:
+  slack:
+    secure: ciMt/fQUE/IHoCchq3YgW5lZaGcs9UbHTwG0H40709eoNxAP6gZRnaJl2g+30TD6QjmXIahVVZ5f3jONK7ipoU9wHvAr+KqhXZUseqz/H0cxdgtnX0kOsHIg2W+CtHmhNFIhTFxLYIdY9gC6nWaH29JQDMBrGzjw88EeljlEegOoJi1FJhiY5wWN2KaBi5d/tHjpFqrlgvqFPHM6luxro2OejHd4s8ylFIbOj4EaBFeIsrPID24y2V84WTO/vV6fLj+HQUnilf1mvrawlhnYDj4RZe5N9OZenL0N/+sTvVmpCPjIesyozGKdilh9xM2gn/Jl8Ze3ffjAOWEbO3imyRZQIpjVQUVvzTJIW0xIsRSgy0ceiX3cAZmx2R5yVzh5+klCz2eTzBjNBLVd6zMJa7CIaKIGL6+AvTSdxCaNEKSoxrWOtpYqlZkgPI3z8IOC+aMuxcHjIJ5HDV2CpxVRCLRnVF2anRt26gFCA7RqQCSnq+wnKgrlYAM9hl50BjiF5BKzjaS1NjwV8Konn1ydkju/zL2Rnkss22vgHWEXqMM861xQNwDsiL3yCJFKUPLfXJZXWJUQ2dj2nevYWrp6lOanWvahMtprukKpuYV8fIyz/s+ifXF/q0qieCIUX5eUWj1QJJU5Xz26SmgozlDLzZYlR2eZvnZxxmm+fzYvYA8=
