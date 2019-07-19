@@ -3,12 +3,14 @@ cache:
   directories:
   - node_modules
 install:
-- yarn install
+  - yarn install
 node_js:
 - 11
 deploy:
   provider: script
   script: yarn release:all
+  skip-cleanup: true
+  keep-history: true
   on:
     branch: master
     node: 11
