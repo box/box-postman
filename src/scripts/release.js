@@ -13,10 +13,10 @@ const release = async (locale = process.argv[1]) => {
     `https://api.getpostman.com/collections/${collectionId}`,
     JSON.stringify({ collection }),
     {
-      headers: { 
-        'Content-Type': 'application/json' ,
+      headers: {
+        'Content-Type': 'application/json',
         'X-Api-Key': process.env.POSTMAN_API_KEY
-      },
+      }
     }
   ).catch(error => console.dir(error.response))
 }
