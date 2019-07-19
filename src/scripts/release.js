@@ -19,7 +19,6 @@ const release = async (locale = process.argv[1]) => {
       },
     }
   ).catch(error => console.dir(error.response))
-
 }
 
 const releaseAll = async () => {
