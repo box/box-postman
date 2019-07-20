@@ -243,26 +243,36 @@ class Collection {
   }
 
   query (endpoint) {
-    if (!endpoint.parameters) { return null }
+    if (!endpoint.parameters) { return [] }
 
     return endpoint.parameters
       .filter(param => param.in === 'query')
       .map(param => ({
         key: param.name,
-        value: param.example,
+        value: this.serialize(param.example),
         disabled: !param.required,
         description: param.description
       }))
   }
 
+  serialize (value) {
+    if (typeof value === 'object' && value !== null && value !== undefined) {
+      return JSON.stringify(value)
+    } else if (value !== null && value !== undefined) {
+      return String(value)
+    } else {
+      return ''
+    }
+  }
+
   variable (endpoint) {
-    if (!endpoint.parameters) { return null }
+    if (!endpoint.parameters) { return [] }
 
     return endpoint.parameters
       .filter(param => param.in === 'path')
       .map(param => ({
         key: param.name,
-        value: param.example,
+        value: this.serialize(param.example),
         disabled: !param.required,
         description: param.description
       }))
@@ -276,7 +286,7 @@ class Collection {
         .filter(param => param.in === 'header')
         .map(param => ({
           key: param.name,
-          value: param.example,
+          value: this.serialize(param.example),
           disabled: !param.required,
           description: param.description
         }))
@@ -355,21 +365,21 @@ class Collection {
   }
 
   urlencoded (endpoint) {
-    if (this.mode(endpoint) !== 'urlencoded' || !endpoint.requestBody) { return null }
+    if (this.mode(endpoint) !== 'urlencoded' || !endpoint.requestBody) { return [] }
 
     const schema = endpoint.requestBody.content['application/x-www-form-urlencoded'].schema
 
     return Object.entries(schema.properties)
       .map(([key, prop]) => ({
         key: key,
-        value: prop.example,
+        value: this.serialize(prop.example),
         disabled: !schema.required.includes(key),
         description: prop.description
       }))
   }
 
   formdata (endpoint) {
-    if (this.mode(endpoint) !== 'formdata' || !endpoint.requestBody) { return null }
+    if (this.mode(endpoint) !== 'formdata' || !endpoint.requestBody) { return [] }
 
     const schema = endpoint.requestBody.content['multipart/form-data'].schema
 
@@ -380,7 +390,7 @@ class Collection {
 
       return {
         key: key,
-        value: value,
+        value: this.serialize(value),
         disabled: !required,
         type: type,
         description: prop.description
@@ -392,9 +402,9 @@ class Collection {
     return Object.entries(endpoint.responses).map(([code, response]) => ({
       id: uuid.v4(),
       name: this.responseName(code, response),
-      headers: this.responseHeaders(response),
+      header: this.responseHeaders(response),
       body: this.responseBody(response),
-      code: code,
+      code: Number(code),
       status: STATUSES[code]
     }))
   }
@@ -404,13 +414,13 @@ class Collection {
   }
 
   responseHeaders (response) {
-    if (!response.headers && !response.content) { return null }
+    if (!response.headers && !response.content) { return [] }
     if (!response.headers) { response.headers = {} }
 
     const headers = Object.entries(response.headers)
       .map(([name, header]) => ({
         key: name,
-        value: header.example,
+        value: this.serialize(header.example),
         description: header.description
       }))
 
