@@ -18,7 +18,7 @@ const release = async (locale = process.argv[1]) => {
         'X-Api-Key': process.env.POSTMAN_API_KEY
       }
     }
-  ).catch(error => console.dir(error.response))
+  )
 }
 
 const releaseAll = async () => {
