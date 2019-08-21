@@ -83,6 +83,7 @@ class Collection {
   constructor (openapi, locale) {
     this.openapi = openapi
     this.locale = locale
+    this.LOCALE = locale.toUpperCase()
   }
 
   /**
@@ -105,7 +106,7 @@ class Collection {
    */
   getInfo () {
     return {
-      name: this.openapi.info.title,
+      name: `${this.openapi.info.title} (${this.LOCALE})`,
       _postman_id: uuid.v4(),
       description: this.openapi.info.description,
       schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
