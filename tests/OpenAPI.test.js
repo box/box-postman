@@ -13,7 +13,7 @@ const treeFor = (entry) => {
 describe('#constructor', () => {
   test('should accept a filename', () => {
     const filename = '/path/to/openapi.json'
-    const openapi = new OpenAPI(filename)
+    const openapi = new OpenAPI(filename, 'en')
     expect(openapi.filename).toBe(filename)
   })
 })
@@ -21,49 +21,63 @@ describe('#constructor', () => {
 describe('.convert', () => {
   test('should convert an openapi spec to a postman collection', async () => {
     const filename = './tests/examples/box-openapi.json'
-    const openapi = new OpenAPI(filename)
+    const openapi = new OpenAPI(filename, 'en')
     const collection = await openapi.convert()
     expect(collection.item).toHaveLength(11)
   })
 
   test('should exclude items marked as excluded', async () => {
     const filename = './tests/examples/box-openapi-with-exclusions.json'
-    const openapi = new OpenAPI(filename)
+    const openapi = new OpenAPI(filename, 'en')
     const collection = await openapi.convert()
 
     const tree = treeFor(collection)
 
-    expect(tree).toEqual({ undefined:
-      [{ Basics:
-           [{ Authorization: [{ 'Request an access token': null }] }] }] })
+    expect(tree).toEqual({
+      undefined:
+      [{
+        Basics:
+           [{ Authorization: [{ 'Request an access token': null }] }]
+      }]
+    })
   })
 
   test('should sort items by tag', async () => {
     const filename = './tests/examples/box-openapi-with-tags.json'
-    const openapi = new OpenAPI(filename)
+    const openapi = new OpenAPI(filename, 'en')
     const collection = await openapi.convert()
 
     const tree = treeFor(collection)
 
-    expect(tree).toEqual({ undefined:
-      [{ Basics:
-           [{ Authorization:
+    expect(tree).toEqual({
+      undefined:
+      [{
+        Basics:
+           [{
+             Authorization:
                 [{ 'Authorize a user': null },
                   { 'Request an access token': null },
-                  { 'Revoke an access token': null }] },
-           { Files:
+                  { 'Revoke an access token': null }]
+           },
+           {
+             Files:
                 [{ 'Get a file': null },
                   { 'Update a file': null },
-                  { 'Delete a file': null }] }] },
-      { 'Downloads & Uploads':
+                  { 'Delete a file': null }]
+           }]
+      },
+      {
+        'Downloads & Uploads':
            [{ Downloads: [{ 'Download a file': null }] },
-             { 'Simple Uploads': [{ 'Upload a file version': null }] }] },
-      { Trash: [{ 'Trashed Files': [{ 'Restore file': null }] }] }] })
+             { 'Simple Uploads': [{ 'Upload a file version': null }] }]
+      },
+      { Trash: [{ 'Trashed Files': [{ 'Restore file': null }] }] }]
+    })
   })
 
   test('should hard code the base URL', async () => {
     const filename = './tests/examples/box-openapi-with-tags.json'
-    const openapi = new OpenAPI(filename)
+    const openapi = new OpenAPI(filename, 'en')
     const collection = await openapi.convert()
 
     expect(collection.variable).toHaveLength(0)

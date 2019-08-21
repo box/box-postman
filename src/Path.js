@@ -1,4 +1,4 @@
-const SOURCES_PATH = `.sources`
+const SOURCES_PATH = '.sources'
 
 class Path {
   constructor (type, locale) {
