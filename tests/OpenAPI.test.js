@@ -85,4 +85,11 @@ describe('.convert', () => {
     expect(collection.item[0].item[1].item[0].request.url.path).toEqual('/2.0/files/:file_id')
     expect(collection.item[0].item[1].item[0].request.url.host).toEqual('api.box.com')
   })
+
+  test('should resolve double slashes in item paths', async () => {
+    const filename = './tests/examples/box-openapi.json'
+    const openapi = new OpenAPI(filename, 'en')
+    const collection = await openapi.convert()
+    expect(collection.item[0].item[0].item[1].request.url.path).toBe('/oauth2/token')
+  })
 })
