@@ -180,16 +180,8 @@ class Collection {
   description (endpoint) {
     const description = rmMD(endpoint.description.split('\n')[0])
     const slug = endpoint.operationId.replace(/_/g, '-')
-    const category = this.category(endpoint)
-    const link = `https://box.dev/${this.locale}/reference/${category}/#${slug}`
+    const link = `https://box.dev/${this.locale}/reference/${slug}`
     return `${description}\n\n${link}`
-  }
-
-  category (endpoint) {
-    const subcategory = Object.entries(this.openapi.tags)
-      .filter(tag => tag[1]['x-box-reference-category'] === endpoint['x-box-reference-category'])[0][1]
-
-    return subcategory['x-box-reference-parent-category']
   }
 
   pruneEmptyFolders () {
