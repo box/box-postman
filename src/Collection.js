@@ -1,5 +1,6 @@
 const uuid = require('uuid')
 const { URL } = require('url')
+const { resolve } = require('path')
 const rmMD = require('remove-markdown')
 
 const Example = require('./Example')
@@ -223,7 +224,7 @@ class Collection {
   }
 
   path (server, path) {
-    const result = `${server.pathname}${path}`
+    const result = resolve(`${server.pathname}${path}`)
     return result.replace(/\{(.*?)\}/g, ':$1')
   }
 
