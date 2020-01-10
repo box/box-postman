@@ -106,8 +106,9 @@ class Collection {
    * Creates the info object
    */
   getInfo () {
+    const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE})` : ''
     return {
-      name: `${this.openapi.info.title} (${this.LOCALE})`,
+      name: `${this.openapi.info.title}${locale}`,
       _postman_id: uuid.v4(),
       description: this.openapi.info.description,
       schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
@@ -312,7 +313,7 @@ class Collection {
       oauth2: [
         {
           key: 'accessToken',
-          value: '{{accessToken}}',
+          value: '{{access_token}}',
           type: 'string'
         },
         {
