@@ -2,6 +2,7 @@ const uuid = require('uuid')
 const { URL } = require('url')
 const { resolve } = require('path')
 const rmMD = require('remove-markdown')
+const fs = require('fs')
 
 const Example = require('./Example')
 
@@ -72,6 +73,28 @@ const STATUSES = {
   599: 'Network Connect Timeout Error'
 }
 
+// Sort 2 objects by name
+const byName = (a, b) => {
+  if ( a.name < b.name ){
+    return -1;
+  }
+  else if ( a.name > b.name ){
+    return 1;
+  }
+  return 0;
+}
+
+// Sort two object by priority
+const byPriority = (a, b) => {
+  if ( a['x-box-prioritize'] ){
+    return -1;
+  }
+  else if ( b['x-box-prioritize']) {
+    return 1;
+  }
+  return 0;
+}
+
 /**
  * Our own opinionated OpenAPI to Postman converter
  */
@@ -134,25 +157,20 @@ class Collection {
   createFolders () {
     this.folders = []
 
-    // for every tag create a folder object and place it on the tree
-    this.openapi.tags.forEach(tag => {
-      // a folder object
-      const folder = {
-        name: tag.name,
-        description: tag['x-box-reference-description'],
-        item: []
-      }
-
-      // if this object has a parent, find it
-      // and append the sub folder
+    // for every nested tag create a folder object and place it on the root folder
+    this.openapi.tags.sort(byName).sort(byPriority).forEach(tag => {
+      // only append subfolders in openapi
       if (tag['x-box-reference-parent-category']) {
-        const parent = this.findFolder(tag['x-box-reference-parent-category'])
-        parent.item.push(folder)
-      // alternatively just push this folder to the root
-      } else {
+        const folder = {
+          name: tag.name,
+          description: tag['x-box-reference-description'],
+          item: []
+        }
+
         this.folders.push(folder)
       }
     })
+
   }
 
   insertEndpoints () {
@@ -172,10 +190,11 @@ class Collection {
       name: endpoint.summary,
       description: this.description(endpoint),
       request: this.request(verb, path, endpoint),
-      response: this.response(endpoint)
+      response: this.response(endpoint),
+      event: this.getEvents(endpoint)
     }
 
-    const parent = this.findSubFolder(endpoint['x-box-reference-category'])
+    const parent = this.findFolder(endpoint['x-box-reference-category'])
     parent.item.push(item)
   }
 
@@ -187,17 +206,12 @@ class Collection {
   }
 
   pruneEmptyFolders () {
-    this.folders = this.folders.map(folder => {
-      folder.item = folder.item.filter(subfolder => subfolder.item.length > 0)
-      return folder
-    }).filter(folder => folder.item.length > 0)
+    this.folders = this.folders.filter(folder => folder.item.length > 0)
   }
 
   sortVerbs () {
     this.folders.forEach(folder => (
-      folder.item.forEach(subfolder => {
-        subfolder.item.sort((a, b) => VERB_PRIORITY.indexOf(a.request.method) - VERB_PRIORITY.indexOf(b.request.method))
-      })
+      folder.item.sort((a, b) => VERB_PRIORITY.indexOf(a.request.method) - VERB_PRIORITY.indexOf(b.request.method))
     ))
   }
 
@@ -453,16 +467,29 @@ class Collection {
   }
 
   /**
-   * Finds a folder instance for a given reference category ID
+   * Adds a pre-request script to an API call
    */
-  findSubFolder (id) {
-    // first find the folder name
-    const folderName = this.openapi.tags.filter(folder =>
-      folder['x-box-reference-category'] === id
-    )[0].name
+  getEvents (endpoint) {
+    // Don't add a script for endpoints without auth
+    if (endpoint.security && endpoint.security.length === 0) {
+      return []
+    }
 
-    // return the first folder to match this name
-    return this.folders.flatMap(parent => parent.item.filter(folder => folder.name === folderName))[0]
+    return [this.prerequestRefreshAccessToken()]
+  }
+
+  /**
+   * Creates a pre-request event to check for expired access tokens
+   */
+  prerequestRefreshAccessToken () {
+    return {
+      listen: 'prerequest',
+      script: {
+        id: uuid.v4(),
+        type: 'text/javascript',
+        exec: [ String(fs.readFileSync('./src/events/refreshAccessToken.js')) ]
+      }
+    }
   }
 }
 
