@@ -178,24 +178,67 @@ class Collection {
     paths.forEach(path => {
       const endpoints = this.openapi.paths[path]
       const verbs = Object.keys(endpoints)
-      verbs.forEach(verb => this.insertEndpoint(verb, path, endpoints[verb]))
+      verbs.forEach(verb => {
+        const endpoint = endpoints[verb]
+        const variations = this.variations(endpoint)
+
+        variations.forEach(variation => (
+          this.insertEndpoint(verb, path, endpoint, variation)
+        ))
+      })
     })
   }
 
-  insertEndpoint (verb, path, endpoint) {
+  /**
+   * Determines the variations for 
+   */
+  variations (endpoint) {
+    let variations = []
+    if (endpoint.requestBody && endpoint.requestBody.content) {
+      Object.keys(endpoint.requestBody.content).forEach(key => {
+        const content = endpoint.requestBody.content[key]
+
+        if (content.schema && content.schema.oneOf) {
+          content.schema.oneOf.forEach((_, index) => {
+            variations.push([key, index])
+          })
+        } 
+        else {
+          variations.push([key, null])
+        }
+       
+      })
+    } 
+    else {
+      variations.push(null)
+    }
+   
+    return variations
+  }
+
+  insertEndpoint (verb, path, endpoint, variation) {
     if (endpoint['x-box-postman-hidden']) { return }
 
     const item = {
       id: uuid.v4(),
-      name: endpoint.summary,
+      name: this.summary(endpoint, variation),
       description: this.description(endpoint),
-      request: this.request(verb, path, endpoint),
+      request: this.request(verb, path, endpoint, variation),
       response: this.response(endpoint),
       event: this.getItemEvents(endpoint)
     }
 
     const parent = this.findFolder(endpoint['x-box-reference-category'])
     parent.item.push(item)
+  }
+
+  summary (endpoint, variation) {
+    if (!variation || !variation[1]) { return endpoint.summary}
+    else {
+      const contentType = variation[0]
+      const index = variation[1]
+      return endpoint.requestBody.content[contentType].schema.oneOf[index].title
+    }
   }
 
   description (endpoint) {
@@ -215,14 +258,14 @@ class Collection {
     ))
   }
 
-  request (verb, path, endpoint) {
+  request (verb, path, endpoint, variation) {
     return {
       url: this.url(path, endpoint),
       auth: this.auth(endpoint),
       method: verb.toUpperCase(),
       description: this.description(endpoint),
       header: this.header(endpoint),
-      body: this.body(endpoint)
+      body: this.body(endpoint, variation)
     }
   }
 
@@ -347,39 +390,43 @@ class Collection {
     }
   }
 
-  body (endpoint) {
+  body (endpoint, variation) {
     if (!(endpoint.requestBody && endpoint.requestBody.content)) { return null }
 
     return {
-      mode: this.mode(endpoint),
-      raw: this.raw(endpoint),
-      urlencoded: this.urlencoded(endpoint),
-      formdata: this.formdata(endpoint)
+      mode: this.mode(variation[0]),
+      raw: this.raw(endpoint, variation),
+      urlencoded: this.urlencoded(endpoint, variation),
+      formdata: this.formdata(endpoint, variation)
     }
   }
 
-  mode (endpoint) {
+  mode (contentType) {
     const mapping = {
       'application/x-www-form-urlencoded': 'urlencoded',
       'multipart/form-data': 'formdata',
       'application/octet-stream': 'file',
       'application/json': 'raw'
     }
-    const contentType = Object.keys(endpoint.requestBody.content)[0]
     return mapping[contentType]
   }
 
-  raw (endpoint) {
-    if (this.mode(endpoint) !== 'raw') { return }
+  raw (endpoint, [contentType, index]) {
+    if (this.mode(contentType) !== 'raw') { return }
 
-    const body = Object.entries(endpoint.requestBody.content)[0][1].schema
+    let body = endpoint.requestBody.content[contentType].schema
+    if (body && body.oneOf) { body = body.oneOf[index] }
     return new Example(body, this.openapi).stringify()
   }
 
-  urlencoded (endpoint) {
-    if (this.mode(endpoint) !== 'urlencoded' || !endpoint.requestBody) { return [] }
+  urlencoded (endpoint, [contentType, index]) {
+    if (this.mode(contentType) !== 'urlencoded' || !endpoint.requestBody) { return [] }
 
-    const schema = endpoint.requestBody.content['application/x-www-form-urlencoded'].schema
+    let schema = endpoint.requestBody.content[contentType].schema
+
+    if (schema && schema.oneOf) { 
+      schema = schema.oneOf[index] 
+    }
 
     return Object.entries(schema.properties)
       .map(([key, prop]) => ({
@@ -390,10 +437,11 @@ class Collection {
       }))
   }
 
-  formdata (endpoint) {
-    if (this.mode(endpoint) !== 'formdata' || !endpoint.requestBody) { return [] }
+  formdata (endpoint, [contentType, index]) {
+    if (this.mode(contentType) !== 'formdata' || !endpoint.requestBody) { return [] }
 
-    const schema = endpoint.requestBody.content['multipart/form-data'].schema
+    const schema = endpoint.requestBody.content[contentType].schema
+    if (schema && schema.oneOf) { schema = schema.oneOf[index] }
 
     return Object.entries(schema.properties).map(([key, prop]) => {
       const type = prop.format === 'binary' ? 'file' : 'text'
