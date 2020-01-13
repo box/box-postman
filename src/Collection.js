@@ -191,7 +191,7 @@ class Collection {
       description: this.description(endpoint),
       request: this.request(verb, path, endpoint),
       response: this.response(endpoint),
-      event: this.getEvents(endpoint)
+      event: this.getItemEvents(endpoint)
     }
 
     const parent = this.findFolder(endpoint['x-box-reference-category'])
@@ -264,8 +264,11 @@ class Collection {
       }))
   }
 
-  serialize (value) {
-    if (typeof value === 'object' && value !== null && value !== undefined) {
+  serialize (key, value) {
+    if (['client_id', 'client_secret', 'refresh_token'].includes(key)) {
+      return `{{${key}}}`
+    } 
+    else if (typeof value === 'object' && value !== null && value !== undefined) {
       return JSON.stringify(value)
     } else if (value !== null && value !== undefined) {
       return String(value)
@@ -381,7 +384,7 @@ class Collection {
     return Object.entries(schema.properties)
       .map(([key, prop]) => ({
         key: key,
-        value: this.serialize(prop.example),
+        value: this.serialize(key, prop.example),
         disabled: !schema.required.includes(key),
         description: prop.description
       }))
@@ -469,13 +472,17 @@ class Collection {
   /**
    * Adds a pre-request script to an API call
    */
-  getEvents (endpoint) {
+  getItemEvents (endpoint) {
     // Don't add a script for endpoints without auth
-    if (endpoint.security && endpoint.security.length === 0) {
+    if (endpoint.operationId === 'post_oauth2_token') {
+      return [this.testUpdateAccessToken()]
+    }
+    else if (endpoint.security && endpoint.security.length === 0) {
       return []
     }
-
-    return [this.prerequestRefreshAccessToken()]
+    else {
+      return [this.prerequestRefreshAccessToken()]
+    }
   }
 
   /**
@@ -488,6 +495,20 @@ class Collection {
         id: uuid.v4(),
         type: 'text/javascript',
         exec: [ String(fs.readFileSync('./src/events/refreshAccessToken.js')) ]
+      }
+    }
+  }
+
+  /**
+   * Creates a test event to pick up on refreshed access tokens
+   */
+  testUpdateAccessToken () {
+    return {
+      listen: 'test',
+      script: {
+        id: uuid.v4(),
+        type: 'text/javascript',
+        exec: [ String(fs.readFileSync('./src/events/updateAccessToken.js')) ]
       }
     }
   }

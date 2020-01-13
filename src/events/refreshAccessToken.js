@@ -1,12 +1,7 @@
 /**
- * A script that is run before every API request. It is used to notify users
- * that their access token has expired, and optionally can be used to
- * automatically try and refresh access tokens.
+ * Pre-request script ran before every API request.
  * 
- * Usage:
- * 
- * Set the `enable_auto_refresh_access_token` variable in your environment to
- * "true" to enable automatic refreshing of your access token.
+ * Used to notify users that their access token has expired
  */
 
 // determine if the Access Token has expired
@@ -40,7 +35,7 @@ if (expired && autoRefresh && hasAllCredentials) {
       ]
     }
   }, function (error, response) {
-    if (error) { 
+    if (error || response.json().error) { 
       // if an error occured, log the error and raise a message to the user.
       console.log('Could not refresh the access token')
       console.log(error)
@@ -51,7 +46,7 @@ if (expired && autoRefresh && hasAllCredentials) {
       let data = response.json()
 
       // determine when this token is set to expire at
-      let newExpiresAt = Date.now() + data.expires_in
+      let newExpiresAt = Date.now() + data.expires_in*1000
       // store the new variables in the environment
       pm.environment.set('access_token', data.access_token);
       pm.environment.set('refresh_token', data.refresh_token);
