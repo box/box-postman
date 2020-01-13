@@ -394,13 +394,16 @@ class Collection {
   }
 
   response (endpoint) {
-    return Object.entries(endpoint.responses).map(([code, response]) => ({
-      id: uuid.v4(),
-      name: this.responseName(code, response),
-      header: this.responseHeaders(response),
-      body: this.responseBody(response),
-      code: Number(code),
-      status: STATUSES[code]
+    return Object
+      .entries(endpoint.responses)
+      .filter(([code]) => code !== 'default')
+      .map(([code, response]) => ({
+        id: uuid.v4(),
+        name: this.responseName(code, response),
+        header: this.responseHeaders(response),
+        body: this.responseBody(response),
+        code: Number(code),
+        status: STATUSES[code]
     }))
   }
 
