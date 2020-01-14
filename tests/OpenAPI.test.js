@@ -23,7 +23,7 @@ describe('.convert', () => {
     const filename = './tests/examples/box-openapi.json'
     const openapi = new OpenAPI(filename, 'en')
     const collection = await openapi.convert()
-    expect(collection.item).toHaveLength(11)
+    expect(collection.item).toHaveLength(52)
   })
 
   test('should exclude items marked as excluded', async () => {
@@ -36,8 +36,8 @@ describe('.convert', () => {
     expect(tree).toEqual({
       undefined:
       [{
-        Basics:
-           [{ Authorization: [{ 'Request an access token': null }] }]
+        Authorization:
+           [{ 'Request an access token': null }]
       }]
     })
   })
@@ -50,28 +50,25 @@ describe('.convert', () => {
     const tree = treeFor(collection)
 
     expect(tree).toEqual({
-      undefined:
-      [{
-        Basics:
-           [{
-             Authorization:
-                [{ 'Authorize a user': null },
-                  { 'Request an access token': null },
-                  { 'Revoke an access token': null }]
-           },
-           {
-             Files:
-                [{ 'Get a file': null },
-                  { 'Update a file': null },
-                  { 'Delete a file': null }]
-           }]
-      },
-      {
-        'Downloads & Uploads':
-           [{ Downloads: [{ 'Download a file': null }] },
-             { 'Simple Uploads': [{ 'Upload a file version': null }] }]
-      },
-      { Trash: [{ 'Trashed Files': [{ 'Restore file': null }] }] }]
+      undefined: [
+        {
+          Authorization: [
+            { 'Authorize a user': null },
+            { 'Request an access token': null },
+            { 'Revoke an access token': null }
+          ]
+        },
+        { Downloads: [{ 'Download a file': null }] },
+        {
+          Files: [
+            { 'Get a file': null },
+            { 'Update a file': null },
+            { 'Delete a file': null }
+          ]
+        },
+        { 'Simple Uploads': [{ 'Upload a file version': null }] },
+        { 'Trashed Files': [{ 'Restore file': null }] }
+      ]
     })
   })
 
@@ -81,15 +78,15 @@ describe('.convert', () => {
     const collection = await openapi.convert()
 
     expect(collection.variable).toHaveLength(0)
-    expect(collection.item[0].item[1].item[0].request.url.protocol).toBe('https')
-    expect(collection.item[0].item[1].item[0].request.url.path).toEqual('/2.0/files/:file_id')
-    expect(collection.item[0].item[1].item[0].request.url.host).toEqual('api.box.com')
+    expect(collection.item[1].item[0].request.url.protocol).toBe('https')
+    expect(collection.item[1].item[0].request.url.path).toEqual('/2.0/files/:file_id/content')
+    expect(collection.item[1].item[0].request.url.host).toEqual('api.box.com')
   })
 
   test('should resolve double slashes in item paths', async () => {
     const filename = './tests/examples/box-openapi.json'
     const openapi = new OpenAPI(filename, 'en')
     const collection = await openapi.convert()
-    expect(collection.item[0].item[0].item[1].request.url.path).toBe('/oauth2/token')
+    expect(collection.item[0].item[1].request.url.path).toBe('/oauth2/token')
   })
 })
