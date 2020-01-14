@@ -504,7 +504,7 @@ class Collection {
    */
   findFolder (endpoint) {
     const id = endpoint['x-box-reference-category']
-   
+
     // first find the folder name
     const folderName = this.openapi.tags.filter(folder =>
       folder['x-box-reference-category'] === id
