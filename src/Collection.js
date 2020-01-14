@@ -75,24 +75,22 @@ const STATUSES = {
 
 // Sort 2 objects by name
 const byName = (a, b) => {
-  if ( a.name < b.name ){
-    return -1;
+  if (a.name < b.name) {
+    return -1
+  } else if (a.name > b.name) {
+    return 1
   }
-  else if ( a.name > b.name ){
-    return 1;
-  }
-  return 0;
+  return 0
 }
 
 // Sort two object by priority
 const byPriority = (a, b) => {
-  if ( a['x-box-prioritize'] ){
-    return -1;
+  if (a['x-box-prioritize']) {
+    return -1
+  } else if (b['x-box-prioritize']) {
+    return 1
   }
-  else if ( b['x-box-prioritize']) {
-    return 1;
-  }
-  return 0;
+  return 0
 }
 
 /**
@@ -170,7 +168,6 @@ class Collection {
         this.folders.push(folder)
       }
     })
-
   }
 
   insertEndpoints () {
@@ -190,10 +187,10 @@ class Collection {
   }
 
   /**
-   * Determines the variations for 
+   * Determines the variations for
    */
   variations (endpoint) {
-    let variations = []
+    const variations = []
     if (endpoint.requestBody && endpoint.requestBody.content) {
       Object.keys(endpoint.requestBody.content).forEach(key => {
         const content = endpoint.requestBody.content[key]
@@ -202,17 +199,14 @@ class Collection {
           content.schema.oneOf.forEach((_, index) => {
             variations.push([key, index])
           })
-        } 
-        else {
+        } else {
           variations.push([key, null])
         }
-       
       })
-    } 
-    else {
+    } else {
       variations.push(null)
     }
-   
+
     return variations
   }
 
@@ -233,8 +227,7 @@ class Collection {
   }
 
   summary (endpoint, variation) {
-    if (!variation || !variation[1]) { return endpoint.summary}
-    else {
+    if (!variation || !variation[1]) { return endpoint.summary } else {
       const contentType = variation[0]
       const index = variation[1]
       return endpoint.requestBody.content[contentType].schema.oneOf[index].title
@@ -310,8 +303,7 @@ class Collection {
   serialize (key, value) {
     if (['client_id', 'client_secret', 'refresh_token'].includes(key)) {
       return `{{${key}}}`
-    } 
-    else if (typeof value === 'object' && value !== null && value !== undefined) {
+    } else if (typeof value === 'object' && value !== null && value !== undefined) {
       return JSON.stringify(value)
     } else if (value !== null && value !== undefined) {
       return String(value)
@@ -424,8 +416,8 @@ class Collection {
 
     let schema = endpoint.requestBody.content[contentType].schema
 
-    if (schema && schema.oneOf) { 
-      schema = schema.oneOf[index] 
+    if (schema && schema.oneOf) {
+      schema = schema.oneOf[index]
     }
 
     return Object.entries(schema.properties)
@@ -440,7 +432,7 @@ class Collection {
   formdata (endpoint, [contentType, index]) {
     if (this.mode(contentType) !== 'formdata' || !endpoint.requestBody) { return [] }
 
-    const schema = endpoint.requestBody.content[contentType].schema
+    let schema = endpoint.requestBody.content[contentType].schema
     if (schema && schema.oneOf) { schema = schema.oneOf[index] }
 
     return Object.entries(schema.properties).map(([key, prop]) => {
@@ -469,7 +461,7 @@ class Collection {
         body: this.responseBody(response),
         code: Number(code),
         status: STATUSES[code]
-    }))
+      }))
   }
 
   responseName (code, response) {
@@ -524,11 +516,9 @@ class Collection {
     // Don't add a script for endpoints without auth
     if (endpoint.operationId === 'post_oauth2_token') {
       return [this.testUpdateAccessToken()]
-    }
-    else if (endpoint.security && endpoint.security.length === 0) {
+    } else if (endpoint.security && endpoint.security.length === 0) {
       return []
-    }
-    else {
+    } else {
       return [this.prerequestRefreshAccessToken()]
     }
   }
@@ -542,7 +532,7 @@ class Collection {
       script: {
         id: uuid.v4(),
         type: 'text/javascript',
-        exec: [ String(fs.readFileSync('./src/events/refreshAccessToken.js')) ]
+        exec: [String(fs.readFileSync('./src/events/refreshAccessToken.js'))]
       }
     }
   }
@@ -556,7 +546,7 @@ class Collection {
       script: {
         id: uuid.v4(),
         type: 'text/javascript',
-        exec: [ String(fs.readFileSync('./src/events/updateAccessToken.js')) ]
+        exec: [String(fs.readFileSync('./src/events/updateAccessToken.js'))]
       }
     }
   }
