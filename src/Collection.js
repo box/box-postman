@@ -222,8 +222,8 @@ class Collection {
       event: this.getItemEvents(endpoint)
     }
 
-    const parent = this.findFolder(endpoint['x-box-reference-category'])
-    parent.item.push(item)
+    const parent = this.findFolder(endpoint)
+    parent.push(item)
   }
 
   summary (endpoint, variation) {
@@ -242,13 +242,16 @@ class Collection {
   }
 
   pruneEmptyFolders () {
-    this.folders = this.folders.filter(folder => folder.item.length > 0)
+    this.folders = this.folders.filter(folder => !folder.item || folder.item.length > 0)
   }
 
   sortVerbs () {
-    this.folders.forEach(folder => (
-      folder.item.sort((a, b) => VERB_PRIORITY.indexOf(a.request.method) - VERB_PRIORITY.indexOf(b.request.method))
-    ))
+    this.folders.forEach(folder => {
+      if (folder.item) {
+        folder.item.sort((a, b) => VERB_PRIORITY.indexOf(a.request.method) - VERB_PRIORITY.indexOf(b.request.method))
+      }
+      return folder
+    })
   }
 
   request (verb, path, endpoint, variation) {
@@ -499,14 +502,16 @@ class Collection {
   /**
    * Finds a folder instance for a given reference category ID
    */
-  findFolder (id) {
+  findFolder (endpoint) {
+    const id = endpoint['x-box-reference-category']
+   
     // first find the folder name
     const folderName = this.openapi.tags.filter(folder =>
       folder['x-box-reference-category'] === id
     )[0].name
 
     // return the first folder to match this name
-    return this.folders.filter(folder => folder.name === folderName)[0]
+    return this.folders.filter(folder => folder.name === folderName)[0].item
   }
 
   /**

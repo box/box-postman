@@ -57,5 +57,5 @@ if (expired && autoRefresh && hasAllCredentials) {
   })
 } else if (expired) {
   // otherwise, throw a message to the user if the access token expired.
-  throw new Error('Access token expired. Please use the "Refresh access token" API to request a new token.')
+  throw new Error('Access token expired. Please use the "Authorization => Refresh access token" API to request a new token.')
 }
