@@ -237,7 +237,7 @@ class Collection {
   description (endpoint) {
     const description = rmMD(endpoint.description.split('\n')[0])
     const slug = endpoint.operationId.replace(/_/g, '-')
-    const link = `https://box.dev/${this.locale}/reference/${slug}`
+    const link = `https://developer.box.com/${this.locale}/reference/${slug}`
     return `${description}\n\n${link}`
   }
 
@@ -297,7 +297,7 @@ class Collection {
       .filter(param => param.in === 'query')
       .map(param => ({
         key: param.name,
-        value: this.serialize(param.example),
+        value: this.serialize(param.name, param.example),
         disabled: !param.required,
         description: param.description
       }))
@@ -322,7 +322,7 @@ class Collection {
       .filter(param => param.in === 'path')
       .map(param => ({
         key: param.name,
-        value: this.serialize(param.example),
+        value: this.serialize(param.name, param.example),
         disabled: !param.required,
         description: param.description
       }))
@@ -336,7 +336,7 @@ class Collection {
         .filter(param => param.in === 'header')
         .map(param => ({
           key: param.name,
-          value: this.serialize(param.example),
+          value: this.serialize(param.name, param.example),
           disabled: !param.required,
           description: param.description
         }))
@@ -445,7 +445,7 @@ class Collection {
 
       return {
         key: key,
-        value: this.serialize(value),
+        value: this.serialize(key, value),
         disabled: !required,
         type: type,
         description: prop.description
@@ -478,7 +478,7 @@ class Collection {
     const headers = Object.entries(response.headers)
       .map(([name, header]) => ({
         key: name,
-        value: this.serialize(header.example),
+        value: this.serialize(name, header.example),
         description: header.description
       }))
 
