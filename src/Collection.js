@@ -401,7 +401,8 @@ class Collection {
       'application/x-www-form-urlencoded': 'urlencoded',
       'multipart/form-data': 'formdata',
       'application/octet-stream': 'file',
-      'application/json': 'raw'
+      'application/json': 'raw',
+      'application/json-patch+json': 'raw'
     }
     return mapping[contentType]
   }
@@ -411,6 +412,7 @@ class Collection {
 
     let body = endpoint.requestBody.content[contentType].schema
     if (body && body.oneOf) { body = body.oneOf[index] }
+
     return new Example(body, this.openapi).stringify()
   }
 

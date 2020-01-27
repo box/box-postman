@@ -19,12 +19,18 @@ class Example {
   }
 
   value (prop) {
-    if (prop.example) {
+    if (prop.example !== undefined) {
       return prop.example
     } else if (prop.properties && prop.type !== 'string') {
       return this.generate(prop.properties)
-    } else if (prop.type === 'array' && prop.items['x-box-resource-id']) {
-      return [this.generate(prop.items.properties)]
+    } else if (prop.type === 'array' && prop.items.oneOf) {
+      return this.value(prop.items.oneOf[0])
+    } else if (prop.type === 'array' && prop.items.properties) {
+      return [this.value(prop.items)]
+    } else if (prop.oneOf) {
+      return this.value(prop.oneOf[0])
+    } else {
+      console.warn('Could not parse an example for:', prop)
     }
   }
 }
