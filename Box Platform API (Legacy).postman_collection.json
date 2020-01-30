@@ -1,0 +1,8356 @@
+{
+	"info": {
+		"_postman_id": "619d9e7b-3fb1-44c0-8606-7d4df314af7c",
+		"name": "Box Platform API (Legacy)",
+		"description": "An old version of the Box Platform Postman collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication (OAuth2)",
+			"item": [
+				{
+					"name": "Request Authorization",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://api.box.com/oauth2/authorize?response_type=code&client_id={{client_id}}&state=authenticated",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"oauth2",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}"
+								},
+								{
+									"key": "state",
+									"value": "authenticated"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Access & Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.box.com/oauth2/token",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh an Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"access_token\", data.access_token);",
+									"postman.setEnvironmentVariable(\"refresh_token\", data.refresh_token);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "{{refresh_token}}",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.box.com/oauth2/token",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Destroy a Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.box.com/oauth2/revoke",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"oauth2",
+								"revoke"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "As-User",
+			"item": [
+				{
+					"name": "Get the Items in a User's Trash",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "As-User",
+								"value": "[user_id]"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/trash/items",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"trash",
+								"items"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Batch",
+			"item": [
+				{
+					"name": "Batch API",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"requests\": [\n{\n\"method\": \"POST\",\n\"relative_url\": \"/collaborations\",\n\"body\": {\n    \"item\": {\n        \"id\": \"32552530308\",\n        \"type\": \"folder\"\n    },\n    \"accessible_by\": {\n        \"id\": \"12939690\",\n        \"type\": \"user\"\n    },\n    \"role\": \"editor\"\n}\n},\n{\n\"method\": \"POST\",\n\"relative_url\": \"/collaborations\",\n\"body\": {\n    \"item\": {\n        \"id\": \"32552520203\",\n        \"type\": \"folder\"\n    },\n    \"accessible_by\": {\n        \"id\": \"12939558\",\n        \"type\": \"user\"\n    },\n    \"role\": \"editor\"\n}\n}\n]\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/batch/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"batch",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Classification (Governance Required)",
+			"item": [
+				{
+					"name": "Get Classification Template",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_templates/enterprise_78089/securityClassification-6VMVochwUWo/schema",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_templates",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo",
+								"schema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Classification on a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/100075658152/metadata/enterprise_78089/securityClassification-6VMVochwUWo",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"100075658152",
+								"metadata",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Classification on a Folder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/8290184477/metadata/enterprise_78089/securityClassification-6VMVochwUWo",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"8290184477",
+								"metadata",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Classification on a File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \n  \"Box__Security__Classification__Key\": \"Public\"\n \n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/104106176762/metadata/enterprise_78089/securityClassification-6VMVochwUWo",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"104106176762",
+								"metadata",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Classification on a Folder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \n  \"Box__Security__Classification__Key\": \"Public\"\n \n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/8290160857/metadata/enterprise_78089/securityClassification-6VMVochwUWo",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"8290160857",
+								"metadata",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Classification on a Folder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"op\": \"replace\", \"path\": \"/Box__Security__Classification__Key\", \"value\": \"Red Data\"}]"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/11943077453/metadata/enterprise_78089/securityClassification-6VMVochwUWo",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"11943077453",
+								"metadata",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Classification on a Folder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"op\": \"replace\", \"path\": \"/Box__Security__Classification__Key\", \"value\": \"Public\"}]"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/8290160857/metadata/enterprise_78089/securityClassification-6VMVochwUWo",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"8290160857",
+								"metadata",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Classification on a File",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"op\": \"replace\", \"path\": \"/Box__Security__Classification__Key\", \"value\": \"Restricted\"}]"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/100075658152/metadata/enterprise_78089/securityClassification-6VMVochwUWo",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"100075658152",
+								"metadata",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Folder's Path",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/1680847934?fields=path_collection",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"1680847934"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "path_collection"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Classification on a Folder",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/8290184477/metadata/enterprise_78089/securityClassification-6VMVochwUWo",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"8290184477",
+								"metadata",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Classification on a File",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/8290184477/metadata/enterprise_78089/securityClassification-6VMVochwUWo",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"8290184477",
+								"metadata",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Collaborations",
+			"item": [
+				{
+					"name": "Get Pending Collaborations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations?status=pending",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a Collaboration",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations/28503997",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations",
+								"28503997"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve all Collaborations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/300065354/collaborations",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"300065354",
+								"collaborations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a Collaboration to a Folder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"item\": { \"id\": \"7053166201\", \"type\": \"folder\"}, \"accessible_by\": { \"login\": \"rory+demo@box.com\"}, \"role\": \"previewer\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a Collaboration to a File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"item\": { \"id\": \"141118126810\", \"type\": \"file\"}, \"accessible_by\": { \"login\": \"rory+demo@box.com\"}, \"role\": \"previewer\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a Collaboration (Don't Notify)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"item\": { \"id\": \"300065354\", \"type\": \"folder\"}, \"accessible_by\": { \"id\": \"12939522\"}, \"role\": \"editor\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations?notify=false",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations"
+							],
+							"query": [
+								{
+									"key": "notify",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a 'Can_View_Path' Collaboration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"item\": { \"id\": \"1244218205\", \"type\": \"folder\"}, \"accessible_by\": { \"login\": \"bruce+api@box.com\"}, \"role\": \"editor\", \"can_view_path\":true}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations/?notify=false",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations",
+								""
+							],
+							"query": [
+								{
+									"key": "notify",
+									"value": "false"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a Collaboration",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"role\": \"viewer\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations/28503997",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations",
+								"28503997"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a Collaboration (Expiration)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"role\": \"previewer\", \"expires_at\": \"2018-10-31T23:59:00-07:00\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations/11655962968",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations",
+								"11655962968"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove a Collaboration",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations/28504189",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations",
+								"28504189"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Collaboration Whiltelist (Governance Required)",
+			"item": [
+				{
+					"name": "Delete Collaboration Whitelist Entry",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaboration_whitelist_entries/24618",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaboration_whitelist_entries",
+								"24618"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Collaboration Whitelist Exempt User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": {\n        \"type\": \"user\",\n        \"id\": \"12939690\",\n        \"login\": \"rory+buster@box.com\"\n    }\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaboration_whitelist_exempt_targets/185035",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaboration_whitelist_exempt_targets",
+								"185035"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Collaboration Whitelist Exempt Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/collaboration_whitelist_exempt_targets",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaboration_whitelist_exempt_targets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Collaboration Whitelist Exempt User by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/collaboration_whitelist_exempt_targets/184273",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaboration_whitelist_exempt_targets",
+								"184273"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Collaboration Whitelist Exempt User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user\": {\n        \"type\": \"user\",\n        \"id\": \"12939690\",\n        \"login\": \"rory+buster@box.com\"\n    }\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaboration_whitelist_exempt_targets",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaboration_whitelist_exempt_targets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Collaboration Whitelist Entries",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/collaboration_whitelist_entries",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaboration_whitelist_entries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Collaboration Whitelist Entries by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/collaboration_whitelist_entries/24606",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaboration_whitelist_entries",
+								"24606"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Collaboration Whitelist Entry",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"domain\": \"gmail.com\", \"direction\": \"inbound\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaboration_whitelist_entries",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaboration_whitelist_entries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/5639341636/content",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"5639341636",
+								"content"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Collections",
+			"item": [
+				{
+					"name": "Get Collections",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/collections",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Collection Items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/collections/1720015/items",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collections",
+								"1720015",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add File to Collection (Favorites)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"collections\": [{\"id\":\"1720015\"}]}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/49474938170",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"49474938170"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Folder to Collection (Favorites)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"collections\": [{\"id\":\"1720015\"}]}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/9044267606",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"9044267606"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Comments",
+			"item": [
+				{
+					"name": "Get Information About a Comment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/comments/12772127",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"comments",
+								"12772127"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a Comment to a File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n\t\"item\":\n\n\t{\"type\": \"file\", \"id\": \"6526455273\"}, \n    \n\t\"message\": \"This looks great!\"\n\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/comments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add an '@' Comment to a File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n\t\"item\":\n\n\t{\"type\": \"file\", \"id\": \"6526455273\"}, \n    \n\t\"tagged_message\": \"Tagged mention for @[192642898:Rory]\"\n\n}\n\n"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/comments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add an Reply Comment to a File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"tagged_message\": \"Tagged mention for @[192642898:Rory]\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/comments/15322686/comments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"comments",
+								"15322686",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change a Comment's Message",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"message\": \"Change comment via the API\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/comments/12772103",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"comments",
+								"12772103"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Comment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/comments/12772103",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"comments",
+								"12772103"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Enterprise Device Pinning",
+			"item": [
+				{
+					"name": "Get Enterprise Device Pins",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/enterprises/78089/device_pinners",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"enterprises",
+								"78089",
+								"device_pinners"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Device Pin",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/device_pinners/672309",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"device_pinners",
+								"672309"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Device Pin",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/device_pinners/1566141",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"device_pinners",
+								"1566141"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Get All Events in an Enterprise",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/events?stream_type=admin_logs",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"events"
+							],
+							"query": [
+								{
+									"key": "stream_type",
+									"value": "admin_logs"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Specific Event in an Enterprise",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/events?stream_type=admin_logs&event_type=GROUP_ADD_USER",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"events"
+							],
+							"query": [
+								{
+									"key": "stream_type",
+									"value": "admin_logs"
+								},
+								{
+									"key": "event_type",
+									"value": "GROUP_ADD_USER"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Events - Created Today",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/events?stream_type=admin_logs&created_after=today",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"events"
+							],
+							"query": [
+								{
+									"key": "stream_type",
+									"value": "admin_logs"
+								},
+								{
+									"key": "created_after",
+									"value": "today"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Events - Created After by Date",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/events?stream_type=admin_logs&created_after=20170201T17:00:00",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"events"
+							],
+							"query": [
+								{
+									"key": "stream_type",
+									"value": "admin_logs"
+								},
+								{
+									"key": "created_after",
+									"value": "20170201T17:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Events for a User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/events?limit=100",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"events"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Files",
+			"item": [
+				{
+					"name": "Preflight Check",
+					"request": {
+						"method": "OPTIONS",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\": \"Jetpack.pptx\", \"parent\": {\"id\": \"11943077453\"}, \"size\": 15243}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/content?create_upload_token=true",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"content"
+							],
+							"query": [
+								{
+									"key": "create_upload_token",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Information About a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/251269991434",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"251269991434"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File Version Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/3871754690/versions/297776283037",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"3871754690",
+								"versions",
+								"297776283037"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Download a File - Suppress Email",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Box-Notifications",
+								"value": "Off"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/93736620693/content",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"93736620693",
+								"content"
+							]
+						},
+						"description": "This request downloads a file and suppresses the email that might otherwrise be sent to the user(s) that want to be notified when items are downloaded. This requires a special scope and admin/co-admin rights."
+					},
+					"response": []
+				},
+				{
+					"name": "Embed File Preview",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/39691197953?fields=expiring_embed_link",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"39691197953"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "expiring_embed_link"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File Expiration Date",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/251269991434?fields=expires_at",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"251269991434"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "expires_at"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fields Info about a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/101406236464?fields=watermark_info",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"101406236464"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "watermark_info"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View the Comments on a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/3871754690/comments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"3871754690",
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View a File's Collaborations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/141118126810/collaborations",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"141118126810",
+								"collaborations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Thumbnail for a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/5639341636/thumbnail.png?min_height=256&min_width=256&max_height=256&max_width=256",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"5639341636",
+								"thumbnail.png"
+							],
+							"query": [
+								{
+									"key": "min_height",
+									"value": "256"
+								},
+								{
+									"key": "min_width",
+									"value": "256"
+								},
+								{
+									"key": "max_height",
+									"value": "256"
+								},
+								{
+									"key": "max_width",
+									"value": "256"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Trashed File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/5949697285/trash",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"5949697285",
+								"trash"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Versions of a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/3871754690/versions",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"3871754690",
+								"versions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View the Tasks on a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/3871754690/tasks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"3871754690",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the Tags for a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/11822030927?fields=tags",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"11822030927"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "tags"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a File's Lock Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/11822030927?fields=lock",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"11822030927"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "lock"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File + Metadata on a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/101406236464?fields=metadata.enterprise.usNationalParks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"101406236464"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "metadata.enterprise.usNationalParks"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Representations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/178833718140?fields=representations",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"178833718140"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "representations"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Copy a File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"parent\": {\"id\" : 0}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/3869227054/copy",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"3869227054",
+								"copy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore a Trashed File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/5949697285",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"5949697285"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload a File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{downscoped_token}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "attributes",
+									"value": "{\"name\":\".EXT\", \"parent\": {\"id\": \"52258253718\"}}",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"value": "",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://upload.box.com/api/2.0/files/content",
+							"protocol": "https",
+							"host": [
+								"upload",
+								"box",
+								"com"
+							],
+							"path": [
+								"api",
+								"2.0",
+								"files",
+								"content"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload a New Version of a File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "If-Match",
+								"value": "b3f76e2998597a51ec076076493d905fbf09a76b"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Zelda",
+									"value": "",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://upload.box.com/api/2.0/files/7802124308/content",
+							"protocol": "https",
+							"host": [
+								"upload",
+								"box",
+								"com"
+							],
+							"path": [
+								"api",
+								"2.0",
+								"files",
+								"7802124308",
+								"content"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move a File",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"parent\": {\"id\" : 1139054013}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/3869227054",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"3869227054"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Shared Link for a File",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"shared_link\": {\"access\": \"Open\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/6526455273",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"6526455273"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set an Expiration on a Shared Link",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"shared_link\": {\"unshared_at\": \"2016-07-20\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/71046416869",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"71046416869"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disable a Shared Link",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"shared_link\": null}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/6526455273",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"6526455273"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a File's Information",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"description\":\"File Description 2\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/3677287625",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"3677287625"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add & Remove Tags on a File",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"tags\": [\"DELETE\", \"NO\"]}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/11822030927",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"11822030927"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lock a File",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"lock\":{\"expires_at\": \"2013-12-01T16:51:19-08:00\", \"is_download_prevented\":false}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/12042147094?fields=lock",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"12042147094"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "lock"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unlock a File",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"lock\":null}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/12042147094?fields=lock",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"12042147094"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "lock"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a File",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "If-Match",
+								"value": "b0d845836633e96992c25fbdca151407938b485c"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/3862718192",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"3862718192"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Permanently Delete a Trashed File",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/5949691601/trash",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"5949691601",
+								"trash"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Version of a File",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Zelda",
+									"value": "",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/283025030080/versions/297778906192",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"283025030080",
+								"versions",
+								"297778906192"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Promote a Version",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"type\": \"file_version\", \"id\" : \"297776283037\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/283022331325/versions/current",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"283022331325",
+								"versions",
+								"current"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Folders",
+			"item": [
+				{
+					"name": "Get Information About a Folder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/20323695859",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"20323695859"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve a Folder's Items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/0/items",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"0",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View a Folder's Collaborations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/1139054013/collaborations",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"1139054013",
+								"collaborations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Trashed Folder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/628210759/trash",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"628210759",
+								"trash"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the Items in the Trash",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/trash/items",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"trash",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a List of Items and Tags",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/0/items?fields=name,tags",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"0",
+								"items"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "name,tags"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the Tags for a Folder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/1154771821?fields=tags",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"1154771821"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "tags"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Folder by Path",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders?parent_id=11453982910&path=Yosemite%2FYosemite2",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders"
+							],
+							"query": [
+								{
+									"key": "parent_id",
+									"value": "11453982910"
+								},
+								{
+									"key": "path",
+									"value": "Yosemite%2FYosemite2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Info + Metadata on a Folder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/12183204772?fields=metadata.enterprise.usNationalParks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"12183204772"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "metadata.enterprise.usNationalParks"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Copy a Folder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"parent\": {\"id\" : 0}, \"name\":\"My Use Case Folder\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/1358926818/copy",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"1358926818",
+								"copy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Folder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":\"New Folder\", \"parent\": {\"id\": \"0\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restore a Trashed Folder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":\"New Folder\", \"parent\": {\"id\": \"0\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/628210759",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"628210759"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move a Folder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"parent\": {\"id\" : 682258214}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/1076466685",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"1076466685"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Information about a Folder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":\"New Folder Name!\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/473153600",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"473153600"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Folder's Properties",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"can_non_owners_invite\": true\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/9044267606?fields=allowed_invitee_roles,allowed_shared_link_access_levels,can_non_owners_invite",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"9044267606"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "allowed_invitee_roles,allowed_shared_link_access_levels,can_non_owners_invite"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Turn on 'Email File to Folder'",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"folder_upload_email\": {\"access\": \"open\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/653992945",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"653992945"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Disabled a Shared Link",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"shared_link\": null}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/103404330",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"103404330"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add & Remove Tags on a Folder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"tags\": [\"DELETE\", \"NO\"]}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/1154771821",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"1154771821"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Folder",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/441526399?recursive=true",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"441526399"
+							],
+							"query": [
+								{
+									"key": "recursive",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Permanently Delete a Folder",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/628210759/trash",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"628210759",
+								"trash"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Groups",
+			"item": [
+				{
+					"name": "Get a Group Membership",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/group_memberships/1025175",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"group_memberships",
+								"1025175"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Group's Collaborations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/groups/104687/collaborations",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"groups",
+								"104687",
+								"collaborations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Group's Memberships",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/groups/104687/memberships",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"groups",
+								"104687",
+								"memberships"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Enterprise's Groups",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/groups",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Information about an Enterprise Group",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/groups/104687",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"groups",
+								"104687"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a Group Collaboration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"item\": { \"id\": \"1076455207\", \"type\": \"folder\"}, \"accessible_by\": { \"type\":\"group\", \"id\": \"104687\"}, \"role\": \"editor\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a Group Membership",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"group\": { \"id\": \"137557\", \"type\": \"group\"}, \"user\": { \"id\": \"192642898\"}}\n"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/group_memberships",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"group_memberships"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create an Enterprise Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\": \"Box Employees\", \"provenance\": \"AD\", \"external_sync_identifier\": \"ADSecurity-Box-Users\", \"description\": \"All Box Users\", \"invitability_level\": \"admins_only\", \"member_viewability_level\": \"admins_and_members\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/groups",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Group's Collaborations",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"accessible_by\": { \"type\":\"group\", \"id\": \"104687\"}, \"role\": \"Uploader\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations/44519356",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations",
+								"44519356"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update an Enterprise Group",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":\"SE Team 3\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/groups/137561",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"groups",
+								"137561"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Group Membership",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"role\": \"submaster\" }"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/group_memberships/1025175",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"group_memberships",
+								"1025175"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Group Collaboration",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/collaborations/44519086",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"collaborations",
+								"44519086"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Group Membership",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/group_memberships/1025175",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"group_memberships",
+								"1025175"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a an Enterprise Group",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/groups/137561",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"groups",
+								"137561"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Legal Holds Policy (Governance)",
+			"item": [
+				{
+					"name": "Get List of Legal Hold Policies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policies",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Legal Hold Policy",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policies/315601",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policies",
+								"315601"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Legal Hold Policy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"policy_name\": \"Hampton Creek\",\n    \"description\": \"Just Mayo is better\",\n    \"filter_started_at\" : \"2016-06-22T00:00:00-08:00\",\n    \"filter_ended_at\" : \"2016-09-22T00:00:00-08:00\"\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policies",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a New, Ongoing Legal Hold Policy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"policy_name\": \"Josh Donaldson Wrongful Termination Claim\",\n    \"description\": \"Case brought against corporation for harrassment termination\",\n    \"filter_started_at\" : \"2016-06-22T00:00:00-08:00\",\n    \"is_ongoing\" : true\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policies",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Existing Legal Hold Policy",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"policy_name\": \"Hampton Creek\",\n    \"description\": \"Just Mayo is way, way better\",\n    \"filter_started_at\" : \"2016-06-22T00:00:00-08:00\",\n    \"filter_ended_at\" : \"2016-09-22T00:00:00-08:00\"\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policies/356518",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policies",
+								"356518"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Legal Hold Policy",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policies/356518",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policies",
+								"356518"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Assignment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policy_assignments/3731785",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policy_assignments",
+								"3731785"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List of Assignments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policies/315601/assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policies",
+								"315601",
+								"assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Assignment (User)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"policy_id\": \"315601\",\n\"assign_to\": {\n  \"type\" : \"user\",\n  \"id\" : \"194866920\"\n}}\n    \n"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policy_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policy_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Assignment (Folder)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"policy_id\": \"643154\",\n\"assign_to\": {\n  \"type\" : \"folder\",\n  \"id\" : \"28292002699\"\n}}\n    \n"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policy_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policy_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Assignment (File)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"policy_id\": \"643154\",\n\"assign_to\": {\n  \"type\" : \"file\",\n  \"id\" : \"179417201719\"\n}}\n    \n"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policy_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policy_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Assignment (File Version)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\"policy_id\": \"643154\",\n\"assign_to\": {\n  \"type\" : \"file_version\",\n  \"id\" : \"189710477927\"\n}}\n    \n"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policy_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policy_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Assignment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/legal_hold_policy_assignments/16514243",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"legal_hold_policy_assignments",
+								"16514243"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List of File Version Legal Holds",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/file_version_legal_holds?policy_id=918465&fields=file_version",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"file_version_legal_holds"
+							],
+							"query": [
+								{
+									"key": "policy_id",
+									"value": "918465"
+								},
+								{
+									"key": "fields",
+									"value": "file_version"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File Version Legal Hold",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/file_version_legal_holds/1997056725",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"file_version_legal_holds",
+								"1997056725"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Metadata Cascade Policy",
+			"item": [
+				{
+					"name": "Create A Metadata Cascade Policy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"folder_id\" : \"32394464081\",\n        \"scope\": \"enterprise_78089\",\n        \"templateKey\" : \"securityClassification-6VMVochwUWo\"\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_cascade_policies",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_cascade_policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retroactively Apply Metadata Via Cascade Policy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\n\"conflict_resolution\": \"none\"\n\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_cascade_policies/31f928b8-9a5a-4253-b589-25dda0e0fb57/apply",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_cascade_policies",
+								"31f928b8-9a5a-4253-b589-25dda0e0fb57",
+								"apply"
+							]
+						},
+						"description": "This will apply folder metadata to all sub-items (files and folders), skipping over conflicts rather than overwriting. To overwrite, see Overwrite request"
+					},
+					"response": []
+				},
+				{
+					"name": "Overwrite Metadata Via Cascade Policy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\n\"conflict_resolution\": \"overwrite\"\n\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_cascade_policies/31f928b8-9a5a-4253-b589-25dda0e0fb57/apply",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_cascade_policies",
+								"31f928b8-9a5a-4253-b589-25dda0e0fb57",
+								"apply"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Set of Metadata Cascade Policies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_cascade_policies?folder_id=32394464081",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_cascade_policies"
+							],
+							"query": [
+								{
+									"key": "folder_id",
+									"value": "32394464081"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get A Metadata Cascade Policy",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_cascade_policies/109e33b4-8124-4167-a34a-822c478d6d6c",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_cascade_policies",
+								"109e33b4-8124-4167-a34a-822c478d6d6c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete A Metadata Cascade Policy",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "e7nKlFiptyEfcjk5OAz6HasoWBdKWkYw",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "1t8ugbv6qobsoai93yq1n97d8wneqdnt",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "fYdrvJooqksQ73yzjGZavcTXLn9eXaVr",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_cascade_policies/109e33b4-8124-4167-a34a-822c478d6d6c",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_cascade_policies",
+								"109e33b4-8124-4167-a34a-822c478d6d6c"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Metadata Templates",
+			"item": [
+				{
+					"name": "Get Metadata Template",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_templates/enterprise_78089/insuranceClaims/schema",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_templates",
+								"enterprise_78089",
+								"insuranceClaims",
+								"schema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Global Metadata Template",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_templates/global/boxCaptureV1/schema",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_templates",
+								"global",
+								"boxCaptureV1",
+								"schema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Enterprise Metadata Templates",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_templates/enterprise_{{eid}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_templates",
+								"enterprise_{{eid}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Global Metadata Templates",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_templates/global",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_templates",
+								"global"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Metadata Template",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"templateKey\": \"insuranceClaims\",\n  \"scope\": \"enterprise\",\n  \"displayName\": \"Insurance Claims\",\n  \"fields\": [\n    {\n      \"type\": \"string\",\n      \"key\": \"customerName\",\n      \"displayName\": \"Customer Name\"\n    },\n    {\n      \"type\": \"string\",\n      \"key\": \"claimType\",\n      \"displayName\": \"Claim Type\"\n    },\n    {\n      \"type\": \"string\",\n      \"key\": \"claimNumber\",\n      \"displayName\": \"Claim Number\"\n    },\n    {\n      \"type\": \"enum\",\n      \"key\": \"region\",\n      \"displayName\": \"Region\",\n      \"options\": [\n        {\"key\": \"West\"},\n        {\"key\": \"Central\"},\n        {\"key\": \"Northwest\"},\n        {\"key\": \"Southeast\"},\n        {\"key\": \"Northeast\"}\n    ]},\n    {\n      \"type\": \"date\",\n      \"key\": \"claimDate\",\n      \"displayName\": \"Claim Date\",\n      \"hidden\": false\n    }\n  ]}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_templates/schema",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_templates",
+								"schema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Metadata Template",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"op\":\"editField\",\"fieldKey\":\"customerName\",\"data\":{\"displayName\":\"Farmers Customer Group\"}}]"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_templates/enterprise/insuranceClaims/schema",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_templates",
+								"enterprise",
+								"insuranceClaims",
+								"schema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Metadata Template - removeEnumOption",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"op\":\"removeEnumOption\",\"fieldKey\":\"Box__Security__Classification__Key\",\"enumOptionKey\":\"Folder Shared Link Policy\"}]"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_templates/enterprise_78089/securityClassification-6VMVochwUWo/schema",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_templates",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo",
+								"schema"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Metadata Template - editEnumOption",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"op\":\"editEnumOption\",\"fieldKey\":\"Box__Security__Classification__Key\",\"enumOptionKey\":\"Protected by Vera\",\"data\":{\"key\":\"Protected by DRM\"}}]"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/metadata_templates/enterprise_78089/securityClassification-6VMVochwUWo/schema",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"metadata_templates",
+								"enterprise_78089",
+								"securityClassification-6VMVochwUWo",
+								"schema"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Metadata on Files and Folders",
+			"item": [
+				{
+					"name": "Get Metadata on a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/95730306904/metadata/enterprise_78089/clientTrusts",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"95730306904",
+								"metadata",
+								"enterprise_78089",
+								"clientTrusts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Metadata on a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/95730306904/metadata/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"95730306904",
+								"metadata",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Metadata on a Folder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/11409734773/metadata",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"11409734773",
+								"metadata"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Metadata on a Folder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/11409734773/metadata/enterprise_78089/clientTrusts",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"11409734773",
+								"metadata",
+								"enterprise_78089",
+								"clientTrusts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Metadata on a File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \n  \"trustName\": \"Paap Family Trust\",\n  \"trustOfficer\": \"Marcia McKniff\",\n  \"registeredInvestmentAdvisor\": \"John Heckendorn\"\n \n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/95736416538/metadata/enterprise_78089/clientTrusts",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"95736416538",
+								"metadata",
+								"enterprise_78089",
+								"clientTrusts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Metadata on a Folder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \n  \"trustName\": \"Paap Family Trust\",\n  \"trustOfficer\": \"Marcia McKniff\",\n  \"registeredInvestmentAdvisor\": \"John Heckendorn\"\n \n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/11409734773/metadata/enterprise_78089/clientTrusts",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"11409734773",
+								"metadata",
+								"enterprise_78089",
+								"clientTrusts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Metadata on a File",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"op\": \"test\", \"path\": \"/trustName\", \"value\": \"Paap Family Trust\"},\n{\"op\": \"remove\", \"path\": \"/trustOfficer\"},\n{\"op\": \"test\", \"path\": \"/registeredInvestmentAdvisor\", \"value\": \"John Heckendorn\"}]"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/95736416538/metadata/enterprise_78089/clientTrusts",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"95736416538",
+								"metadata",
+								"enterprise_78089",
+								"clientTrusts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Metadata on a Folder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"op\": \"replace\", \"path\": \"/trustName\", \"value\": \"Logan Family Trust\"},\n{\"op\": \"remove\", \"path\": \"/trustOfficer\"},\n{\"op\": \"test\", \"path\": \"/registeredInvestmentAdvisor\", \"value\": \"John Heckendorn\"}]"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/11409734773/metadata/enterprise_78089/clientTrusts",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"11409734773",
+								"metadata",
+								"enterprise_78089",
+								"clientTrusts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Metadata on a File",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/95730306904/metadata/enterprise_78089/clientTrusts",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"95730306904",
+								"metadata",
+								"enterprise_78089",
+								"clientTrusts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Metadata on a Folder",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/11409734773/metadata/enterprise_78089/clientTrusts",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"11409734773",
+								"metadata",
+								"enterprise_78089",
+								"clientTrusts"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Multizones",
+			"item": [
+				{
+					"name": "Get Storage Policy Assignment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/storage_policy_assignments/user_3564365541",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"storage_policy_assignments",
+								"user_3564365541"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Storage Policy Assignment (with Limit)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/storage_policy_assignments?resolved_for_type=enterprise&resolved_for_id=78089",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"storage_policy_assignments"
+							],
+							"query": [
+								{
+									"key": "resolved_for_type",
+									"value": "enterprise"
+								},
+								{
+									"key": "resolved_for_id",
+									"value": "78089"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Storage Policy Assignment (with Limit)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/storage_policy_assignments[?marker=<marker>&limit=<limit>]",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"storage_policy_assignments["
+							],
+							"query": [
+								{
+									"key": "marker",
+									"value": "<marker>"
+								},
+								{
+									"key": "limit",
+									"value": "<limit>]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Storage Policies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/storage_policies",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"storage_policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Storage Policy Assignment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n\"storage_policy\": {\"type\": \"storage_policy\", \"id\": \"106\"},\n\"assigned_to\": {\"type\": \"user\", \"id\": \"3564325002\"}\n\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/storage_policy_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"storage_policy_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Storage Policy Assignment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n\"storage_policy\": {\"type\":\"storage_policy\", \"id\": \"158\"}\n\n}\n"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/storage_policy_assignments/user_213798446",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"storage_policy_assignments",
+								"user_213798446"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Storage Policy Assignment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/storage_policy_assignments/user_214877451",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"storage_policy_assignments",
+								"user_214877451"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Retention Policies (Governance)",
+			"item": [
+				{
+					"name": "Get Retention Policy",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/retention_policies/299398",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"retention_policies",
+								"299398"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Retention Policies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/retention_policies",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"retention_policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Retention Policy Assignment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/retention_policy_assignments/16476267",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"retention_policy_assignments",
+								"16476267"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Retention Policy Assignments",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/retention_policies/299398/assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"retention_policies",
+								"299398",
+								"assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File Version Retention",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/file_version_retentions/626445",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"file_version_retentions",
+								"626445"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get File Version Retentions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/file_version_retentions",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"file_version_retentions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Retention Policy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"policy_name\": \"HR Records-Corporate Records\", \"policy_type\": \"indefinite\", \"disposition_action\":\"remove_retention\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/retention_policies",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"retention_policies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Retention Policy Assignment (Enterprise)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"policy_id\" : \"382994\",\n  \"assign_to\" : {\n    \"id\" : null,\n    \"type\" : \"enterprise\"\n   }\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/retention_policy_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"retention_policy_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Retention Policy Assignment (Folder)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"policy_id\": \"299398\", \"assign_to\": {\"type\": \"folder\", \"id\": \"11429579558\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/retention_policy_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"retention_policy_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Retention Policy Assignment (Metadata Field)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"policy_id\" : \"891906\",\n  \"assign_to\" : {\n    \"id\" : \"c4fd63d0-8f8a-49f1-a5bb-26c716998da4\",\n    \"type\" : \"metadata_template\"\n   },\n   \"filter_fields\" : [\n\t{\n\t\t\"field\":\"f55f2406-5143-4a64-8d9f-9e6337706f74\",\n\t\t\"value\":\"a32dd489-d466-4237-be80-9b63b5d89118\"\n\t}\n   ]\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/retention_policy_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"retention_policy_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Retention Policy Assignment (Metadata Template)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"policy_id\": \"877278\", \"assign_to\": {\"type\": \"metadata_template\", \"id\": \"c4fd63d0-8f8a-49f1-a5bb-26c716998da4\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/retention_policy_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"retention_policy_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Retention Policy",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"policy_name\": \"HR Records-Corporate Records for Box\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/retention_policies/299398",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"retention_policies",
+								"299398"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Search",
+			"item": [
+				{
+					"name": "Search a User's Account",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/search?query=agenda",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "agenda"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search by Metadata",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/search?mdfilters=[{\"templateKey\":\"AcademyAwardsAssets\", \"scope\":\"enterprise\", \"filters\":{\"Year\": \"2015\"}}]",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"search"
+							],
+							"query": [
+								{
+									"key": "mdfilters",
+									"value": "[{\"templateKey\":\"AcademyAwardsAssets\", \"scope\":\"enterprise\", \"filters\":{\"Year\": \"2015\"}}]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search by Metadata (Multiple Filters)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/search?mdfilters=[{\"templateKey\":\"AcademyAwardsAssets\", \"scope\":\"enterprise\", \"filters\":{\"Year\": \"2015\", \"Category\":\"Best Picture\"}}]",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"search"
+							],
+							"query": [
+								{
+									"key": "mdfilters",
+									"value": "[{\"templateKey\":\"AcademyAwardsAssets\", \"scope\":\"enterprise\", \"filters\":{\"Year\": \"2015\", \"Category\":\"Best Picture\"}}]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search by Metadata (Number)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/search?mdfilters=[{\"templateKey\":\"usNationalParks\", \"scope\":\"enterprise\", \"filters\":{\"size\": {\"lt\":\"138999\",\"gt\":\"138999\"}}}]",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"search"
+							],
+							"query": [
+								{
+									"key": "mdfilters",
+									"value": "[{\"templateKey\":\"usNationalParks\", \"scope\":\"enterprise\", \"filters\":{\"size\": {\"lt\":\"138999\",\"gt\":\"138999\"}}}]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search a User's Trash",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/search?query=paychex&trash_content=trashed_only",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"search"
+							],
+							"query": [
+								{
+									"key": "query",
+									"value": "paychex"
+								},
+								{
+									"key": "trash_content",
+									"value": "trashed_only"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Shared Items",
+			"item": [
+				{
+					"name": "Get a Shared Item",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "BoxApi",
+								"value": "shared_link=https://box.com/s/5szm1glgq1foiai1kjqz"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/shared_items",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"shared_items"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Recents",
+			"item": [
+				{
+					"name": "Get Recent Items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/recent_items?limit=5",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"recent_items"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Recent Shared Items",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/recent_items?list_type=shared",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"recent_items"
+							],
+							"query": [
+								{
+									"key": "list_type",
+									"value": "shared"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Relay (GraphQL)",
+			"item": [
+				{
+					"name": "Relay Workflow List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/graphql"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "query { \n\ttemplates(first: 3) {\n\t\titems { \n\t\t\tid\n\t\t\tname\n\t\t\tdescription\n\t\t\tstate\n\t\t\tpublished\n\t\t} \n\t} \n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/graphql",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Relay Workflow",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/graphql"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "mutation { \n\tlaunchWorkflow( \n\t\ttemplateId: \"5DE705D0-0000-C365-805C-331B12E7BA9E\" \n\t\tname: \"Test start from Postman\" \n\t\tdescription: \"GraphQL - what is it good for?\" \n\t\towner: \"12927765\" \n\t\ttimeZone: \"America/Tijuana\" ) \n\t\t{ id name description state }\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/graphql/",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"graphql",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Relay Workflow Template List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/graphql"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " query { \n\ttemplates(first: 3) \n\t{ \n\t\tcount \n\t\tpageInfo { \n\t\t\thasNextPage \n\t\t\thasPreviousPage \n\t\t\tstartCursor \n\t\t\tendCursor \n\t\t} \n\t\titems { \n\t\t\tid \n\t\t\tname \n\t\t\tdescription \n\t\t\tstate \n\t\t\tpublished \n\t\t} \n\t} \n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/graphql",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"graphql"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Get Tasks for a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/7170802730/tasks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"7170802730",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Task Assignment",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/task_assignments/2810149",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"task_assignments",
+								"2810149"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the Assignments for a Task",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/tasks/2073419/assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"tasks",
+								"2073419",
+								"assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a Task to a File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n  \"item\": { \"type\":\"file\", \"id\": \"12399072230\"},\n  \"message\": \"Is this working?\",\n  \"assigned_to\": { \"type\": \"user\", \"id\": \"194651398\"}\n }\n\n"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/tasks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Task Assignment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"task\": { \"id\": \"3001636\", \"type\": \"task\" }, \"assign_to\": { \"login\": \"rory+api@box.com\" } }"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/task_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"task_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"item\": {\"type\": \"file\", \"id\": \"7262132718\"}, \"action\": \"review\", \"message\" : \"vish is awesome\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/tasks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"tasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a Task Assignment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"task\": { \"id\": \"2073419\", \"type\": \"task\" }, \"assign_to\": { \"login\": \"john.doe+demo@box.com\" } }"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/task_assignments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"task_assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Task Assignment",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"message\": \"hello!!!\" , \"resolution_state\":\"completed\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/task_assignments/2810161",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"task_assignments",
+								"2810161"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a Task",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"message\": \"sure is\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/tasks/3001636",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"tasks",
+								"3001636"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Task Assignment",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/task_assignments/2810149",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"task_assignments",
+								"2810149"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a Task",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/tasks/1817407",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"tasks",
+								"1817407"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Terms of Service (Governance Required)",
+			"item": [
+				{
+					"name": "Creates Terms of Service Text & Settings",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n  \"status\" : \"enabled\",\n  \"tos_type\" : \"external\", \n  \"text\" : \"External ToS text\"\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/terms_of_services",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"terms_of_services"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Terms of Services",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n\n\"status\": \"enabled\",\n\"text\":\"1234\"\n \n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/terms_of_services/26",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"terms_of_services",
+								"26"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Terms of Services",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/terms_of_services",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"terms_of_services"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Terms of Services by Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/terms_of_services/24",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"terms_of_services",
+								"24"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Terms of Services by Type",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/terms_of_services?tos_type=managed",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"terms_of_services"
+							],
+							"query": [
+								{
+									"key": "tos_type",
+									"value": "managed"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Terms of Service User Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/terms_of_service_user_statuses?tos_id=26&user_id=12927765",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"terms_of_service_user_statuses"
+							],
+							"query": [
+								{
+									"key": "tos_id",
+									"value": "26"
+								},
+								{
+									"key": "user_id",
+									"value": "12927765"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accept Terms of Service",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"is_accepted\":true}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/terms_of_service_user_statuses/444",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"terms_of_service_user_statuses",
+								"444"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Accepts Terms of Service of User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer IIogH1E8oxIm1LYHlpOSIDbeoqAcyLAE"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\n  \"is_accepted\" : true\n  \n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/terms_of_service_user_statuses/13696422",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"terms_of_service_user_statuses",
+								"13696422"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Terms of Service User Statuses",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/terms_of_service_user_statuses?tos_id=26",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"terms_of_service_user_statuses"
+							],
+							"query": [
+								{
+									"key": "tos_id",
+									"value": "26"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creates Terms of Service User Statuses",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tos\" : {\n    \"id\" : \"19501\",\n    \"type\" : \"terms_of_service\"\n  },\n  \"user\" : {\n    \"id\" : \"19235834\",\n    \"type\" : \"user\"\n   },\n   \"is_accepted\": true\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/api/2.0/terms_of_service_user_statuses",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"api",
+								"2.0",
+								"terms_of_service_user_statuses"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Token Exchange for Files and Folders",
+			"item": [
+				{
+					"name": "Token Exchange for Folder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "urn:ietf:params:oauth:grant-type:token-exchange",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "base_picker item_download item_preview",
+									"type": "text"
+								},
+								{
+									"key": "subject_token_type",
+									"value": "urn:ietf:params:oauth:token-type:access_token",
+									"type": "text"
+								},
+								{
+									"key": "subject_token",
+									"value": "{{access_token}}",
+									"type": "text"
+								},
+								{
+									"key": "resource",
+									"value": "https://api.box.com/2.0/folders/11809259741",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.box.com/oauth2/token",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Token Exchange for File",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "urn:ietf:params:oauth:grant-type:token-exchange",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "base_picker item_download item_preview",
+									"type": "text"
+								},
+								{
+									"key": "subject_token_type",
+									"value": "urn:ietf:params:oauth:token-type:access_token",
+									"type": "text"
+								},
+								{
+									"key": "subject_token",
+									"value": "{{access_token}}",
+									"type": "text"
+								},
+								{
+									"key": "resource",
+									"value": "https://api.box.com/2.0/files/200045467357",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.box.com/oauth2/token",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Method to generate child/downscoped tokens for use within client apps (re Box UI Elements)",
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Tracking Codes",
+			"item": [
+				{
+					"name": "Create User Tracking Code",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tracking_codes\": [\n    {\n      \"type\": \"tracking_code\",\n      \"name\": \"employee id\",\n      \"value\": \"111111111\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users/194866920?fields=tracking_codes",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"194866920"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "tracking_codes"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET User Tracking Code",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users/{{jessie}}?fields=tracking_codes",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"{{jessie}}"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "tracking_codes"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Trash",
+			"item": [
+				{
+					"name": "Get the Items in the Trash",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/trash/items",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"trash",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Trashed Item",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/628210759/trash",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"628210759",
+								"trash"
+							]
+						},
+						"description": "Use /Folders, /Files, or /Weblinks"
+					},
+					"response": []
+				},
+				{
+					"name": "Restore a Trashed Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":\"New Folder\", \"parent\": {\"id\": \"0\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/628210759",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"628210759"
+							]
+						},
+						"description": "Use /Folders, /Files, or /Weblinks"
+					},
+					"response": []
+				},
+				{
+					"name": "Permanently Delete an Item",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/628210759/trash",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"628210759",
+								"trash"
+							]
+						},
+						"description": "Use /Folders, /Files, or /Weblinks"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get Email Aliases for a User",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users/12927765/email_aliases",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"12927765",
+								"email_aliases"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Users in an Enterprise",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the Current User's Information",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users/me",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the Current User's Tags",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users/me?fields=my_tags",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"me"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "my_tags"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a User's Enterprise Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users/212698806?fields=enterprise",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"212698806"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "enterprise"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a User's Group Memberships",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users/12927765/memberships",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"12927765",
+								"memberships"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Avatar",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users/12927765/avatar",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"12927765",
+								"avatar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get A User By Login Email",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users?filter_term=patientpaul@gmail.com",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users"
+							],
+							"query": [
+								{
+									"key": "filter_term",
+									"value": "patientpaul@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create an Enterprise User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"login\": \"rory+api2@box.com\", \"name\": \"Ned\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create an App User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"is_platform_access_only\": true, \"name\": \"Patty Patient\", \"external_app_user_id\" : \"0000001\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users"
+							]
+						},
+						"description": "Creates an app user and assigns an external application user id."
+					},
+					"response": []
+				},
+				{
+					"name": "Add an Email Alias for a User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\":\"john.doe.alias@box.com\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users/12927765/email_aliases",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"12927765",
+								"email_aliases"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add an Email Alias for a User With Notifying Them",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Box-Notifications",
+								"value": "Off"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\":\"rory+scorsese@box.com\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users/12939558/email_aliases",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"12939558",
+								"email_aliases"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Change a User's Primary Login",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"login\":\"john.doe+newlogin@box.com\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users/12927765",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"12927765"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Move a Folder into Another User's Folder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"owned_by\": {\"id\": \"12927765\"}}\n"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users/186941196/folders/0",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"186941196",
+								"folders",
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset a User's Password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"is_password_reset_required\":\"true\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users/192642898",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"192642898"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a User's Information",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"status\": \"inactive\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users/12927765",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"12927765"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Convert Enterprise User to Free User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"enterprise\": null}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users/212698806?fields=enterprise",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"212698806"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "enterprise"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a tracking code",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tracking_codes\": [\n    {\n      \"type\": \"tracking_code\",\n      \"name\": \"employee id\",\n      \"value\": \"111111111\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/users/194866920?fields=tracking_codes",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"194866920"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "tracking_codes"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete an Enterprise User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users/186549705?notify=true&force=true",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"186549705"
+							],
+							"query": [
+								{
+									"key": "notify",
+									"value": "true"
+								},
+								{
+									"key": "force",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove a User's Email Alias",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/users/12927765/email_aliases/597",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"users",
+								"12927765",
+								"email_aliases",
+								"597"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Watermarking",
+			"item": [
+				{
+					"name": "Watermark a File",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"watermark\": {\"imprint\": \"default\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/46718115881/watermark",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"46718115881",
+								"watermark"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Watermark on a File",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/files/46718115881/watermark",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"46718115881",
+								"watermark"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Watermark on a File",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"watermark\": {\"imprint\": \"default\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/files/46718115881/watermark",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"files",
+								"46718115881",
+								"watermark"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Apply Watermark on a Folder",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"watermark\": {\"imprint\": \"default\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/11943077453/watermark",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"11943077453",
+								"watermark"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Watermark on a Folder",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/11943077453/watermark",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"11943077453",
+								"watermark"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Watermark on a Folder",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"watermark\": {\"imprint\": \"default\"}}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/folders/11943077453/watermark",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"folders",
+								"11943077453",
+								"watermark"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Web Links",
+			"item": [
+				{
+					"name": "Create Web Link",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"url\":\"https://www.getpostman.com/\", \"parent\": {\"id\": \"0\"}, \"name\": \"Get Postman!\", \"description\": \"Go here to download the Postman Mac or Chrome app\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/web_links",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"web_links"
+							]
+						},
+						"description": "Creates a web link object within a given folder."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Web Link",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/web_links/60546397",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"web_links",
+								"60546397"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Web Link",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\": \"Postman is Cool\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/web_links/60546397",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"web_links",
+								"60546397"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Web Link",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\": \"Postman is Cool\"}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/web_links/60546397",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"web_links",
+								"60546397"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Webhooks",
+			"item": [
+				{
+					"name": "Create A Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\n\t\"target\": \n\n{\"id\": \"48436291747\", \"type\": \"folder\"},\n\"address\": \"https://ent.box.com\", \n\"triggers\": [\"FILE.UPLOADED\",\"FILE.DOWNLOADED\"]\n\t\n\t\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/webhooks",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"webhooks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Webhooks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/webhooks?limit=3",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"webhooks"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get A Webhook",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "https://api.box.com/2.0/webhooks/43295884",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"webhooks",
+								"43295884"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update A Webhook",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\n\t\"target\": \n\n{\"id\": \"48436291747\", \"type\": \"folder\"},\n\"address\": \"https://ent.box.com\", \n\"triggers\": [\"FILE.UPLOADED\",\"FILE.DOWNLOADED\", \"FILE.TRASHED\"]\n\t\n\t\n}"
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/webhooks/43295884",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"webhooks",
+								"43295884"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete A Webhook",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.box.com/2.0/webhooks/43295884",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"2.0",
+								"webhooks",
+								"43295884"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Token Exchange",
+			"item": [
+				{
+					"name": "Downscope a Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"access_token\", data.access_token);",
+									"postman.setEnvironmentVariable(\"refresh_token\", data.refresh_token);",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "subject_token",
+									"value": "{{access_token}}",
+									"type": "text"
+								},
+								{
+									"key": "subject_token_type",
+									"value": "urn:ietf:params:oauth:token-type:access_token",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "item_upload item_preview base_explorer",
+									"type": "text"
+								},
+								{
+									"key": "resource",
+									"value": "https://api.box.com/2.0/folders/48436291747",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "urn:ietf:params:oauth:grant-type:token-exchange",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://api.box.com/oauth2/token",
+							"protocol": "https",
+							"host": [
+								"api",
+								"box",
+								"com"
+							],
+							"path": [
+								"oauth2",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "06253f1a-4124-409a-9d00-df5d003ddc51",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "1c70ea0a-a379-453c-8344-c105700251f7",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
