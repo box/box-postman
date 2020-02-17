@@ -3,6 +3,7 @@ const { URL } = require('url')
 const { resolve } = require('path')
 const rmMD = require('remove-markdown')
 const fs = require('fs')
+const { uniq } = require('lodash')
 
 const Example = require('./Example')
 
@@ -116,7 +117,7 @@ class Collection {
       info: this.getInfo(),
       item: this.getItems(),
       event: [],
-      variable: [],
+      variable: this.getVariables(),
       auth: this.defaultAuth()
     }
   }
@@ -146,6 +147,20 @@ class Collection {
     this.pruneEmptyFolders()
     this.sortVerbs()
     return this.folders
+  }
+
+  /**
+   * Extracts all server URLs as variables
+   */
+  getVariables () {
+    return uniq(Object.values(this.openapi.paths).flatMap(endpoints => (
+      Object.values(endpoints).map(endpoint => this.server(endpoint).host)
+    ))).map(host => ({
+      id: uuid.v4(),
+      key: host, // .replace(/\./g, '_'),
+      value: host,
+      type: 'string'
+    }))
   }
 
   /**
@@ -270,7 +285,7 @@ class Collection {
 
     return {
       protocol: 'https',
-      host: server.host,
+      host: `{{${server.host}}}`,
       path: this.path(server, path),
       query: this.query(endpoint),
       variable: this.variable(endpoint)

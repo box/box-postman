@@ -24,6 +24,8 @@ describe('.convert', () => {
     const openapi = new OpenAPI(filename, 'en')
     const collection = await openapi.convert()
     expect(collection.item).toHaveLength(52)
+    expect(collection.variable).toHaveLength(3)
+    expect(collection.item[0].item[0].request.url.host).toBe('{{account.box.com}}')
   })
 
   test('should exclude items marked as excluded', async () => {
@@ -77,10 +79,9 @@ describe('.convert', () => {
     const openapi = new OpenAPI(filename, 'en')
     const collection = await openapi.convert()
 
-    expect(collection.variable).toHaveLength(0)
     expect(collection.item[1].item[0].request.url.protocol).toBe('https')
     expect(collection.item[1].item[0].request.url.path).toEqual('/2.0/files/:file_id/content')
-    expect(collection.item[1].item[0].request.url.host).toEqual('api.box.com')
+    expect(collection.item[1].item[0].request.url.host).toEqual('{{api.box.com}}')
   })
 
   test('should resolve double slashes in item paths', async () => {
