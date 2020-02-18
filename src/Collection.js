@@ -86,9 +86,9 @@ const byName = (a, b) => {
 
 // Sort two object by priority
 const byPriority = (a, b) => {
-  if (a['x-box-prioritize']) {
+  if (a['x-box-priority']) {
     return -1
-  } else if (b['x-box-prioritize']) {
+  } else if (b['x-box-priority']) {
     return 1
   }
   return 0
@@ -520,11 +520,11 @@ class Collection {
    * Finds a folder instance for a given reference category ID
    */
   findFolder (endpoint) {
-    const id = endpoint['x-box-reference-category']
+    const id = endpoint['x-box-tag']
 
     // first find the folder name
     const folderName = this.openapi.tags.filter(folder =>
-      folder['x-box-reference-category'] === id
+      folder['x-box-tag'] === id
     )[0].name
 
     // return the first folder to match this name
