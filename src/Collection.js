@@ -173,15 +173,12 @@ class Collection {
     // for every nested tag create a folder object and place it on the root folder
     this.openapi.tags.sort(byName).sort(byPriority).forEach(tag => {
       // only append subfolders in openapi
-      if (tag['x-box-reference-parent-category']) {
-        const folder = {
-          name: tag.name,
-          description: tag['x-box-reference-description'],
-          item: []
-        }
-
-        this.folders.push(folder)
+      const folder = {
+        name: tag.name,
+        item: []
       }
+
+      this.folders.push(folder)
     })
   }
 
@@ -520,11 +517,11 @@ class Collection {
    * Finds a folder instance for a given reference category ID
    */
   findFolder (endpoint) {
-    const id = endpoint['x-box-tag']
+    const id = endpoint['x-box-reference-category']
 
     // first find the folder name
-    const folderName = this.openapi.tags.filter(folder =>
-      folder['x-box-tag'] === id
+    const folderName = this.openapi.tags.filter(tag =>
+      tag['x-box-reference-category'] === id
     )[0].name
 
     // return the first folder to match this name

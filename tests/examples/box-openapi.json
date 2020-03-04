@@ -30,7 +30,7 @@
         "tags": [
           "Authorization"
         ],
-        "x-box-tag": "authorization",
+        "x-box-reference-category": "authorization",
         "security": [],
         "servers": [
           {
@@ -124,7 +124,7 @@
             "description": "Server for server-side authentication"
           }
         ],
-        "x-box-tag": "authorization",
+        "x-box-reference-category": "authorization",
         "security": [],
         "requestBody": {
           "content": {
@@ -173,7 +173,7 @@
             "description": "Server for server-side authentication"
           }
         ],
-        "x-box-tag": "authorization",
+        "x-box-reference-category": "authorization",
         "security": [],
         "requestBody": {
           "content": {
@@ -208,7 +208,7 @@
         "tags": [
           "Files"
         ],
-        "x-box-tag": "files",
+        "x-box-reference-category": "files",
         "x-box-enable-explorer": true,
         "description": "Retrieves the details about a file.",
         "parameters": [
@@ -257,7 +257,7 @@
           "Trash",
           "Files"
         ],
-        "x-box-tag": "trashed_files",
+        "x-box-reference-category": "trashed_files",
         "description": "Restores an file that has been moved to the trash.",
         "parameters": [
           {
@@ -359,7 +359,7 @@
         "tags": [
           "Files"
         ],
-        "x-box-tag": "files",
+        "x-box-reference-category": "files",
         "x-box-enable-explorer": true,
         "description": "Updates a file. This can be used to rename or move a file,\ncreate a shared link, or lock a file.",
         "parameters": [
@@ -488,7 +488,7 @@
         "tags": [
           "Files"
         ],
-        "x-box-tag": "files",
+        "x-box-reference-category": "files",
         "description": "Deletes a file, either permanently or by moving it to\nthe trash.\n\nThe the enterprise settings determine whether the item will\nbe permanently deleted from Box or moved to the trash.",
         "parameters": [
           {
@@ -536,7 +536,7 @@
         "tags": [
           "Files"
         ],
-        "x-box-tag": "downloads",
+        "x-box-reference-category": "downloads",
         "description": "Returns the contents of a file in binary format.",
         "parameters": [
           {
@@ -611,7 +611,7 @@
         "tags": [
           "File Uploads"
         ],
-        "x-box-tag": "uploads",
+        "x-box-reference-category": "uploads",
         "summary": "Upload a file version",
         "description": "Update a file's content. For file sizes over 50MB we recommend\nusing the Chunk Upload APIs.",
         "servers": [
@@ -726,7 +726,7 @@
         "tags": [
           "Files"
         ],
-        "x-box-tag": "uploads",
+        "x-box-reference-category": "uploads",
         "description": "Performs a check to verify that a file will be accepted by Box\nbefore you upload the entire file.",
         "requestBody": {
           "content": {
@@ -787,7 +787,7 @@
         "tags": [
           "File Uploads"
         ],
-        "x-box-tag": "uploads",
+        "x-box-reference-category": "uploads",
         "summary": "Upload a file",
         "description": "Uploads a small file to Box. For file sizes over 50MB we recommend\nusing the Chunk Upload APIs.",
         "servers": [
@@ -913,7 +913,7 @@
         "tags": [
           "Chunked Uploads"
         ],
-        "x-box-tag": "chunked_uploads",
+        "x-box-reference-category": "chunked_uploads",
         "description": "Creates an upload session for a new file.",
         "servers": [
           {
@@ -983,7 +983,7 @@
         "tags": [
           "Chunked Uploads"
         ],
-        "x-box-tag": "chunked_uploads",
+        "x-box-reference-category": "chunked_uploads",
         "description": "Creates an upload session for an existing file.",
         "servers": [
           {
@@ -1059,7 +1059,7 @@
           "Chunked Uploads"
         ],
         "description": "Return information about an upload session.",
-        "x-box-tag": "chunked_uploads",
+        "x-box-reference-category": "chunked_uploads",
         "servers": [
           {
             "url": "https://upload.box.com/api/2.0",
@@ -1097,7 +1097,7 @@
         "tags": [
           "Chunked Uploads"
         ],
-        "x-box-tag": "chunked_uploads",
+        "x-box-reference-category": "chunked_uploads",
         "description": "Updates a chunk of an upload session for a file.",
         "servers": [
           {
@@ -1203,7 +1203,7 @@
             "description": "Server for file uploads"
           }
         ],
-        "x-box-tag": "chunked_uploads",
+        "x-box-reference-category": "chunked_uploads",
         "parameters": [
           {
             "name": "upload_session_id",
@@ -1230,7 +1230,7 @@
         "tags": [
           "Chunked Uploads"
         ],
-        "x-box-tag": "chunked_uploads",
+        "x-box-reference-category": "chunked_uploads",
         "servers": [
           {
             "url": "https://upload.box.com/api/2.0",
@@ -1296,7 +1296,7 @@
         "tags": [
           "Chunked Uploads"
         ],
-        "x-box-tag": "chunked_uploads",
+        "x-box-reference-category": "chunked_uploads",
         "servers": [
           {
             "url": "https://upload.box.com/api/2.0",
@@ -1418,7 +1418,7 @@
         "tags": [
           "Files"
         ],
-        "x-box-tag": "files",
+        "x-box-reference-category": "files",
         "x-box-enable-explorer": true,
         "parameters": [
           {
@@ -1517,7 +1517,7 @@
           "Files",
           "Thumbnails"
         ],
-        "x-box-tag": "files",
+        "x-box-reference-category": "files",
         "parameters": [
           {
             "name": "file_id",
@@ -1659,7 +1659,7 @@
           "Collaborations",
           "Files"
         ],
-        "x-box-tag": "file_collaborations",
+        "x-box-reference-category": "file_collaborations",
         "parameters": [
           {
             "name": "file_id",
@@ -1734,7 +1734,7 @@
           "Comments",
           "Files"
         ],
-        "x-box-tag": "comments",
+        "x-box-reference-category": "comments",
         "parameters": [
           {
             "name": "file_id",
@@ -1809,7 +1809,7 @@
           "Tasks",
           "Files"
         ],
-        "x-box-tag": "tasks",
+        "x-box-reference-category": "tasks",
         "parameters": [
           {
             "name": "file_id",
@@ -1854,7 +1854,7 @@
           "Files",
           "Trash"
         ],
-        "x-box-tag": "trashed_files",
+        "x-box-reference-category": "trashed_files",
         "description": "Retrieves a file that has been moved to the trash.",
         "parameters": [
           {
@@ -1912,7 +1912,7 @@
           "Files",
           "Trash"
         ],
-        "x-box-tag": "trashed_files",
+        "x-box-reference-category": "trashed_files",
         "description": "Permanently deletes a file that is in the trash.\nThis action cannot be undone.",
         "parameters": [
           {
@@ -1951,7 +1951,7 @@
           "Files",
           "File Versions"
         ],
-        "x-box-tag": "file_versions",
+        "x-box-reference-category": "file_versions",
         "description": "Retrieve information on all version of a file. This endpoint can be used to\nretrieve information about older versions of a file.\n\nVersions are only tracked for Box users with premium accounts.",
         "parameters": [
           {
@@ -2026,7 +2026,7 @@
           "Files",
           "File Versions"
         ],
-        "x-box-tag": "file_versions",
+        "x-box-reference-category": "file_versions",
         "description": "Retrieve a specific older version of a file.\n\nVersions are only tracked for Box users with premium accounts.",
         "parameters": [
           {
@@ -2084,7 +2084,7 @@
           "Files",
           "File Versions"
         ],
-        "x-box-tag": "file_versions",
+        "x-box-reference-category": "file_versions",
         "description": "Move a file version to the trash.\n\nVersions are only tracked for Box users with premium accounts.",
         "parameters": [
           {
@@ -2133,7 +2133,7 @@
           "Files",
           "File Versions"
         ],
-        "x-box-tag": "file_versions",
+        "x-box-reference-category": "file_versions",
         "description": "Revert to a previous version of a file.\n\n\nIf previous versions exist, this method can be used to\npromote one of the older versions to the top of the version history.\n\nThis actually creates a new copy of the old version and puts it at the\ntop of the versions history. The file will have the exact same contents\nas the older version, with the the same SHA1/etag, and the same name\nas the original.\n\nOther properties such as comments do not get updated to their\nformer values.",
         "parameters": [
           {
@@ -2206,7 +2206,7 @@
         "tags": [
           "File & Folder Metadata"
         ],
-        "x-box-tag": "file_metadata",
+        "x-box-reference-category": "file_metadata",
         "description": "Retrieves all metadata for a given file.",
         "parameters": [
           {
@@ -2241,7 +2241,7 @@
         "tags": [
           "Files & Folder Metadata"
         ],
-        "x-box-tag": "file_metadata",
+        "x-box-reference-category": "file_metadata",
         "description": "Retrieve a specific metadata template instance for a file",
         "parameters": [
           {
@@ -2308,7 +2308,7 @@
         "tags": [
           "File & Folder Metadata"
         ],
-        "x-box-tag": "file_metadata",
+        "x-box-reference-category": "file_metadata",
         "description": "Creates a piece of metadata on a file based on the specified template.\n\nOnly values that are present in the metadata template\nwill be accepted.",
         "parameters": [
           {
@@ -2391,7 +2391,7 @@
         "tags": [
           "File & Folder Metadata"
         ],
-        "x-box-tag": "file_metadata",
+        "x-box-reference-category": "file_metadata",
         "description": "Updates a piece of metadata on a file.\n\nThe metadata instance can only be updated if the instance\nalready exists. When editing metadata, only values that adhere to the\nmetadata template schema will be accepted.\n\nThe update is applied atomically. If any errors occur during the\napplication of the operations, the metadata instance remains unchanged.",
         "parameters": [
           {
@@ -2471,7 +2471,7 @@
         "tags": [
           "File & Folder Metadata"
         ],
-        "x-box-tag": "file_metadata",
+        "x-box-reference-category": "file_metadata",
         "description": "Deletes a piece of file metadata.",
         "parameters": [
           {
@@ -2523,7 +2523,7 @@
         "tags": [
           "Watermarks"
         ],
-        "x-box-tag": "file_watermarks",
+        "x-box-reference-category": "file_watermarks",
         "description": "Retrieve the watermark for a file.",
         "parameters": [
           {
@@ -2566,7 +2566,7 @@
         "tags": [
           "Watermarks"
         ],
-        "x-box-tag": "file_watermarks",
+        "x-box-reference-category": "file_watermarks",
         "description": "Applies or update a watermark on a file.",
         "parameters": [
           {
@@ -2639,7 +2639,7 @@
         "tags": [
           "Watermark"
         ],
-        "x-box-tag": "file_watermarks",
+        "x-box-reference-category": "file_watermarks",
         "description": "Removes the watermark from a file.",
         "parameters": [
           {
@@ -2677,7 +2677,7 @@
         "tags": [
           "Folders"
         ],
-        "x-box-tag": "folders",
+        "x-box-reference-category": "folders",
         "x-box-enable-explorer": true,
         "x-box-sanitized": true,
         "description": "Retrieves details for a folder, including the first 100 entries\nin the folder.\n\nTo fetch more items within the folder, please use the\n[Get items in a folder](#get-folders-id-items) endpoint.",
@@ -2758,7 +2758,7 @@
           "Trash",
           "Folders"
         ],
-        "x-box-tag": "trashed_folders",
+        "x-box-reference-category": "trashed_folders",
         "description": "Restores a folder that has been moved to the trash.\n\n# Folder locking\n\nDuring this operation, part of the file tree will be locked, mainly\nthe source folder and all of its descendants, as well as the destination\nfolder.\n\nFor the duration of the operation, no other move, copy, delete, or restore\noperation can performed on any of the locked folders.",
         "parameters": [
           {
@@ -2862,7 +2862,7 @@
         "tags": [
           "Folders"
         ],
-        "x-box-tag": "folders",
+        "x-box-reference-category": "folders",
         "x-box-enable-explorer": true,
         "parameters": [
           {
@@ -3031,7 +3031,7 @@
         "tags": [
           "Folders"
         ],
-        "x-box-tag": "folders",
+        "x-box-reference-category": "folders",
         "parameters": [
           {
             "name": "folder_id",
@@ -3090,7 +3090,7 @@
           "Folders",
           "Files"
         ],
-        "x-box-tag": "folders",
+        "x-box-reference-category": "folders",
         "x-box-sanitized": true,
         "x-box-enable-explorer": true,
         "description": "Retrieves a page of items in a folder. These items can be files,\nfolders, and web links.\n\nTo request more information about the folder itself, like its size,\nplease use the [Get a folder](#get-folders-id) endpoint instead.",
@@ -3247,7 +3247,7 @@
         "tags": [
           "Folders"
         ],
-        "x-box-tag": "folders",
+        "x-box-reference-category": "folders",
         "x-box-enable-explorer": true,
         "description": "Creates a new empty folder within the specified parent folder.",
         "parameters": [
@@ -3350,7 +3350,7 @@
         "operationId": "post_folders_id_copy",
         "summary": "Copy a folder",
         "x-box-enable-explorer": true,
-        "x-box-tag": "folders",
+        "x-box-reference-category": "folders",
         "description": "Creates a copy of a folder within a destination folder.\n\nThe original folder will not be changed.\n\n# Asynchronous copying\n\nIf the folder being copied contains up to 500 items the copy will\nhappen synchronously with the API call. The call will not return until\nthe copy operation has completed.\n\nIf the folder contains more than 500 items the copy operation will be\nexecuted asynchronously and the API call will return directly yet before\nthe copy operation has completed. We currently have no API to check when\na copy operation has finished.\n\n# Folder locking\n\nDuring this operation, part of the file tree will be locked, mainly\nthe source folder and all of its descendants, as well as the destination\nfolder.\n\nFor the duration of the operation, no other move, copy, delete, or restore\noperation can performed on any of the locked folders. Most importantly, this\nmeans that the same folder can not be copied to two different parts of the\nfolder tree at the same time.\n\n# Metadata\n\nIf the destination folder has a metadata cascade policy attached to any of the\nparent folders a metadata cascade operation will be kicked off asynchronously.\n\nWe currently have no API to check when this operation has finished.",
         "tags": [
           "Folders"
@@ -3479,7 +3479,7 @@
           "Collaborations",
           "Folders"
         ],
-        "x-box-tag": "folder_collaborations",
+        "x-box-reference-category": "folder_collaborations",
         "parameters": [
           {
             "name": "folder_id",
@@ -3554,7 +3554,7 @@
           "Folders",
           "Trash"
         ],
-        "x-box-tag": "trashed_folders",
+        "x-box-reference-category": "trashed_folders",
         "description": "Retrieves a folder that has been moved to the trash.",
         "parameters": [
           {
@@ -3613,7 +3613,7 @@
           "Folders",
           "Trash"
         ],
-        "x-box-tag": "trashed_folders",
+        "x-box-reference-category": "trashed_folders",
         "description": "Permanently deletes a folder that is in the trash.\nThis action cannot be undone.",
         "parameters": [
           {
@@ -3652,7 +3652,7 @@
         "tags": [
           "File & Folder Metadata"
         ],
-        "x-box-tag": "folder_metadata",
+        "x-box-reference-category": "folder_metadata",
         "description": "Retrieves all metadata for a given folder.",
         "parameters": [
           {
@@ -3688,7 +3688,7 @@
         "tags": [
           "File & Folder Metadata"
         ],
-        "x-box-tag": "folder_metadata",
+        "x-box-reference-category": "folder_metadata",
         "description": "Retrieve a specific metadata template instance for a folder",
         "parameters": [
           {
@@ -3756,7 +3756,7 @@
         "tags": [
           "File & Folder Metadata"
         ],
-        "x-box-tag": "folder_metadata",
+        "x-box-reference-category": "folder_metadata",
         "description": "Creates a piece of metadata on a folder based on the specified template.\n\nOnly values that are present in the metadata template\nwill be accepted.",
         "parameters": [
           {
@@ -3840,7 +3840,7 @@
         "tags": [
           "File & Folder Metadata"
         ],
-        "x-box-tag": "folder_metadata",
+        "x-box-reference-category": "folder_metadata",
         "description": "Updates a piece of metadata on a folder based.\n\nThe metadata instance can only be updated if the instance\nalready exists. When editing metadata, only values that adhere to the\nmetadata template schema will be accepted.\n\nThe update is applied atomically. If any errors occur during the\napplication of the operations, the metadata instance remains unchanged.",
         "parameters": [
           {
@@ -3921,7 +3921,7 @@
         "tags": [
           "File & Folder Metadata"
         ],
-        "x-box-tag": "folder_metadata",
+        "x-box-reference-category": "folder_metadata",
         "description": "Deletes a piece of folder metadata.",
         "parameters": [
           {
@@ -3975,7 +3975,7 @@
           "Folders",
           "Trash"
         ],
-        "x-box-tag": "trashed_items",
+        "x-box-reference-category": "trashed_items",
         "description": "Retrieves the files and folders that have been moved\nto the trash.\n\nAny attribute in the full files or folders objects can be passed\nin with the `fields` parameter to retrieve those specific\nattributes that are not returned by default.",
         "parameters": [
           {
@@ -4039,7 +4039,7 @@
         "tags": [
           "Watermarks"
         ],
-        "x-box-tag": "folder_watermarks",
+        "x-box-reference-category": "folder_watermarks",
         "description": "Retrieve the watermark for a folder.",
         "parameters": [
           {
@@ -4083,7 +4083,7 @@
         "tags": [
           "Watermarks"
         ],
-        "x-box-tag": "folder_watermarks",
+        "x-box-reference-category": "folder_watermarks",
         "description": "Applies or update a watermark on a folder.",
         "parameters": [
           {
@@ -4157,7 +4157,7 @@
         "tags": [
           "Watermark"
         ],
-        "x-box-tag": "folder_watermarks",
+        "x-box-reference-category": "folder_watermarks",
         "description": "Removes the watermark from a folder.",
         "parameters": [
           {
@@ -4196,7 +4196,7 @@
         "tags": [
           "Metadata Templates"
         ],
-        "x-box-tag": "metadata_templates",
+        "x-box-reference-category": "metadata_templates",
         "description": "Retrieves a metadata template by its scope and template name.",
         "parameters": [
           {
@@ -4242,7 +4242,7 @@
         "tags": [
           "Metadata Templates"
         ],
-        "x-box-tag": "metadata_templates",
+        "x-box-reference-category": "metadata_templates",
         "summary": "Update metadata template",
         "description": "Updates a metadata template.\n\nThe metadata template can only be updated if the template\nalready exists.\n\nThe update is applied atomically. If any errors occur during the\napplication of the operations, the metadata template remains unchanged.",
         "parameters": [
@@ -4334,7 +4334,7 @@
         "tags": [
           "Metadata Templates"
         ],
-        "x-box-tag": "metadata_templates",
+        "x-box-reference-category": "metadata_templates",
         "description": "Delete a metadata template and its instances.\nThis deletion is permanent and can not be reversed.",
         "parameters": [
           {
@@ -4396,7 +4396,7 @@
         "tags": [
           "Metadata Templates"
         ],
-        "x-box-tag": "metadata_templates",
+        "x-box-reference-category": "metadata_templates",
         "description": "Retrieves a metadata template by its ID.",
         "parameters": [
           {
@@ -4431,7 +4431,7 @@
         "tags": [
           "Metadata Templates"
         ],
-        "x-box-tag": "metadata_templates",
+        "x-box-reference-category": "metadata_templates",
         "description": "Used to retrieve all metadata templates within a user's enterprise",
         "parameters": [
           {
@@ -4480,7 +4480,7 @@
           "Metadata Templates"
         ],
         "description": "Creates a new metadata template that can be applied to files and folders.",
-        "x-box-tag": "metadata_templates",
+        "x-box-reference-category": "metadata_templates",
         "requestBody": {
           "content": {
             "application/json": {
@@ -4531,7 +4531,7 @@
         "tags": [
           "Metadata Cascade (Beta)"
         ],
-        "x-box-tag": "metadata_cascade_policies",
+        "x-box-reference-category": "metadata_cascade_policies",
         "description": "Retrieve a collection of metadata cascade policies\nwithin a given folder for the current enterprise.",
         "parameters": [
           {
@@ -4595,7 +4595,7 @@
         "tags": [
           "Metadata Cascade (Beta)"
         ],
-        "x-box-tag": "metadata_cascade_policies",
+        "x-box-reference-category": "metadata_cascade_policies",
         "description": "Creates a new metadata cascade policy that applies a given\nmetadata template to a given folder and automatically\ncascades it down to its children.\n\nIn order for the policy to work, a metadata instance must first\nbe applied to the folder.",
         "requestBody": {
           "content": {
@@ -4652,7 +4652,7 @@
         "tags": [
           "Metadata Cascade (Beta)"
         ],
-        "x-box-tag": "metadata_cascade_policies",
+        "x-box-reference-category": "metadata_cascade_policies",
         "description": "Retrieve a metadata cascade policy.",
         "parameters": [
           {
@@ -4685,7 +4685,7 @@
         "tags": [
           "Metadata Cascade (Beta)"
         ],
-        "x-box-tag": "metadata_cascade_policies",
+        "x-box-reference-category": "metadata_cascade_policies",
         "description": "Deletes a metadata cascade policy.",
         "parameters": [
           {
@@ -4713,7 +4713,7 @@
         "tags": [
           "Metadata Cascade (Beta)"
         ],
-        "x-box-tag": "metadata_cascade_policies",
+        "x-box-reference-category": "metadata_cascade_policies",
         "description": "If a policy already exists on a folder, this will apply that policy\nto all existing files and sub-folders within the target folder.",
         "parameters": [
           {
@@ -4770,7 +4770,7 @@
         "tags": [
           "Comments"
         ],
-        "x-box-tag": "comments",
+        "x-box-reference-category": "comments",
         "description": "Retrieves the message and metadata for a specific comment, as well\nas information on the user who created the comment.",
         "parameters": [
           {
@@ -4817,7 +4817,7 @@
         "tags": [
           "Comments"
         ],
-        "x-box-tag": "comments",
+        "x-box-reference-category": "comments",
         "description": "Update the message of a comment.",
         "parameters": [
           {
@@ -4879,7 +4879,7 @@
         "tags": [
           "Comments"
         ],
-        "x-box-tag": "comments",
+        "x-box-reference-category": "comments",
         "description": "Permanently deletes a comment.",
         "parameters": [
           {
@@ -4906,7 +4906,7 @@
         "tags": [
           "Comments"
         ],
-        "x-box-tag": "comments",
+        "x-box-reference-category": "comments",
         "summary": "Create comment",
         "description": "Adds a comment comment by the user to a specific file, or\nas a reply to an other comment.",
         "parameters": [
@@ -4990,7 +4990,7 @@
       "get": {
         "operationId": "get_collaborations_id",
         "summary": "Get collaboration",
-        "x-box-tag": "user_collaborations",
+        "x-box-reference-category": "user_collaborations",
         "tags": [
           "Collaborations"
         ],
@@ -5039,7 +5039,7 @@
         "tags": [
           "Collaborations"
         ],
-        "x-box-tag": "user_collaborations",
+        "x-box-reference-category": "user_collaborations",
         "summary": "Update collaboration",
         "description": "Updates a collaboration.\n\nCan be used to change the owner of an item, or to\naccept collaboration invites.",
         "parameters": [
@@ -5142,7 +5142,7 @@
         "tags": [
           "Collaborations"
         ],
-        "x-box-tag": "user_collaborations",
+        "x-box-reference-category": "user_collaborations",
         "description": "Deletes a single collaboration.",
         "parameters": [
           {
@@ -5170,7 +5170,7 @@
         "tags": [
           "Collaborations"
         ],
-        "x-box-tag": "user_collaborations",
+        "x-box-reference-category": "user_collaborations",
         "description": "Retrieves all pending collaboration invites for this user.",
         "parameters": [
           {
@@ -5244,7 +5244,7 @@
         "tags": [
           "Collaborations"
         ],
-        "x-box-tag": "user_collaborations",
+        "x-box-reference-category": "user_collaborations",
         "summary": "Create collaboration",
         "description": "Adds a collaboration for a single user or a single group to a file\nor folder.\n\nCollaborations can be created using email address, user IDs, or a\ngroup IDs.\n\nIf a collaboration is being created with a group, access to\nthis endpoint is dependent on the group's ability to be invited.",
         "parameters": [
@@ -5380,7 +5380,7 @@
         "tags": [
           "Search"
         ],
-        "x-box-tag": "search",
+        "x-box-reference-category": "search",
         "description": "Searches for items that are available to the user or an entire enterprise.",
         "parameters": [
           {
@@ -5596,7 +5596,7 @@
           "Tasks"
         ],
         "summary": "Create task",
-        "x-box-tag": "tasks",
+        "x-box-reference-category": "tasks",
         "description": "Creates a single task on a file.",
         "requestBody": {
           "content": {
@@ -5675,7 +5675,7 @@
         "tags": [
           "Tasks"
         ],
-        "x-box-tag": "tasks",
+        "x-box-reference-category": "tasks",
         "description": "Fetches a specific task.",
         "parameters": [
           {
@@ -5718,7 +5718,7 @@
           "Tasks"
         ],
         "summary": "Update task",
-        "x-box-tag": "tasks",
+        "x-box-reference-category": "tasks",
         "description": "Updates a specific task.",
         "parameters": [
           {
@@ -5794,7 +5794,7 @@
           "Tasks"
         ],
         "summary": "Delete task",
-        "x-box-tag": "tasks",
+        "x-box-reference-category": "tasks",
         "description": "Deletes a specific task.",
         "parameters": [
           {
@@ -5832,7 +5832,7 @@
         "tags": [
           "Tasks"
         ],
-        "x-box-tag": "task_assignments",
+        "x-box-reference-category": "task_assignments",
         "description": "Retrieves all of the assignments for a given task.",
         "parameters": [
           {
@@ -5877,7 +5877,7 @@
         "tags": [
           "Tasks"
         ],
-        "x-box-tag": "task_assignments",
+        "x-box-reference-category": "task_assignments",
         "description": "Assigns a task to a user.\n\nMultiple assignments to different users\nare allowed per task.",
         "requestBody": {
           "content": {
@@ -5953,7 +5953,7 @@
         "tags": [
           "Tasks"
         ],
-        "x-box-tag": "task_assignments",
+        "x-box-reference-category": "task_assignments",
         "description": "Fetches a specific task assignment.",
         "parameters": [
           {
@@ -5996,7 +5996,7 @@
         "tags": [
           "Tasks"
         ],
-        "x-box-tag": "task_assignments",
+        "x-box-reference-category": "task_assignments",
         "description": "Updates a task assignment. This endpoint can be\nused to update the state of a task.",
         "parameters": [
           {
@@ -6065,7 +6065,7 @@
         "tags": [
           "Tasks"
         ],
-        "x-box-tag": "task_assignments",
+        "x-box-reference-category": "task_assignments",
         "description": "Deletes a specific task assignment.",
         "parameters": [
           {
@@ -6103,7 +6103,7 @@
         "tags": [
           "Shared Links"
         ],
-        "x-box-tag": "shared_links",
+        "x-box-reference-category": "shared_links",
         "description": "Return the file or folder represented by a shared link.\n\nShared items are any files or folders that are represented by a shared link,\nwhich can originate within the current enterprise or within another one.\n\nThis endpoint allows an application to retrieve information about a\nshared item when only given a shared link.",
         "parameters": [
           {
@@ -6138,7 +6138,7 @@
         "tags": [
           "Web Links"
         ],
-        "x-box-tag": "web_links",
+        "x-box-reference-category": "web_links",
         "description": "Creates a web link object within a folder.",
         "requestBody": {
           "content": {
@@ -6200,7 +6200,7 @@
         "tags": [
           "Web Links"
         ],
-        "x-box-tag": "web_links",
+        "x-box-reference-category": "web_links",
         "description": "Retrieve information about a web link.",
         "parameters": [
           {
@@ -6234,7 +6234,7 @@
           "Trash",
           "Web Links"
         ],
-        "x-box-tag": "trashed_web_links",
+        "x-box-reference-category": "trashed_web_links",
         "description": "Restores an web link that has been moved to the trash.",
         "parameters": [
           {
@@ -6336,7 +6336,7 @@
         "tags": [
           "Web Links"
         ],
-        "x-box-tag": "web_links",
+        "x-box-reference-category": "web_links",
         "description": "Updates a web link object.",
         "parameters": [
           {
@@ -6404,7 +6404,7 @@
         "tags": [
           "Web Links"
         ],
-        "x-box-tag": "web_links",
+        "x-box-reference-category": "web_links",
         "description": "Deletes a web link.",
         "parameters": [
           {
@@ -6433,7 +6433,7 @@
           "Web Links",
           "Trash"
         ],
-        "x-box-tag": "trashed_web_links",
+        "x-box-reference-category": "trashed_web_links",
         "description": "Retrieves a web link that has been moved to the trash.",
         "parameters": [
           {
@@ -6491,7 +6491,7 @@
           "Folders",
           "Trash"
         ],
-        "x-box-tag": "trashed_web_links",
+        "x-box-reference-category": "trashed_web_links",
         "description": "Permanently deletes a web link that is in the trash.\nThis action cannot be undone.",
         "parameters": [
           {
@@ -6525,7 +6525,7 @@
     "/users": {
       "get": {
         "operationId": "get_users",
-        "x-box-tag": "users",
+        "x-box-reference-category": "users",
         "summary": "List enterprise users",
         "tags": [
           "Users"
@@ -6616,7 +6616,7 @@
         "tags": [
           "Users"
         ],
-        "x-box-tag": "users",
+        "x-box-reference-category": "users",
         "description": "Creates a new managed user in an enterprise. This endpoint\nis only available to users and applications with the right\nadmin permissions.",
         "parameters": [
           {
@@ -6770,7 +6770,7 @@
     "/users/me": {
       "get": {
         "operationId": "get_users_me",
-        "x-box-tag": "users",
+        "x-box-reference-category": "users",
         "summary": "Get authenticated user",
         "tags": [
           "Users"
@@ -6809,7 +6809,7 @@
     "/users/{user_id}": {
       "get": {
         "operationId": "get_users_id",
-        "x-box-tag": "users",
+        "x-box-reference-category": "users",
         "summary": "Get user",
         "tags": [
           "Users"
@@ -6860,7 +6860,7 @@
         "tags": [
           "Users"
         ],
-        "x-box-tag": "users",
+        "x-box-reference-category": "users",
         "description": "Updates a managed user in an enterprise. This endpoint\nis only available to users and applications with the right\nadmin permissions.",
         "parameters": [
           {
@@ -7024,7 +7024,7 @@
       },
       "delete": {
         "operationId": "delete_users_id",
-        "x-box-tag": "users",
+        "x-box-reference-category": "users",
         "summary": "Delete user",
         "tags": [
           "Users"
@@ -7070,7 +7070,7 @@
     "/users/{user_id}/avatar": {
       "get": {
         "operationId": "get_users_id_avatar",
-        "x-box-tag": "avatars",
+        "x-box-reference-category": "avatars",
         "summary": "Get user avatar",
         "tags": [
           "Users"
@@ -7107,7 +7107,7 @@
     "/users/{user_id}/folders/{folder_id}": {
       "put": {
         "operationId": "put_users_id_folders_id",
-        "x-box-tag": "transfer",
+        "x-box-reference-category": "transfer",
         "summary": "Transfer owned folders",
         "tags": [
           "Users"
@@ -7208,7 +7208,7 @@
         "tags": [
           "Users"
         ],
-        "x-box-tag": "email_aliases",
+        "x-box-reference-category": "email_aliases",
         "description": "Retrieves all email aliases for a user. The collection\ndoes not include the primary login for the user.",
         "parameters": [
           {
@@ -7237,7 +7237,7 @@
       },
       "post": {
         "operationId": "post_users_id_email_aliases",
-        "x-box-tag": "email_aliases",
+        "x-box-reference-category": "email_aliases",
         "summary": "Create email alias",
         "tags": [
           "Users"
@@ -7290,7 +7290,7 @@
     "/users/{user_id}/email_aliases/{email_alias_id}": {
       "delete": {
         "operationId": "delete_users_id_email_aliases_id",
-        "x-box-tag": "email_aliases",
+        "x-box-reference-category": "email_aliases",
         "summary": "Remove email alias",
         "tags": [
           "Users"
@@ -7329,7 +7329,7 @@
       "get": {
         "operationId": "get_users_id_memberships",
         "summary": "List user's groups",
-        "x-box-tag": "memberships",
+        "x-box-reference-category": "memberships",
         "tags": [
           "Groups"
         ],
@@ -7392,7 +7392,7 @@
         "tags": [
           "Users"
         ],
-        "x-box-tag": "invites",
+        "x-box-reference-category": "invites",
         "description": "Invites an existing external user to join an enterprise.\n\nThe existing user can not be part of another enterprise and\nmust already have a Box account. Once invited, the user will receive an\nemail and are prompted to accept the invitation within the\nBox web application.\n\nThis method requires the \"Manage An Enterprise\" scope enabled for\nthe application, which can be enabled within the developer console.",
         "parameters": [
           {
@@ -7474,7 +7474,7 @@
           "Users"
         ],
         "description": "Returns the status of a user invite.",
-        "x-box-tag": "invites",
+        "x-box-reference-category": "invites",
         "parameters": [
           {
             "name": "invite_id",
@@ -7519,7 +7519,7 @@
       "get": {
         "operationId": "get_groups",
         "summary": "List enterprise groups",
-        "x-box-tag": "groups",
+        "x-box-reference-category": "groups",
         "tags": [
           "Groups"
         ],
@@ -7584,7 +7584,7 @@
         "tags": [
           "Groups"
         ],
-        "x-box-tag": "groups",
+        "x-box-reference-category": "groups",
         "description": "Creates a new group of users in an enterprise. Only users with admin\npermissions can create new groups.",
         "parameters": [
           {
@@ -7678,7 +7678,7 @@
         "tags": [
           "Groups"
         ],
-        "x-box-tag": "groups",
+        "x-box-reference-category": "groups",
         "description": "Retrieves information about a group.",
         "parameters": [
           {
@@ -7725,7 +7725,7 @@
         "tags": [
           "Groups"
         ],
-        "x-box-tag": "groups",
+        "x-box-reference-category": "groups",
         "description": "Updates a specific group.",
         "parameters": [
           {
@@ -7824,7 +7824,7 @@
         "tags": [
           "Groups"
         ],
-        "x-box-tag": "groups",
+        "x-box-reference-category": "groups",
         "description": "Permanently deletes a group.",
         "parameters": [
           {
@@ -7849,7 +7849,7 @@
       "get": {
         "operationId": "get_groups_id_memberships",
         "summary": "List group's members",
-        "x-box-tag": "memberships",
+        "x-box-reference-category": "memberships",
         "tags": [
           "Groups"
         ],
@@ -7909,7 +7909,7 @@
       "get": {
         "operationId": "get_groups_id_collaborations",
         "summary": "List group's collaborations",
-        "x-box-tag": "group_collaborations",
+        "x-box-reference-category": "group_collaborations",
         "tags": [
           "Groups"
         ],
@@ -7972,7 +7972,7 @@
         "tags": [
           "Groups"
         ],
-        "x-box-tag": "memberships",
+        "x-box-reference-category": "memberships",
         "description": "Creates a group membership",
         "parameters": [
           {
@@ -8074,7 +8074,7 @@
         "tags": [
           "Groups"
         ],
-        "x-box-tag": "memberships",
+        "x-box-reference-category": "memberships",
         "description": "Retrieves a specific group membership.",
         "parameters": [
           {
@@ -8121,7 +8121,7 @@
         "tags": [
           "Groups"
         ],
-        "x-box-tag": "memberships",
+        "x-box-reference-category": "memberships",
         "description": "Updates a user's group membership.",
         "parameters": [
           {
@@ -8199,7 +8199,7 @@
         "tags": [
           "Groups"
         ],
-        "x-box-tag": "memberships",
+        "x-box-reference-category": "memberships",
         "description": "Deletes a specific group membership.",
         "parameters": [
           {
@@ -8227,7 +8227,7 @@
         "tags": [
           "Webhooks"
         ],
-        "x-box-tag": "webhooks",
+        "x-box-reference-category": "webhooks",
         "description": "Returns all defined webhooks for the requesting application.",
         "parameters": [
           {
@@ -8283,7 +8283,7 @@
         "tags": [
           "Webhooks"
         ],
-        "x-box-tag": "webhooks",
+        "x-box-reference-category": "webhooks",
         "description": "Creates a webhook.",
         "requestBody": {
           "content": {
@@ -8436,7 +8436,7 @@
         "tags": [
           "Webhooks"
         ],
-        "x-box-tag": "webhooks",
+        "x-box-reference-category": "webhooks",
         "summary": "Get webhook",
         "description": "Retrieves a specific webhook",
         "parameters": [
@@ -8490,7 +8490,7 @@
         "tags": [
           "Webhooks"
         ],
-        "x-box-tag": "webhooks",
+        "x-box-reference-category": "webhooks",
         "description": "Updates a webhook.",
         "parameters": [
           {
@@ -8649,7 +8649,7 @@
         "tags": [
           "Webhooks"
         ],
-        "x-box-tag": "webhooks",
+        "x-box-reference-category": "webhooks",
         "description": "Deletes a webhook.",
         "parameters": [
           {
@@ -8697,7 +8697,7 @@
         "tags": [
           "Skills"
         ],
-        "x-box-tag": "skills",
+        "x-box-reference-category": "skills",
         "description": "Updates the status, usage and response metadata of a\nskill invocation.",
         "parameters": [
           {
@@ -8803,7 +8803,7 @@
         "tags": [
           "Events"
         ],
-        "x-box-tag": "events",
+        "x-box-reference-category": "events",
         "description": "Returns a list of real-time servers that can be used for long-polling updates\nto the [event stream](#get-events).\n\nLong polling is the concept where a HTTP request is kept open until the\nserver sends a response, then repeating the process over and over to receive\nupdated responses.\n\nLong polling the event stream can only be used for user events, not for\nenterprise events.\n\nTo use long polling, first use this endpoint to retrieve a list of long poll\nURLs. Next, make a long poll request to any of the provided URLs.\n\nWhen an event occurs in monitored account a response with the value\n`new_change` will be sent. The response contains no other details as\nit simply serves as a prompt to take further action such as sending a\nrequest to the [events endpoint](#get-events) with the last known\n`stream_position`.\n\nAfter the server sends this response it closes the connection. You must now\nrepeat the long poll process to begin listening for events again.\n\nIf no events occur for a while and the connection times out you will\nreceive a response with the value `reconnect`. When you receive this response\nyou’ll make another call to this endpoint to restart the process.\n\nIf you receive no events in `retry_timeout` seconds then you will need to\nmake another request to the real-time server (one of the URLs in the response\nfor this endpoint). This might be necessary due to network errors.\n\nFinally, if you receive a `max_retries` error when making a request to the\nreal-time server, you should start over by making a call to this endpoint\nfirst.",
         "responses": {
           "200": {
@@ -8824,7 +8824,7 @@
         "tags": [
           "Events"
         ],
-        "x-box-tag": "events",
+        "x-box-reference-category": "events",
         "description": "Returns up to a year of past events for a given user\nor for the entire enterprise.\n\nBy default this returns events for the authenticated user. To retrieve\nevents for the entire enterprise, set the `stream_type` to `admin_logs`.\nThe user making the API call will need to have admin privileges, and\nthe application will need to have the permission to access the event feed\nto get the enterprise event feed.",
         "parameters": [
           {
@@ -9035,7 +9035,7 @@
         "tags": [
           "Collections"
         ],
-        "x-box-tag": "collections",
+        "x-box-reference-category": "collections",
         "description": "Retrieves all collections for a given user.\n\nCurrently, only the `favorites` collection\nis supported.",
         "parameters": [
           {
@@ -9099,7 +9099,7 @@
         "tags": [
           "Collections"
         ],
-        "x-box-tag": "collections",
+        "x-box-reference-category": "collections",
         "description": "Retrieves the files and/or folders contained within\nthis collection.",
         "parameters": [
           {
@@ -9174,7 +9174,7 @@
           "Recent Items"
         ],
         "description": "Returns information about the recent items accessed\nby a user, either in the last 90 days or up to the last\n1000 items accessed.",
-        "x-box-tag": "recent_items",
+        "x-box-reference-category": "recent_items",
         "parameters": [
           {
             "name": "fields",
@@ -9235,7 +9235,7 @@
         "tags": [
           "Retention Policies"
         ],
-        "x-box-tag": "retention_policies",
+        "x-box-reference-category": "retention_policies",
         "description": "Retrieves all of the retention policies for an enterprise.",
         "parameters": [
           {
@@ -9312,7 +9312,7 @@
         "tags": [
           "Retention Policies"
         ],
-        "x-box-tag": "retention_policies",
+        "x-box-reference-category": "retention_policies",
         "description": "Creates a retention policy.",
         "requestBody": {
           "content": {
@@ -9415,7 +9415,7 @@
         "tags": [
           "Retention Policies"
         ],
-        "x-box-tag": "retention_policies",
+        "x-box-reference-category": "retention_policies",
         "description": "Retrieves a retention policy.",
         "parameters": [
           {
@@ -9448,7 +9448,7 @@
         "tags": [
           "Retention Policies"
         ],
-        "x-box-tag": "retention_policies",
+        "x-box-reference-category": "retention_policies",
         "description": "Updates a retention policy.",
         "parameters": [
           {
@@ -9535,7 +9535,7 @@
         "tags": [
           "Retention Policies"
         ],
-        "x-box-tag": "retention_policy_assignments",
+        "x-box-reference-category": "retention_policy_assignments",
         "description": "Returns a list of all retention policy assignments associated with a specified\nretention policy.",
         "parameters": [
           {
@@ -9617,7 +9617,7 @@
         "tags": [
           "Retention Policies"
         ],
-        "x-box-tag": "retention_policy_assignments",
+        "x-box-reference-category": "retention_policy_assignments",
         "description": "Assigns a retention policy to an item.",
         "requestBody": {
           "content": {
@@ -9714,7 +9714,7 @@
         "tags": [
           "Retention Policies"
         ],
-        "x-box-tag": "retention_policy_assignments",
+        "x-box-reference-category": "retention_policy_assignments",
         "description": "Retrieves a retention policy assignment",
         "parameters": [
           {
@@ -9749,7 +9749,7 @@
         "tags": [
           "Legal Hold Policies"
         ],
-        "x-box-tag": "legal_hold_policies",
+        "x-box-reference-category": "legal_hold_policies",
         "description": "Retrieves a list of legal hold policies that belong to\nan enterprise.",
         "parameters": [
           {
@@ -9819,7 +9819,7 @@
         "tags": [
           "Legal Hold Policies"
         ],
-        "x-box-tag": "legal_hold_policies",
+        "x-box-reference-category": "legal_hold_policies",
         "description": "Create a new legal hold policy.",
         "requestBody": {
           "content": {
@@ -9906,7 +9906,7 @@
         "tags": [
           "Legal Hold Policies"
         ],
-        "x-box-tag": "legal_hold_policies",
+        "x-box-reference-category": "legal_hold_policies",
         "description": "Retrieve a legal hold policy.",
         "parameters": [
           {
@@ -9939,7 +9939,7 @@
         "tags": [
           "Legal Hold Policies"
         ],
-        "x-box-tag": "legal_hold_policies",
+        "x-box-reference-category": "legal_hold_policies",
         "description": "Update legal hold policy.",
         "parameters": [
           {
@@ -10006,7 +10006,7 @@
       },
       "delete": {
         "operationId": "delete_legal_hold_policies_id",
-        "x-box-tag": "legal_hold_policies",
+        "x-box-reference-category": "legal_hold_policies",
         "tags": [
           "Legal Hold Policies"
         ],
@@ -10038,7 +10038,7 @@
         "tags": [
           "Legal Hold Policies"
         ],
-        "x-box-tag": "legal_hold_policy_assignments",
+        "x-box-reference-category": "legal_hold_policy_assignments",
         "description": "Retrieves a list of items a legal hold policy has been assigned to.",
         "parameters": [
           {
@@ -10118,7 +10118,7 @@
         "tags": [
           "Legal Hold Policies"
         ],
-        "x-box-tag": "legal_hold_policy_assignments",
+        "x-box-reference-category": "legal_hold_policy_assignments",
         "description": "Assign a legal hold to a file, file version, folder, or user.",
         "requestBody": {
           "content": {
@@ -10186,7 +10186,7 @@
         "tags": [
           "Legal Hold Policies"
         ],
-        "x-box-tag": "legal_hold_policy_assignments",
+        "x-box-reference-category": "legal_hold_policy_assignments",
         "description": "Retrieve a legal hold policy assignment.",
         "parameters": [
           {
@@ -10215,7 +10215,7 @@
       },
       "delete": {
         "operationId": "delete_legal_hold_policy_assignments_id",
-        "x-box-tag": "legal_hold_policy_assignments",
+        "x-box-reference-category": "legal_hold_policy_assignments",
         "tags": [
           "Legal Hold Policies"
         ],
@@ -10246,7 +10246,7 @@
         "tags": [
           "Retention Policies"
         ],
-        "x-box-tag": "file_version_retentions",
+        "x-box-reference-category": "file_version_retentions",
         "summary": "Get retention for file",
         "description": "Returns information about a file version retention.",
         "parameters": [
@@ -10281,7 +10281,7 @@
         "tags": [
           "Retention Policies"
         ],
-        "x-box-tag": "file_version_retentions",
+        "x-box-reference-category": "file_version_retentions",
         "summary": "List retentions on files",
         "description": "Retrieves all file version retentions for the given enterprise.",
         "parameters": [
@@ -10394,7 +10394,7 @@
         "tags": [
           "Legal Hold Policies"
         ],
-        "x-box-tag": "file_version_legal_holds",
+        "x-box-reference-category": "file_version_legal_holds",
         "description": "Retrieves information about the legal hold policies\nassigned to a file version.",
         "parameters": [
           {
@@ -10429,7 +10429,7 @@
         "tags": [
           "Legal Hold Policies"
         ],
-        "x-box-tag": "file_version_legal_holds",
+        "x-box-reference-category": "file_version_legal_holds",
         "description": "Get list of non-deleted legal holds for a single legal\nhold policy.",
         "parameters": [
           {
@@ -10487,7 +10487,7 @@
         "tags": [
           "Device Pins"
         ],
-        "x-box-tag": "device_pins",
+        "x-box-reference-category": "device_pins",
         "description": "Retrieves information about an individual device pin.",
         "parameters": [
           {
@@ -10520,7 +10520,7 @@
         "tags": [
           "Device Pins"
         ],
-        "x-box-tag": "device_pins",
+        "x-box-reference-category": "device_pins",
         "description": "Deletes an individual device pin.",
         "parameters": [
           {
@@ -10548,7 +10548,7 @@
         "tags": [
           "Device Pins"
         ],
-        "x-box-tag": "device_pins",
+        "x-box-reference-category": "device_pins",
         "description": "Retrieves all the device pins within an enterprise.\n\nThe user must have admin privileges, and the application\nneeds the \"manage enterprise\" scope to make this call.",
         "parameters": [
           {
@@ -10616,7 +10616,7 @@
     "/terms_of_services": {
       "get": {
         "operationId": "get_terms_of_services",
-        "x-box-tag": "terms_of_services",
+        "x-box-reference-category": "terms_of_services",
         "summary": "List terms of services",
         "tags": [
           "Terms of Service"
@@ -10657,7 +10657,7 @@
           "Terms of Service"
         ],
         "summary": "Create terms of service",
-        "x-box-tag": "terms_of_services",
+        "x-box-reference-category": "terms_of_services",
         "description": "Creates a terms of service for a given enterprise\nand type of user.",
         "requestBody": {
           "content": {
@@ -10718,7 +10718,7 @@
         "tags": [
           "Terms of Service"
         ],
-        "x-box-tag": "terms_of_services",
+        "x-box-reference-category": "terms_of_services",
         "description": "Fetches a specific terms of service.",
         "parameters": [
           {
@@ -10751,7 +10751,7 @@
         "tags": [
           "Terms of Service"
         ],
-        "x-box-tag": "terms_of_services",
+        "x-box-reference-category": "terms_of_services",
         "description": "Updates a specific terms of service.",
         "parameters": [
           {
@@ -10815,7 +10815,7 @@
         "tags": [
           "Terms of Service"
         ],
-        "x-box-tag": "terms_of_service_user_statuses",
+        "x-box-reference-category": "terms_of_service_user_statuses",
         "description": "Retrieves an overview of users and their status for a\nterms of service, including Whether they have accepted\nthe terms and when.",
         "parameters": [
           {
@@ -10858,7 +10858,7 @@
         "tags": [
           "Terms of Service"
         ],
-        "x-box-tag": "terms_of_service_user_statuses",
+        "x-box-reference-category": "terms_of_service_user_statuses",
         "description": "Sets the status for a terms of service for a user.",
         "requestBody": {
           "content": {
@@ -10947,7 +10947,7 @@
         "tags": [
           "Terms of Service"
         ],
-        "x-box-tag": "terms_of_service_user_statuses",
+        "x-box-reference-category": "terms_of_service_user_statuses",
         "description": "Updates the status for a terms of service for a user.",
         "parameters": [
           {
@@ -11000,7 +11000,7 @@
         "tags": [
           "Collaboration Whitelist"
         ],
-        "x-box-tag": "collaboration_whitelist_entries",
+        "x-box-reference-category": "collaboration_whitelist_entries",
         "description": "Returns the list of whitelist entries which specify what domains can\ncollaborate with the current enterprise.",
         "parameters": [
           {
@@ -11046,7 +11046,7 @@
         "tags": [
           "Collaboration Whitelist"
         ],
-        "x-box-tag": "collaboration_whitelist_entries",
+        "x-box-reference-category": "collaboration_whitelist_entries",
         "description": "Creates a collaboration whitelist entry, specifying a domain\nand direction to allow collaboration for.",
         "requestBody": {
           "content": {
@@ -11098,7 +11098,7 @@
         "tags": [
           "Collaboration Whitelist"
         ],
-        "x-box-tag": "collaboration_whitelist_entries",
+        "x-box-reference-category": "collaboration_whitelist_entries",
         "description": "Returns a specific collaboration whitelist entry.",
         "parameters": [
           {
@@ -11131,7 +11131,7 @@
         "tags": [
           "Collaboration Whitelist"
         ],
-        "x-box-tag": "collaboration_whitelist_entries",
+        "x-box-reference-category": "collaboration_whitelist_entries",
         "description": "Deletes a specific collaboration whitelist entry.",
         "parameters": [
           {
@@ -11159,7 +11159,7 @@
         "tags": [
           "Collaboration Whitelist"
         ],
-        "x-box-tag": "collaboration_whitelist_exempt_targets",
+        "x-box-reference-category": "collaboration_whitelist_exempt_targets",
         "description": "Returns a list of users who have been exempt from the collaboration\nwhitelist.",
         "parameters": [
           {
@@ -11205,7 +11205,7 @@
         "tags": [
           "Collaboration Whitelist"
         ],
-        "x-box-tag": "collaboration_whitelist_exempt_targets",
+        "x-box-reference-category": "collaboration_whitelist_exempt_targets",
         "description": "Creates a collaboration whitelist entry exemption, specifying a user\nthat is exempted from the whitelist.",
         "requestBody": {
           "content": {
@@ -11255,7 +11255,7 @@
         "tags": [
           "Collaboration Whitelist"
         ],
-        "x-box-tag": "collaboration_whitelist_exempt_targets",
+        "x-box-reference-category": "collaboration_whitelist_exempt_targets",
         "description": "Returns a users who has been exempt from the collaboration\nwhitelist.",
         "parameters": [
           {
@@ -11288,7 +11288,7 @@
         "tags": [
           "Collaboration Whitelist"
         ],
-        "x-box-tag": "collaboration_whitelist_exempt_targets",
+        "x-box-reference-category": "collaboration_whitelist_exempt_targets",
         "description": "Deletes a specific collaboration whitelist exemption.",
         "parameters": [
           {
@@ -11316,7 +11316,7 @@
         "tags": [
           "Multi Zones"
         ],
-        "x-box-tag": "storage_policies",
+        "x-box-reference-category": "storage_policies",
         "description": "Fetches all the storage policies in the enterprise.",
         "parameters": [
           {
@@ -11378,7 +11378,7 @@
         "tags": [
           "Multi Zones"
         ],
-        "x-box-tag": "storage_policies",
+        "x-box-reference-category": "storage_policies",
         "description": "Fetches a specific storage policy.",
         "parameters": [
           {
@@ -11413,7 +11413,7 @@
         "tags": [
           "Multi Zones"
         ],
-        "x-box-tag": "storage_policy_assignments",
+        "x-box-reference-category": "storage_policy_assignments",
         "description": "Fetches all the storage policy assignment for an enterprise or user.",
         "parameters": [
           {
@@ -11470,7 +11470,7 @@
         "tags": [
           "Multi Zones"
         ],
-        "x-box-tag": "storage_policy_assignments",
+        "x-box-reference-category": "storage_policy_assignments",
         "description": "Creates a storage policy assignment for an enterprise or user.",
         "requestBody": {
           "content": {
@@ -11554,7 +11554,7 @@
         "tags": [
           "Multi Zones"
         ],
-        "x-box-tag": "storage_policy_assignments",
+        "x-box-reference-category": "storage_policy_assignments",
         "description": "Fetches a specific storage policy assignment.",
         "parameters": [
           {
@@ -11587,7 +11587,7 @@
         "tags": [
           "Multi Zones"
         ],
-        "x-box-tag": "storage_policy_assignments",
+        "x-box-reference-category": "storage_policy_assignments",
         "description": "Updates a specific storage policy assignment.",
         "parameters": [
           {
@@ -11657,7 +11657,7 @@
         "tags": [
           "Multi Zones"
         ],
-        "x-box-tag": "storage_policy_assignments",
+        "x-box-reference-category": "storage_policy_assignments",
         "description": "Delete a storage policy assignment.\n\nDeleting a storage policy assignment on a user\nwill have the user inherit the enterprise's default\nstorage policy.\n\nThere is a rate limit for calling this endpoint of only\ntwice per user in a 24 hour period.",
         "parameters": [
           {
@@ -11707,7 +11707,7 @@
         "title": "Access Token",
         "x-box-resource-id": "access_token",
         "description": "A token that can be used to make authenticated API calls.",
-        "x-box-tag": "authorization",
+        "x-box-reference-category": "authorization",
         "type": "object",
         "allOf": [
           {
@@ -11871,7 +11871,7 @@
         "title": "Collaboration",
         "x-box-resource-id": "collaboration",
         "description": "Collaborations define access permissions for users and groups to files and\nfolders, similar to access control lists. A collaboration object grants a\nuser or group access to a file or folder with permissions defined by a\nspecific role.",
-        "x-box-tag": "user_collaborations",
+        "x-box-reference-category": "user_collaborations",
         "allOf": [
           {
             "$ref": "#/components/schemas/Reference"
@@ -12043,7 +12043,7 @@
       "Collaborations": {
         "title": "Collaborations",
         "x-box-resource-id": "collaborations",
-        "x-box-tag": "user_collaborations",
+        "x-box-reference-category": "user_collaborations",
         "description": "A list of collaborations",
         "allOf": [
           {
@@ -12064,7 +12064,7 @@
       "CollaborationWhitelistEntry": {
         "title": "Collaboration Whitelist Entry",
         "x-box-resource-id": "collaboration_whitelist_entry",
-        "x-box-tag": "collaboration_whitelist_entries",
+        "x-box-reference-category": "collaboration_whitelist_entries",
         "description": "A Collaboration Whitelist entry describes an\napproved domains that can collaborate with your enterprise",
         "allOf": [
           {
@@ -12118,7 +12118,7 @@
       "CollaborationWhitelistEntries": {
         "title": "Collaboration Whitelist Entries",
         "x-box-resource-id": "collaboration_whitelist_entries",
-        "x-box-tag": "collaboration_whitelist_entries",
+        "x-box-reference-category": "collaboration_whitelist_entries",
         "description": "A list of collaboration whitelist entries.",
         "allOf": [
           {
@@ -12139,7 +12139,7 @@
       "CollaborationWhitelistExemptTarget": {
         "title": "Whitelist Exempt Target",
         "x-box-resource-id": "collaboration_whitelist_exempt_target",
-        "x-box-tag": "collaboration_whitelist_exempt_targets",
+        "x-box-reference-category": "collaboration_whitelist_exempt_targets",
         "description": "The record that represents a target user that is exempt from the\ncollaboration whitelist.",
         "allOf": [
           {
@@ -12194,7 +12194,7 @@
       "CollaborationWhitelistExemptTargets": {
         "title": "Whitelist Exempt Targets",
         "x-box-resource-id": "collaboration_whitelist_exempt_targets",
-        "x-box-tag": "collaboration_whitelist_exempt_targets",
+        "x-box-reference-category": "collaboration_whitelist_exempt_targets",
         "description": "A list of collaboration whitelist exemptions.",
         "allOf": [
           {
@@ -12216,7 +12216,7 @@
         "title": "Collection",
         "x-box-resource-id": "collection",
         "description": "A collection of items, including files and folders.\n\nCurrently, the only collection available\nis the `favorites` collection.\n\nThe contents of a collection can be explored in a\nsimilar way to which the contents of a folder is\nexplored.",
-        "x-box-tag": "collections",
+        "x-box-reference-category": "collections",
         "allOf": [
           {
             "$ref": "#/components/schemas/Reference"
@@ -12254,7 +12254,7 @@
       "Collections": {
         "title": "Collections",
         "x-box-resource-id": "collections",
-        "x-box-tag": "collections",
+        "x-box-reference-category": "collections",
         "description": "A list of collections",
         "allOf": [
           {
@@ -12276,7 +12276,7 @@
         "title": "Comment",
         "x-box-resource-id": "comment",
         "x-box-has-field-variants": true,
-        "x-box-tag": "comments",
+        "x-box-reference-category": "comments",
         "description": "Comments are messages created on files. Comments\ncan be made independently or created as responses to other\ncomments",
         "type": "object",
         "allOf": [
@@ -12301,7 +12301,7 @@
       "Comments": {
         "title": "Comments",
         "x-box-resource-id": "comments",
-        "x-box-tag": "comments",
+        "x-box-reference-category": "comments",
         "description": "A list of comments",
         "allOf": [
           {
@@ -12399,7 +12399,7 @@
       "ConflictError": {
         "title": "Conflict Error",
         "x-box-resource-id": "conflict_error",
-        "x-box-tag": "uploads",
+        "x-box-reference-category": "uploads",
         "description": "The error that occurs when a file can not be created due\nto a conflict.",
         "allOf": [
           {
@@ -12438,7 +12438,7 @@
       "DevicePinner": {
         "title": "Device Pinner",
         "x-box-resource-id": "device_pinner",
-        "x-box-tag": "device_pins",
+        "x-box-reference-category": "device_pins",
         "description": "Device pins allow enterprises to control what devices can\nuse native Box applications.",
         "allOf": [
           {
@@ -12488,7 +12488,7 @@
       "DevicePinners": {
         "title": "Device Pinners",
         "x-box-resource-id": "device_pinners",
-        "x-box-tag": "device_pins",
+        "x-box-reference-category": "device_pins",
         "description": "A list of device pins",
         "allOf": [
           {
@@ -12536,7 +12536,7 @@
       "EmailAlias": {
         "title": "Email Alias",
         "x-box-resource-id": "email_alias",
-        "x-box-tag": "email_aliases",
+        "x-box-reference-category": "email_aliases",
         "description": "An email alias for a user.",
         "type": "object",
         "allOf": [
@@ -12570,7 +12570,7 @@
       "EmailAliases": {
         "title": "Email Aliases",
         "x-box-resource-id": "email_aliases",
-        "x-box-tag": "email_aliases",
+        "x-box-reference-category": "email_aliases",
         "description": "A list of email aliases",
         "properties": {
           "total_count": {
@@ -12590,7 +12590,7 @@
       "Event": {
         "title": "Event",
         "x-box-resource-id": "event",
-        "x-box-tag": "events",
+        "x-box-reference-category": "events",
         "description": "The description of an event that happened within Box",
         "properties": {
           "type": {
@@ -12773,7 +12773,7 @@
       "Events": {
         "title": "Events",
         "x-box-resource-id": "events",
-        "x-box-tag": "events",
+        "x-box-reference-category": "events",
         "description": "A list of event objects",
         "properties": {
           "chunk_size": {
@@ -12800,7 +12800,7 @@
         "x-box-resource-id": "file",
         "x-box-has-field-variants": true,
         "description": "A full representation of a file, as can be returned from any\nfile API endpoints by default",
-        "x-box-tag": "files",
+        "x-box-reference-category": "files",
         "allOf": [
           {
             "$ref": "#/components/schemas/File--Standard"
@@ -12972,7 +12972,7 @@
       "Files": {
         "title": "Files",
         "x-box-resource-id": "files",
-        "x-box-tag": "files",
+        "x-box-reference-category": "files",
         "description": "A list of files",
         "properties": {
           "total_count": {
@@ -12993,7 +12993,7 @@
       "File--Standard": {
         "title": "File (Standard)",
         "x-box-resource-id": "file--standard",
-        "x-box-tag": null,
+        "x-box-reference-category": null,
         "description": "A standard representation of a file, as returned from any\nfile API endpoints by default",
         "x-box-reference-hide": true,
         "allOf": [
@@ -13166,7 +13166,7 @@
       "File--Mini": {
         "title": "File (Mini)",
         "x-box-resource-id": "file--mini",
-        "x-box-tag": null,
+        "x-box-reference-category": null,
         "description": "A mini representation of a file, used when\nnested under another resource.",
         "x-box-reference-hide": true,
         "allOf": [
@@ -13292,7 +13292,7 @@
       "FileVersion": {
         "title": "File Version",
         "x-box-resource-id": "file_version",
-        "x-box-tag": "file_versions",
+        "x-box-reference-category": "file_versions",
         "description": "A full representation of a file version",
         "allOf": [
           {
@@ -13357,7 +13357,7 @@
       "FileVersions": {
         "title": "File Versions",
         "x-box-resource-id": "file_versions",
-        "x-box-tag": "file_versions",
+        "x-box-reference-category": "file_versions",
         "description": "A list of file versions",
         "allOf": [
           {
@@ -13406,7 +13406,7 @@
       "FileVersionLegalHold": {
         "title": "Legal Hold",
         "x-box-resource-id": "file_version_legal_hold",
-        "x-box-tag": "file_version_legal_holds",
+        "x-box-reference-category": "file_version_legal_holds",
         "description": "File-Version-Legal-Hold is an entity representing all\nholds on a File Version.",
         "allOf": [
           {
@@ -13462,7 +13462,7 @@
       "FileVersionLegalHolds": {
         "title": "Legal Holds",
         "x-box-resource-id": "file_version_legal_holds",
-        "x-box-tag": "file_version_legal_holds",
+        "x-box-reference-category": "file_version_legal_holds",
         "description": "A list of file version legal holds.",
         "allOf": [
           {
@@ -13483,7 +13483,7 @@
       "FileVersionRetention": {
         "title": "Retention",
         "x-box-resource-id": "file_version_retention",
-        "x-box-tag": "file_version_retentions",
+        "x-box-reference-category": "file_version_retentions",
         "description": "A retention policy blocks permanent deletion of content\nfor a specified amount of time. Admins can apply policies to\nspecified folders, or an entire enterprise. A file version retention\nis a  record for a retained file version. To use this feature,\nyou must  have the manage retention policies scope enabled for your\nAPI key via  your application management console. For more information\nabout retention policies, please visit our help documentation",
         "allOf": [
           {
@@ -13548,7 +13548,7 @@
       "FileVersionRetentions": {
         "title": "Retentions",
         "x-box-resource-id": "file_version_retentions",
-        "x-box-tag": "file_version_retentions",
+        "x-box-reference-category": "file_version_retentions",
         "description": "A list of file version retentions.",
         "allOf": [
           {
@@ -13572,7 +13572,7 @@
         "x-box-has-field-variants": true,
         "x-box-sanitized": true,
         "description": "A full representation of a folder, as can be returned from any\nfolder API endpoints by default",
-        "x-box-tag": "folders",
+        "x-box-reference-category": "folders",
         "allOf": [
           {
             "$ref": "#/components/schemas/Folder--Standard"
@@ -13741,7 +13741,7 @@
       "Folder--Standard": {
         "title": "Folder (Standard)",
         "x-box-resource-id": "folder--standard",
-        "x-box-tag": null,
+        "x-box-reference-category": null,
         "x-box-reference-hide": true,
         "x-box-sanitized": true,
         "description": "A standard representation of a folder, as returned from any\nfolder API endpoints by default",
@@ -13984,7 +13984,7 @@
       "Folder--Mini": {
         "title": "Folder (Mini)",
         "x-box-resource-id": "folder--mini",
-        "x-box-tag": null,
+        "x-box-reference-category": null,
         "description": "A mini representation of a file version, used when\nnested under another resource.",
         "x-box-reference-hide": true,
         "x-box-sanitized": true,
@@ -14066,7 +14066,7 @@
       "Group": {
         "title": "Group",
         "x-box-resource-id": "group",
-        "x-box-tag": "groups",
+        "x-box-reference-category": "groups",
         "x-box-has-field-variants": true,
         "description": "Groups contain a set of users, and can be used in place of\nusers in some operations, such as collaborations.",
         "allOf": [
@@ -14127,7 +14127,7 @@
       "Groups": {
         "title": "Groups",
         "x-box-resource-id": "groups",
-        "x-box-tag": "groups",
+        "x-box-reference-category": "groups",
         "description": "A list of groups.",
         "allOf": [
           {
@@ -14215,7 +14215,7 @@
       "GroupMembership": {
         "title": "Membership",
         "x-box-resource-id": "group_membership",
-        "x-box-tag": "memberships",
+        "x-box-reference-category": "memberships",
         "description": "Membership is used to signify that a user is part of a\ngroup.",
         "allOf": [
           {
@@ -14279,7 +14279,7 @@
       "GroupMemberships": {
         "title": "Memberships",
         "x-box-resource-id": "group_memberships",
-        "x-box-tag": "memberships",
+        "x-box-reference-category": "memberships",
         "description": "A list of group memberships.",
         "allOf": [
           {
@@ -14300,7 +14300,7 @@
       "Invite": {
         "title": "Invite",
         "x-box-resource-id": "invite",
-        "x-box-tag": "invites",
+        "x-box-reference-category": "invites",
         "description": "An invite for a user to an enterprise.",
         "allOf": [
           {
@@ -14349,7 +14349,7 @@
       "Item": {
         "title": "Item",
         "x-box-resource-id": "item_reference",
-        "x-box-tag": "shared_links",
+        "x-box-reference-category": "shared_links",
         "description": "A generic mini representation of a file, folder, user or enterprise",
         "allOf": [
           {
@@ -14384,7 +14384,7 @@
       "Items": {
         "title": "Items",
         "x-box-resource-id": "item_collection",
-        "x-box-tag": "folders",
+        "x-box-reference-category": "folders",
         "description": "A list of files, folders, and web links in\ntheir mini representation.",
         "allOf": [
           {
@@ -14416,7 +14416,7 @@
       "LegalHoldPolicy": {
         "title": "Legal Hold Policy",
         "x-box-resource-id": "legal_hold_policy",
-        "x-box-tag": "legal_hold_policies",
+        "x-box-reference-category": "legal_hold_policies",
         "description": "Legal Hold Policy information describes the basic\ncharacteristics of the Policy, such as name, description,\nand filter dates.",
         "allOf": [
           {
@@ -14513,7 +14513,7 @@
       "LegalHoldPolicies": {
         "title": "Legal Hold Policies",
         "x-box-resource-id": "legal_hold_policies",
-        "x-box-tag": "legal_hold_policies",
+        "x-box-reference-category": "legal_hold_policies",
         "description": "A list of legal hold policies.",
         "allOf": [
           {
@@ -14557,7 +14557,7 @@
       "LegalHoldPolicyAssignment": {
         "title": "Legal Hold Policy Assignment",
         "x-box-resource-id": "legal_hold_policy_assignment",
-        "x-box-tag": "legal_hold_policy_assignments",
+        "x-box-reference-category": "legal_hold_policy_assignments",
         "description": "Legal Hold Assignments are used to assign Legal Hold\nPolicies to Users, Folders, Files, or File Versions.\n\nCreating a Legal Hold Assignment puts a hold\non the File-Versions that belong to the Assignment's\n'apply-to' entity.",
         "allOf": [
           {
@@ -14622,7 +14622,7 @@
       "LegalHoldPolicyAssignments": {
         "title": "Legal Hold Policy Assignments",
         "x-box-resource-id": "legal_hold_policy_assignments",
-        "x-box-tag": "legal_hold_policy_assignments",
+        "x-box-reference-category": "legal_hold_policy_assignments",
         "description": "A list of legal hold policies assignments.",
         "allOf": [
           {
@@ -14746,7 +14746,7 @@
         "title": "Metadata",
         "x-box-resource-id": "metadata",
         "description": "A piece of metadata as specified by a metadata template and\napplied to a file or folder.",
-        "x-box-tag": "file_metadata",
+        "x-box-reference-category": "file_metadata",
         "type": "object",
         "properties": {
           "$canEdit": {
@@ -14795,7 +14795,7 @@
       "Metadatas": {
         "title": "Metadatas",
         "x-box-resource-id": "metadatas",
-        "x-box-tag": "file_metadata",
+        "x-box-reference-category": "file_metadata",
         "description": "A list of metadata",
         "properties": {
           "entries": {
@@ -14845,7 +14845,7 @@
       "MetadataCascadePolicy": {
         "title": "Metadata Cascade Policy",
         "x-box-resource-id": "metadata_cascade_policy",
-        "x-box-tag": "metadata_cascade_policies",
+        "x-box-reference-category": "metadata_cascade_policies",
         "description": "A cascade policy that applies to metadata policy template\nto a folder",
         "properties": {
           "id": {
@@ -14906,7 +14906,7 @@
       "MetadataCascadePolicies": {
         "title": "Metadata Cascade Policies",
         "x-box-resource-id": "metadata_cascade_policies",
-        "x-box-tag": "metadata_cascade_policies",
+        "x-box-reference-category": "metadata_cascade_policies",
         "description": "A list of metadata cascade policies.",
         "allOf": [
           {
@@ -14961,7 +14961,7 @@
       "MetadataTemplate": {
         "title": "Metadata Template",
         "x-box-resource-id": "metadata_template",
-        "x-box-tag": "metadata_templates",
+        "x-box-reference-category": "metadata_templates",
         "description": "A template for metadata that can be applied to files and folders",
         "allOf": [
           {
@@ -14981,7 +14981,7 @@
       "MetadataTemplates": {
         "title": "Metadata Templates",
         "x-box-resource-id": "metadata_templates",
-        "x-box-tag": "metadata_templates",
+        "x-box-reference-category": "metadata_templates",
         "description": "A list of metadata templates",
         "allOf": [
           {
@@ -15162,7 +15162,7 @@
         "title": "Metadata Card",
         "x-box-resource-id": "metadata_card",
         "description": "A Box Skills card that is applied to the metadata\nof a file.",
-        "x-box-tag": "skills",
+        "x-box-reference-category": "skills",
         "required": [
           "type",
           "created_at",
@@ -15299,7 +15299,7 @@
       "MetadataCardEntry": {
         "title": "Metadata Card Entry",
         "x-box-resource-id": "metadata_cards_entry",
-        "x-box-tag": "skills",
+        "x-box-reference-category": "skills",
         "description": "An entry in the `entries` attribute of a metadata card",
         "required": [
           "type",
@@ -15355,7 +15355,7 @@
       "OAuth2Error": {
         "title": "OAuth2 Error",
         "x-box-resource-id": "oauth2_error",
-        "x-box-tag": "authorization",
+        "x-box-reference-category": "authorization",
         "description": "An OAuth2 error",
         "properties": {
           "error": {
@@ -15567,7 +15567,7 @@
         "title": "Realtime Servers",
         "x-box-resource-id": "realtime_servers",
         "description": "A list of real-time servers that can\nbe used for long-polling.",
-        "x-box-tag": "events",
+        "x-box-reference-category": "events",
         "properties": {
           "chunk_size": {
             "description": "The number of pages of servers remaining.",
@@ -15587,7 +15587,7 @@
         "title": "Recent Item",
         "x-box-resource-id": "recent_item",
         "description": "A recent item accessed by a user.",
-        "x-box-tag": "recent_items",
+        "x-box-reference-category": "recent_items",
         "properties": {
           "type": {
             "type": "string",
@@ -15665,7 +15665,7 @@
       "RetentionPolicy": {
         "title": "Retention Policy",
         "x-box-resource-id": "retention_policy",
-        "x-box-tag": "retention_policies",
+        "x-box-reference-category": "retention_policies",
         "description": "A retention policy blocks permanent deletion of content\nfor a specified amount of time. Admins can create retention\npolicies and then later assign them to specific folders\nor their entire enterprise.  To use this feature, you must\nhave the manage retention policies scope enabled\nfor your API key via your application management console.",
         "allOf": [
           {
@@ -15738,7 +15738,7 @@
       "RetentionPolicies": {
         "title": "Retention Policies",
         "x-box-resource-id": "retention_policies",
-        "x-box-tag": "retention_policies",
+        "x-box-reference-category": "retention_policies",
         "description": "A list of retention policies",
         "properties": {
           "total_count": {
@@ -15786,7 +15786,7 @@
       "RetentionPolicyAssignment": {
         "title": "Retention Policy Assignment",
         "x-box-resource-id": "retention_policy_assignment",
-        "x-box-tag": "retention_policy_assignments",
+        "x-box-reference-category": "retention_policy_assignments",
         "description": "The retention policy assignment endpoint provides a way\nfor admins to apply a retention policy on a per-folder\nbasis, or place a blanket policy over the entire\nenterprise.",
         "allOf": [
           {
@@ -15845,7 +15845,7 @@
       "RetentionPolicyAssignments": {
         "title": "Retention Policy Assignments",
         "x-box-resource-id": "retention_policy_assignments",
-        "x-box-tag": "retention_policy_assignments",
+        "x-box-reference-category": "retention_policy_assignments",
         "description": "A list of retention policy assignments",
         "allOf": [
           {
@@ -15866,7 +15866,7 @@
       "SessionEndpoints": {
         "title": "Session Endpoints",
         "x-box-resource-id": "session_endpoints",
-        "x-box-tag": "chunked_uploads",
+        "x-box-reference-category": "chunked_uploads",
         "description": "A list of endpoints for a chunked upload session.",
         "properties": {
           "upload_part": {
@@ -16209,7 +16209,7 @@
       "StoragePolicy": {
         "title": "Storage Policy",
         "x-box-resource-id": "storage_policy",
-        "x-box-tag": "storage_policies",
+        "x-box-reference-category": "storage_policies",
         "description": "The Storage Policy object describes the storage zone.",
         "allOf": [
           {
@@ -16232,7 +16232,7 @@
       "StoragePolicies": {
         "title": "Storage Policies",
         "x-box-resource-id": "storage_policies",
-        "x-box-tag": "storage_policies",
+        "x-box-reference-category": "storage_policies",
         "description": "A list of storage policies.",
         "allOf": [
           {
@@ -16276,7 +16276,7 @@
       "StoragePolicyAssignment": {
         "title": "Storage Policy Assignment",
         "x-box-resource-id": "storage_policy_assignment",
-        "x-box-tag": "storage_policy_assignments",
+        "x-box-reference-category": "storage_policy_assignments",
         "description": "The assignment of a storage policy to a user or enterprise",
         "properties": {
           "storage_policy": {
@@ -16304,7 +16304,7 @@
       "StoragePolicyAssignments": {
         "title": "Storage Policy Assignments",
         "x-box-resource-id": "storage_policy_assignments",
-        "x-box-tag": "storage_policy_assignments",
+        "x-box-reference-category": "storage_policy_assignments",
         "description": "A list of storage policy assignments.",
         "allOf": [
           {
@@ -16325,7 +16325,7 @@
       "Task": {
         "title": "Task",
         "x-box-resource-id": "task",
-        "x-box-tag": "tasks",
+        "x-box-reference-category": "tasks",
         "description": "Tasks allow for file-centric workflows in Box. Users can\ncreate tasks on files and assign them to collaborators on\nBox.",
         "allOf": [
           {
@@ -16408,7 +16408,7 @@
       "Tasks": {
         "title": "Tasks",
         "x-box-resource-id": "tasks",
-        "x-box-tag": "tasks",
+        "x-box-reference-category": "tasks",
         "description": "A list of tasks",
         "properties": {
           "total_count": {
@@ -16428,7 +16428,7 @@
       "TaskAssignment": {
         "title": "Task Assignment",
         "x-box-resource-id": "task_assignment",
-        "x-box-tag": "task_assignments",
+        "x-box-reference-category": "task_assignments",
         "description": "An assignment of a task to a file and user",
         "allOf": [
           {
@@ -16515,7 +16515,7 @@
       "TaskAssignments": {
         "title": "Task Assignments",
         "x-box-resource-id": "task_assignments",
-        "x-box-tag": "task_assignments",
+        "x-box-reference-category": "task_assignments",
         "type": "object",
         "description": "A list of task assignments",
         "allOf": [
@@ -16537,7 +16537,7 @@
       "TermsOfService": {
         "title": "Terms Of Service",
         "x-box-resource-id": "terms_of_service",
-        "x-box-tag": "terms_of_services",
+        "x-box-reference-category": "terms_of_services",
         "description": "The root-level record that is supposed to represent a\nsingle Terms of Service.",
         "allOf": [
           {
@@ -16600,7 +16600,7 @@
       "TermsOfServices": {
         "title": "Terms Of Services",
         "x-box-resource-id": "terms_of_services",
-        "x-box-tag": "terms_of_services",
+        "x-box-reference-category": "terms_of_services",
         "description": "A list of terms of services",
         "properties": {
           "total_count": {
@@ -16643,7 +16643,7 @@
       "TermsOfServiceUserStatus": {
         "title": "ToS User Status",
         "x-box-resource-id": "terms_of_service_user_status",
-        "x-box-tag": "terms_of_service_user_statuses",
+        "x-box-reference-category": "terms_of_service_user_statuses",
         "description": "The association between a Terms of Service and a user",
         "allOf": [
           {
@@ -16703,7 +16703,7 @@
       "TermsOfServiceUserStatuses": {
         "title": "ToS User Statuses",
         "x-box-resource-id": "terms_of_services_user_statuses",
-        "x-box-tag": "terms_of_service_user_statuses",
+        "x-box-reference-category": "terms_of_service_user_statuses",
         "description": "A list of terms of service user statuses",
         "properties": {
           "total_count": {
@@ -16866,7 +16866,7 @@
         "title": "Upload Part",
         "x-box-resource-id": "upload_part",
         "description": "A chunk of a file uploaded as part of\nan upload session.",
-        "x-box-tag": "chunked_uploads",
+        "x-box-reference-category": "chunked_uploads",
         "allOf": [
           {
             "$ref": "#/components/schemas/UploadPart--Mini"
@@ -16930,7 +16930,7 @@
         "title": "Upload Session",
         "x-box-resource-id": "upload_session",
         "description": "An upload session for chunk uploading a file.",
-        "x-box-tag": "chunked_uploads",
+        "x-box-reference-category": "chunked_uploads",
         "allOf": [
           {
             "$ref": "#/components/schemas/Reference"
@@ -16986,7 +16986,7 @@
       "UploadUrl": {
         "title": "Upload Url",
         "x-box-resource-id": "upload_url",
-        "x-box-tag": "uploads",
+        "x-box-reference-category": "uploads",
         "description": "The details for the upload session for the file.",
         "properties": {
           "upload_url": {
@@ -17006,7 +17006,7 @@
         "x-box-resource-id": "user",
         "x-box-has-field-variants": true,
         "description": "A full representation of a user, as can be returned from any\nuser API endpoint.",
-        "x-box-tag": "users",
+        "x-box-reference-category": "users",
         "allOf": [
           {
             "$ref": "#/components/schemas/User--Standard"
@@ -17114,7 +17114,7 @@
       "Users": {
         "title": "Users",
         "x-box-resource-id": "users",
-        "x-box-tag": "users",
+        "x-box-reference-category": "users",
         "description": "A list of users.",
         "allOf": [
           {
@@ -17273,7 +17273,7 @@
       "Watermark": {
         "title": "Watermark",
         "x-box-resource-id": "watermark",
-        "x-box-tag": "file_watermarks",
+        "x-box-reference-category": "file_watermarks",
         "description": "A watermark is a semi-transparent overlay on an embedded file\npreview that displays a viewer's email address or user ID\nand the time of access over a file's content",
         "properties": {
           "watermark": {
@@ -17311,7 +17311,7 @@
       "Webhook": {
         "title": "Webhook",
         "x-box-resource-id": "webhook",
-        "x-box-tag": "webhooks",
+        "x-box-reference-category": "webhooks",
         "description": "Represents a configured webhook.",
         "allOf": [
           {
@@ -17426,7 +17426,7 @@
       "Webhooks": {
         "title": "Webhooks",
         "x-box-resource-id": "webhooks",
-        "x-box-tag": "webhooks",
+        "x-box-reference-category": "webhooks",
         "description": "A list of webhooks.",
         "allOf": [
           {
@@ -17564,7 +17564,7 @@
         "title": "Web Link",
         "x-box-resource-id": "web_link",
         "description": "Web links are objects that point to URLs. These objects\nare also known as bookmarks within the Box web application.\n\nWeb link objects are treated similarly to file objects,\nthey will also support most actions that apply to regular files.",
-        "x-box-tag": "web_links",
+        "x-box-reference-category": "web_links",
         "x-box-has-field-variants": true,
         "allOf": [
           {
@@ -17706,7 +17706,7 @@
         "title": "Web Link (Mini)",
         "x-box-resource-id": "web_link--mini",
         "description": "Web links are objects that point to URLs. These objects\nare also known as bookmarks within the Box web application.\n\nWeb link objects are treated similarly to file objects,\nthey will also support most actions that apply to regular files.",
-        "x-box-tag": "web_links",
+        "x-box-reference-category": "web_links",
         "allOf": [
           {
             "$ref": "#/components/schemas/Item"
@@ -17755,307 +17755,307 @@
   "tags": [
     {
       "name": "Basics",
-      "x-box-tag": "basics"
+      "x-box-reference-category": "basics"
     },
     {
       "name": "Downloads & Uploads",
-      "x-box-tag": "downloads_and_uploads"
+      "x-box-reference-category": "downloads_and_uploads"
     },
     {
       "name": "Advanced Files & Folders",
-      "x-box-tag": "advanced_files_and_folders"
+      "x-box-reference-category": "advanced_files_and_folders"
     },
     {
       "name": "Trash",
-      "x-box-tag": "trash"
+      "x-box-reference-category": "trash"
     },
     {
       "name": "Metadata",
-      "x-box-tag": "metadata"
+      "x-box-reference-category": "metadata"
     },
     {
       "name": "Automation & Events",
-      "x-box-tag": "automation_and_events"
+      "x-box-reference-category": "automation_and_events"
     },
     {
       "name": "Collaborations",
-      "x-box-tag": "collaborations"
+      "x-box-reference-category": "collaborations"
     },
     {
       "name": "Users & Groups",
-      "x-box-tag": "users_and_groups"
+      "x-box-reference-category": "users_and_groups"
     },
     {
       "name": "Governance",
-      "x-box-tag": "governance"
+      "x-box-reference-category": "governance"
     },
     {
       "name": "Security & Compliance",
-      "x-box-tag": "security_and_compliance"
+      "x-box-reference-category": "security_and_compliance"
     },
     {
       "name": "Multi Zones",
-      "x-box-tag": "multizones"
+      "x-box-reference-category": "multizones"
     },
     {
       "name": "Authorization",
-      "x-box-tag": "authorization",
+      "x-box-reference-category": "authorization",
       "x-box-reference-parent-category": "basics"
     },
     {
       "name": "Folders",
-      "x-box-tag": "folders",
+      "x-box-reference-category": "folders",
       "x-box-reference-parent-category": "basics",
       "x-box-reference-description": "Folders represent a collection of files, web links,\nand other folders. They are a key building block when\nusing Box Platform.\n\nFolders also contain metadata about itself, including\nwho owns the folder, when it was created, and when it was\nlast modified."
     },
     {
       "name": "Files",
-      "x-box-tag": "files",
+      "x-box-reference-category": "files",
       "x-box-reference-parent-category": "basics"
     },
     {
       "name": "Downloads",
-      "x-box-tag": "downloads",
+      "x-box-reference-category": "downloads",
       "x-box-reference-parent-category": "downloads_and_uploads"
     },
     {
       "name": "Simple Uploads",
-      "x-box-tag": "uploads",
+      "x-box-reference-category": "uploads",
       "x-box-reference-parent-category": "downloads_and_uploads"
     },
     {
       "name": "Chunked Uploads",
-      "x-box-tag": "chunked_uploads",
+      "x-box-reference-category": "chunked_uploads",
       "x-box-reference-parent-category": "downloads_and_uploads"
     },
     {
       "name": "Search",
-      "x-box-tag": "search",
+      "x-box-reference-category": "search",
       "x-box-reference-parent-category": "advanced_files_and_folders"
     },
     {
       "name": "Shared Links",
-      "x-box-tag": "shared_links",
+      "x-box-reference-category": "shared_links",
       "x-box-reference-parent-category": "advanced_files_and_folders"
     },
     {
       "name": "File Versions",
-      "x-box-tag": "file_versions",
+      "x-box-reference-category": "file_versions",
       "x-box-reference-parent-category": "advanced_files_and_folders"
     },
     {
       "name": "Comments",
-      "x-box-tag": "comments",
+      "x-box-reference-category": "comments",
       "x-box-reference-parent-category": "advanced_files_and_folders"
     },
     {
       "name": "Collections",
-      "x-box-tag": "collections",
+      "x-box-reference-category": "collections",
       "x-box-reference-parent-category": "advanced_files_and_folders"
     },
     {
       "name": "Web Links",
-      "x-box-tag": "web_links",
+      "x-box-reference-category": "web_links",
       "x-box-reference-parent-category": "advanced_files_and_folders"
     },
     {
       "name": "Trashed Items",
-      "x-box-tag": "trashed_items",
+      "x-box-reference-category": "trashed_items",
       "x-box-reference-parent-category": "trash"
     },
     {
       "name": "Trashed Files",
-      "x-box-tag": "trashed_files",
+      "x-box-reference-category": "trashed_files",
       "x-box-reference-parent-category": "trash"
     },
     {
       "name": "Trashed Folders",
-      "x-box-tag": "trashed_folders",
+      "x-box-reference-category": "trashed_folders",
       "x-box-reference-parent-category": "trash"
     },
     {
       "name": "Trashed Web Links",
-      "x-box-tag": "trashed_web_links",
+      "x-box-reference-category": "trashed_web_links",
       "x-box-reference-parent-category": "trash"
     },
     {
       "name": "File Metadata",
-      "x-box-tag": "file_metadata",
+      "x-box-reference-category": "file_metadata",
       "x-box-reference-parent-category": "metadata"
     },
     {
       "name": "Folder Metadata",
-      "x-box-tag": "folder_metadata",
+      "x-box-reference-category": "folder_metadata",
       "x-box-reference-parent-category": "metadata"
     },
     {
       "name": "Metadata Templates",
-      "x-box-tag": "metadata_templates",
+      "x-box-reference-category": "metadata_templates",
       "x-box-reference-parent-category": "metadata"
     },
     {
       "name": "Cascade Policies (Beta)",
-      "x-box-tag": "metadata_cascade_policies",
+      "x-box-reference-category": "metadata_cascade_policies",
       "x-box-reference-parent-category": "metadata"
     },
     {
       "name": "Skills",
-      "x-box-tag": "skills",
+      "x-box-reference-category": "skills",
       "x-box-reference-parent-category": "automation_and_events"
     },
     {
       "name": "Webhooks",
-      "x-box-tag": "webhooks",
+      "x-box-reference-category": "webhooks",
       "x-box-reference-parent-category": "automation_and_events"
     },
     {
       "name": "Events",
-      "x-box-tag": "events",
+      "x-box-reference-category": "events",
       "x-box-reference-parent-category": "automation_and_events"
     },
     {
       "name": "Recent Items",
-      "x-box-tag": "recent_items",
+      "x-box-reference-category": "recent_items",
       "x-box-reference-parent-category": "automation_and_events"
     },
     {
       "name": "Tasks",
-      "x-box-tag": "tasks",
+      "x-box-reference-category": "tasks",
       "x-box-reference-parent-category": "automation_and_events"
     },
     {
       "name": "Task Assignments",
-      "x-box-tag": "task_assignments",
+      "x-box-reference-category": "task_assignments",
       "x-box-reference-parent-category": "automation_and_events"
     },
     {
       "name": "User Collaboration",
-      "x-box-tag": "user_collaborations",
+      "x-box-reference-category": "user_collaborations",
       "x-box-reference-parent-category": "collaborations"
     },
     {
       "name": "File Collaborations",
-      "x-box-tag": "file_collaborations",
+      "x-box-reference-category": "file_collaborations",
       "x-box-reference-parent-category": "collaborations"
     },
     {
       "name": "Folder Collaborations",
-      "x-box-tag": "folder_collaborations",
+      "x-box-reference-category": "folder_collaborations",
       "x-box-reference-parent-category": "collaborations"
     },
     {
       "name": "Group Collaborations",
-      "x-box-tag": "group_collaborations",
+      "x-box-reference-category": "group_collaborations",
       "x-box-reference-parent-category": "collaborations"
     },
     {
       "name": "Whitelist",
-      "x-box-tag": "collaboration_whitelist_entries",
+      "x-box-reference-category": "collaboration_whitelist_entries",
       "x-box-reference-parent-category": "collaborations"
     },
     {
       "name": "Whitelist Exemptions",
-      "x-box-tag": "collaboration_whitelist_exempt_targets",
+      "x-box-reference-category": "collaboration_whitelist_exempt_targets",
       "x-box-reference-parent-category": "collaborations"
     },
     {
       "name": "Users",
-      "x-box-tag": "users",
+      "x-box-reference-category": "users",
       "x-box-reference-parent-category": "users_and_groups"
     },
     {
       "name": "Groups",
-      "x-box-tag": "groups",
+      "x-box-reference-category": "groups",
       "x-box-reference-parent-category": "users_and_groups"
     },
     {
       "name": "Memberships",
-      "x-box-tag": "memberships",
+      "x-box-reference-category": "memberships",
       "x-box-reference-parent-category": "users_and_groups"
     },
     {
       "name": "Avatars",
-      "x-box-tag": "avatars",
+      "x-box-reference-category": "avatars",
       "x-box-reference-parent-category": "users_and_groups"
     },
     {
       "name": "Email Aliases",
-      "x-box-tag": "email_aliases",
+      "x-box-reference-category": "email_aliases",
       "x-box-reference-parent-category": "users_and_groups"
     },
     {
       "name": "Invites",
-      "x-box-tag": "invites",
+      "x-box-reference-category": "invites",
       "x-box-reference-parent-category": "users_and_groups"
     },
     {
       "name": "Transfer Folders",
-      "x-box-tag": "transfer",
+      "x-box-reference-category": "transfer",
       "x-box-reference-parent-category": "users_and_groups"
     },
     {
       "name": "Legal Hold Policies",
-      "x-box-tag": "legal_hold_policies",
+      "x-box-reference-category": "legal_hold_policies",
       "x-box-reference-parent-category": "governance"
     },
     {
       "name": "Legal Hold Assignments",
-      "x-box-tag": "legal_hold_policy_assignments",
+      "x-box-reference-category": "legal_hold_policy_assignments",
       "x-box-reference-parent-category": "governance"
     },
     {
       "name": "File Version Holds",
-      "x-box-tag": "file_version_legal_holds",
+      "x-box-reference-category": "file_version_legal_holds",
       "x-box-reference-parent-category": "governance"
     },
     {
       "name": "Retention Policies",
-      "x-box-tag": "retention_policies",
+      "x-box-reference-category": "retention_policies",
       "x-box-reference-parent-category": "governance"
     },
     {
       "name": "Retention Assignments",
-      "x-box-tag": "retention_policy_assignments",
+      "x-box-reference-category": "retention_policy_assignments",
       "x-box-reference-parent-category": "governance"
     },
     {
       "name": "File Version Retentions",
-      "x-box-tag": "file_version_retentions",
+      "x-box-reference-category": "file_version_retentions",
       "x-box-reference-parent-category": "governance"
     },
     {
       "name": "Device Pins",
-      "x-box-tag": "device_pins",
+      "x-box-reference-category": "device_pins",
       "x-box-reference-parent-category": "security_and_compliance"
     },
     {
       "name": "Terms of Service",
-      "x-box-tag": "terms_of_services",
+      "x-box-reference-category": "terms_of_services",
       "x-box-reference-parent-category": "security_and_compliance"
     },
     {
       "name": "Terms Users Statuses",
-      "x-box-tag": "terms_of_service_user_statuses",
+      "x-box-reference-category": "terms_of_service_user_statuses",
       "x-box-reference-parent-category": "security_and_compliance"
     },
     {
       "name": "File Watermarks",
-      "x-box-tag": "file_watermarks",
+      "x-box-reference-category": "file_watermarks",
       "x-box-reference-parent-category": "security_and_compliance"
     },
     {
       "name": "Folder Watermarks",
-      "x-box-tag": "folder_watermarks",
+      "x-box-reference-category": "folder_watermarks",
       "x-box-reference-parent-category": "security_and_compliance"
     },
     {
       "name": "Storage Policies",
-      "x-box-tag": "storage_policies",
+      "x-box-reference-category": "storage_policies",
       "x-box-reference-parent-category": "multizones"
     },
     {
       "name": "Storage Policy Assignments",
-      "x-box-tag": "storage_policy_assignments",
+      "x-box-reference-category": "storage_policy_assignments",
       "x-box-reference-parent-category": "multizones"
     }
   ]
