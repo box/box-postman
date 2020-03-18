@@ -483,7 +483,7 @@ class Collection {
    */
   getItemEvents (endpoint) {
     // Don't add a script for endpoints without auth
-    if (endpoint.operationId === 'post_oauth2_token') {
+    if (endpoint.operationId === 'post_oauth2_token#refresh') {
       return [this.testUpdateAccessToken()]
     } else if (endpoint.security && endpoint.security.length === 0) {
       return []
