@@ -210,7 +210,7 @@ class Collection {
   description (endpoint) {
     const description = rmMD(endpoint.description.split('\n')[0])
     const slug = endpoint.operationId.replace(/_/g, '-')
-    const link = `https://developer.box.com/${this.locale}/reference/${slug}`
+    const link = `https://developer.box.com/reference/${slug}`
     return `${description}\n\n${link}`
   }
 
