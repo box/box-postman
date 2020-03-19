@@ -270,15 +270,17 @@ class Collection {
       .filter(param => param.in === 'query')
       .map(param => ({
         key: param.name,
-        value: this.serialize(param.name, param.example),
+        value: this.serialize(param.name, param.example, param.explode),
         disabled: !param.required,
         description: param.description
       }))
   }
 
-  serialize (key, value) {
+  serialize (key, value, explode = true) {
     if (['client_id', 'client_secret', 'refresh_token'].includes(key)) {
       return `{{${key}}}`
+    } else if (!explode && Array.isArray(value)) {
+      return value.join(',')
     } else if (typeof value === 'object' && value !== null && value !== undefined) {
       return JSON.stringify(value)
     } else if (value !== null && value !== undefined) {
