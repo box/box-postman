@@ -41,7 +41,7 @@ jobs:
       uses: Ilshidur/action-slack@2.0.2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_USERNAME: Box Dev
+        SLACK_USERNAME: GitHub Actions
         SLACK_AVATAR: "htps://avatars3.githubusercontent.com/u/8659759?s=200&v=4"
       with:
         args: "Deployed English Postman collection :rocket:"
@@ -84,7 +84,7 @@ jobs:
       uses: Ilshidur/action-slack@2.0.2
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        SLACK_USERNAME: Box Dev
+        SLACK_USERNAME: GitHub Actions
         SLACK_AVATAR: "htps://avatars3.githubusercontent.com/u/8659759?s=200&v=4"
       with:
         args: "Deployed Japanese Postman collection :rocket:"
