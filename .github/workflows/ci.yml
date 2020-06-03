@@ -1,0 +1,36 @@
+# The name of this GH action 
+name: CI
+
+# Defines when this action should be run
+on:
+  # Run on any Push
+  push: {}
+  # Run for PRs on master and staging
+  pull_request:
+    branches: [ master, staging ]
+
+jobs:
+  # Test the compiler code
+  test:
+    # We run this on the latest ubuntu
+    runs-on: ubuntu-latest
+
+    # We use node 14.X
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    # The following steps are performed for each lint job 
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Test the compiler
+      run: |
+        yarn install  
+        yarn test

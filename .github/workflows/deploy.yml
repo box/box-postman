@@ -1,5 +1,5 @@
 # The name of this GH action 
-name: CI
+name: Deploy
 
 # Defines when this action should be run
 on:
@@ -50,7 +50,6 @@ jobs:
       EN_POSTMAN_COLLECTION_ID: "8119550-b5ea2aeb-c82a-425d-baff-ed5dfd1d7659"
       JP_POSTMAN_COLLECTION_ID: "8119550-73df4d75-420a-455b-97c2-d3d33103c1a4"
       POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
-
 
     # We use node 14.X
     strategy:
