@@ -42,7 +42,7 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_USERNAME: Box Dev
-        SLACK_AVATAR: "repository"
+        SLACK_AVATAR: "htps://avatars3.githubusercontent.com/u/8659759?s=200&v=4"
       with:
         args: "Deployed English Postman collection :rocket:"
 
@@ -85,6 +85,6 @@ jobs:
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         SLACK_USERNAME: Box Dev
-        SLACK_AVATAR: "repository"
+        SLACK_AVATAR: "htps://avatars3.githubusercontent.com/u/8659759?s=200&v=4"
       with:
         args: "Deployed Japanese Postman collection :rocket:"
