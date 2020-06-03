@@ -1,0 +1,73 @@
+# The name of this GH action 
+name: CI
+
+# Defines when this action should be run
+on:
+  # Run on any push to master
+  push: 
+    branches:
+      - master
+  # Run when a repository dispatch event is received
+  repository_dispatch:
+    types: [openapi-update]
+
+jobs:
+  # Deploys the english version
+  deploy-en:
+    # We run this on the latest ubuntu
+    runs-on: ubuntu-latest
+
+    # We use node 14.X
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    # The following steps are performed for each lint job 
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Lint the content
+      run: |
+        yarn install  
+        yarn release en
+
+  # Deploys the japanese version
+  deploy-jp:
+    # We run this on the latest ubuntu
+    runs-on: ubuntu-latest
+
+    # Define the environment
+    env:
+      LOCALES: "en,jp"
+      EN_OAS3_REPO: "https://github.com/box/box-openapi.git#en"
+      JP_OAS3_REPO: "https://github.com/box/box-openapi.git#jp"
+      EN_POSTMAN_COLLECTION_ID: "8119550-b5ea2aeb-c82a-425d-baff-ed5dfd1d7659"
+      JP_POSTMAN_COLLECTION_ID: "8119550-73df4d75-420a-455b-97c2-d3d33103c1a4"
+      POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+
+
+    # We use node 14.X
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    # The following steps are performed for each lint job 
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v2
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Lint the content
+      run: |
+        yarn install  
+        yarn release jp
