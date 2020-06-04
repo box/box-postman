@@ -14,6 +14,7 @@ jobs:
   test:
     # We run this on the latest ubuntu
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     # We use node 14.X
     strategy:
