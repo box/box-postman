@@ -5,9 +5,9 @@ name: CI
 on:
   # Run on any Push
   push: {}
-  # Run for PRs on master and staging
+  # Run for PRs on default and staging
   pull_request:
-    branches: [ master, staging ]
+    branches: [ default, staging ]
 
 jobs:
   # Test the compiler code
