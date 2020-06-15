@@ -469,11 +469,11 @@ class Collection {
    * Finds a folder instance for a given reference category ID
    */
   findFolder (endpoint) {
-    const id = endpoint['x-box-reference-category']
+    const id = endpoint['x-box-tag']
 
     // first find the folder name
     const folderName = this.openapi.tags.filter(tag =>
-      tag['x-box-reference-category'] === id
+      tag['x-box-tag'] === id
     )[0].name
 
     // return the first folder to match this name
