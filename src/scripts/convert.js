@@ -6,7 +6,7 @@ const Writer = require('../Writer')
 
 const OPENAPI_FILENAME = 'openapi.json'
 const OPENAPI_TYPE = 'OAS3'
-const OUTPUT_FOLDER = './.build'
+const OUTPUT_FOLDER = './compiled'
 
 const convert = async (locale = process.argv[1]) => {
   const path = new Path(OPENAPI_TYPE, locale)

@@ -5,3 +5,4 @@ collection.json
 coverage
 build/*.json
 .env
+compiled

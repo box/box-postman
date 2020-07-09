@@ -31,7 +31,7 @@
     "uuid": "^8.0.0"
   },
   "scripts": {
-    "clean": "rm -rf ./.sources ./.build",
+    "clean": "rm -rf ./.sources ./compiled",
     "pull": "node -e 'require(\"./src/scripts/pull.js\").pullAll()'",
     "prebuild": "yarn pull",
     "prebuild:all": "yarn prebuild",

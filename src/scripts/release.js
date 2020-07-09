@@ -3,7 +3,7 @@ require('dotenv').config()
 const fs = require('fs')
 const axios = require('axios')
 
-const OUTPUT_FOLDER = './.build'
+const OUTPUT_FOLDER = './compiled'
 
 const release = async (locale = process.argv[1]) => {
   const collection = JSON.parse(fs.readFileSync(`${OUTPUT_FOLDER}/collection.${locale}.json`).toString())
