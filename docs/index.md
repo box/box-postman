@@ -1,7 +1,7 @@
 # Installation & setup
 
 [**Previous:** Contribution guidelines](../CONTRIBUTING.md) |
-[**Next:** Releasing a new collection](./docs/release.md)
+[**Next:** Releasing a new collection](./release.md)
 ---
 
 ## Prerequisites
@@ -95,4 +95,4 @@ yarn build jp
 
 ---
 
-[**Next:** Releasing a new collection](./docs/release.md)
+[**Next:** Releasing a new collection](./release.md)

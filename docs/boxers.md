@@ -1,7 +1,7 @@
 # Notes for Box employees
 
 [**Previous:** Contribution guidelines](./index.md) |
-[**Next:** Contributing a pull request](./docs/pull-request.md)
+[**Next:** Contributing a pull request](./pull-request.md)
 
 ---
 
@@ -34,4 +34,4 @@ When working on the API specification we recommend the following best practices:
 
 ---
 
-[**Next:** Contributing a pull request](./docs/pull-request.md)
+[**Next:** Contributing a pull request](./pull-request.md)

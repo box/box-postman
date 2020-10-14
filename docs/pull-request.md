@@ -1,6 +1,6 @@
 # Contributing a pull request
 
-[**Previous:** Notes for Box employees](./docs/boxers.md) |
+[**Previous:** Notes for Box employees](./boxers.md) |
 [**Next:** Updating dependencies](./dependencies.md)
 
 ---

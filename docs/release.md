@@ -1,7 +1,7 @@
 # Release a new collection
 
 [**Previous:** Installation & Setup](../index.md) |
-[**Next:** Notes for Box employees](./docs/boxers.md)
+[**Next:** Notes for Box employees](./boxers.md)
 ---
 
 ## Building without releasing
@@ -55,4 +55,4 @@ finally click the **Update Link** button.
 
 ---
 
-[**Next:** Notes for Box employees](./docs/boxers.md)
+[**Next:** Notes for Box employees](./boxers.md)
