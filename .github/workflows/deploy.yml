@@ -1,10 +1,10 @@
-# The name of this GH action 
+# The name of this GH action
 name: Deploy
 
 # Defines when this action should be run
 on:
   # Run on any push to main
-  push: 
+  push:
     branches:
       - main
   # Run when a repository dispatch event is received
@@ -14,16 +14,19 @@ on:
 jobs:
   # Deploys the english version
   deploy-en:
-    # We run this on the latest ubuntu
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    # We use node 14.X
+    env:
+      LOCALES: "en"
+      EN_OAS3_REPO: "https://github.com/box/box-openapi.git#en"
+      EN_POSTMAN_COLLECTION_ID: "8119550-b5ea2aeb-c82a-425d-baff-ed5dfd1d7659"
+      POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+
     strategy:
       matrix:
         node-version: [14.x]
 
-    # The following steps are performed for each lint job 
     steps:
     - name: Check out the repo
       uses: actions/checkout@v2
@@ -35,7 +38,7 @@ jobs:
 
     - name: Deploy the collection
       run: |
-        yarn install  
+        yarn install
         yarn release en
 
     - name: Send Slack notification
@@ -49,25 +52,19 @@ jobs:
 
   # Deploys the japanese version
   deploy-jp:
-    # We run this on the latest ubuntu
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    # Define the environment
     env:
-      LOCALES: "en,jp"
-      EN_OAS3_REPO: "https://github.com/box/box-openapi.git#en"
+      LOCALES: "jp"
       JP_OAS3_REPO: "https://github.com/box/box-openapi.git#jp"
-      EN_POSTMAN_COLLECTION_ID: "8119550-b5ea2aeb-c82a-425d-baff-ed5dfd1d7659"
       JP_POSTMAN_COLLECTION_ID: "8119550-73df4d75-420a-455b-97c2-d3d33103c1a4"
       POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
 
-    # We use node 14.X
     strategy:
       matrix:
         node-version: [14.x]
 
-    # The following steps are performed for each lint job 
     steps:
     - name: Check out the repo
       uses: actions/checkout@v2
@@ -79,7 +76,7 @@ jobs:
 
     - name: Deploy the collection
       run: |
-        yarn install  
+        yarn install
         yarn release jp
 
     - name: Send Slack notification
