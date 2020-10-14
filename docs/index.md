@@ -2,6 +2,7 @@
 
 [**Previous:** Contribution guidelines](../CONTRIBUTING.md) |
 [**Next:** Releasing a new collection](./release.md)
+
 ---
 
 ## Prerequisites
