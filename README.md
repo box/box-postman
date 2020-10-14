@@ -27,42 +27,14 @@ A legacy, incomplete Postman Collection is available right now.
 
 ## Development
 
-### Requirements
+To contribute to this project we highly recommend reading our guides on
+making contributions.
 
-This project requires a [Node](https://nodejs.org/) environment, ideally with
-`yarn` installed.
-
-### Building the collection
-
-To create a new build of the English and Japanese Postman Collections.
-
-```sh
-# clone the repo
-git clone https://github.com/box/box-postman.git
-# enter the repo
-cd box-postman
-# install yarn
-npm install -g yarn
-# create the environment
-cp .env.example .env
-# install all dependencies
-yarn install
-# build a specific locale
-yarn build en
-# build all registered locales
-yarn build:all
-```
-
-### Testing
-
-Before submitting changes, run our tests to ensure everything still works as
-expected.
-
-```sh
-yarn test
-# or listen to changes and run tests
-yarn test --watch
-```
+1. [Installation & setup](./docs/index.md)
+2. [Releasing a new collection](./docs/release.md)
+3. [Notes for Box employees](./docs/boxers.md)
+4. [Contributing a pull request](./docs/pull-request.md)
+5. [Updating dependencies](./docs/dependencies.md)
 
 ## Usage & License
 
@@ -70,16 +42,14 @@ Copyright 2020 Box, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
-License at
-
-http://www.apache.org/licenses/LICENSE-2.0.
+License at <http://www.apache.org/licenses/LICENSE-2.0.>
 
 Unless required by applicable law or agreed to in writing, software distributed
 under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
 
-[legacy]: https://app.getpostman.com/run-collection/768279fde466dffc5511 
+[legacy]: https://app.getpostman.com/run-collection/768279fde466dffc5511
 [openapi]: https://github.com/box/box-openapi
-[english]: https://app.getpostman.com/run-collection/62d85bbca8bf7bd5a48b 
-[japanese]: https://app.getpostman.com/run-collection/71097146282762048e55 
+[english]: https://app.getpostman.com/run-collection/62d85bbca8bf7bd5a48b
+[japanese]: https://app.getpostman.com/run-collection/71097146282762048e55
