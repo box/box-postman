@@ -25,10 +25,10 @@ A legacy, incomplete Postman Collection is available right now.
 
 [![Run in Postman](https://run.pstmn.io/button.svg)][legacy]
 
-## Development
+## Development & Contribution
 
-To contribute to this project we highly recommend reading our guides on
-making contributions.
+Please follow the [contribution guidelines](./CONTRIBUTING.md) when contributing
+to the source of this project.
 
 1. [Installation & setup](./docs/index.md)
 2. [Releasing a new collection](./docs/release.md)
