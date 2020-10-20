@@ -14,8 +14,8 @@ This project has a few prerequisites.
   * A local installation of Docker. I'd recommend the
     [Docker Desktop](https://www.docker.com/products/docker-desktop)
     on Mac.
-  * [Docker Compose](https://docs.docker.com/compose/) which can be
-    installed with `Homebrew` using `brew install docker-compose`.
+  * [Visual Studio Code]()
+  * [The Remote Development Pack](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) for VS Code which allows for development in a containerized Node environment.
 * When not using Docker
   * [`Node.js`](https://nodejs.org/) for compilation and linting of the API
     specification. Ideally Node 12 or above.
@@ -42,21 +42,6 @@ cp .env.example .env
 
 This `.env` is mostly ready to go, all that it needs is the API key for the
 Postman API.
-
-## Run with Docker
-
-To run with Docker
-
-```sh
-docker build .
-```
-
-Now, every yarn command can be run as follows using docker compose.
-
-```sh
-# replace "yarn test" with any yarn command
-docker-compose run dev yarn test
-```
 
 ## Run with Node
 
