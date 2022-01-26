@@ -11,6 +11,8 @@
 A updated, up-to-date Postman Collection is created every few weeks based on
 the official Box [OpenAPI 3.0 Specification][openapi].
 
+We are currently working on updating the collection to work with Postman V9. Until that time, please make sure to use the desktop version of V8 for your OS. You can find the downloads for V8 [here][v8].
+
 [![Run in Postman](https://run.pstmn.io/button.svg)][english]
 
 ### Japanese Collection.
@@ -38,7 +40,7 @@ to the source of this project.
 
 ## Usage & License
 
-Copyright 2020 Box, Inc. All rights reserved.
+Copyright 2022 Box, Inc. All rights reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
@@ -53,3 +55,4 @@ specific language governing permissions and limitations under the License.
 [openapi]: https://github.com/box/box-openapi
 [english]: https://app.getpostman.com/run-collection/62d85bbca8bf7bd5a48b
 [japanese]: https://app.getpostman.com/run-collection/71097146282762048e55
+[v8]: https://learning.postman.com/docs/administration/upgrading/#downloading-postman-v8
