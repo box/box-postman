@@ -17,6 +17,7 @@ class OpenAPI {
     this.readOpenAPI()
     this.openapi = await this.resolveReferences(this.openapi)
     this.openapi = this.resolveAllOf(this.openapi)
+    // this.writeOpenAPI()
     this.createCollection()
     return this.collection
   }
@@ -26,6 +27,13 @@ class OpenAPI {
   readOpenAPI () {
     const source = fs.readFileSync(this.filename).toString()
     this.openapi = JSON.parse(source)
+  }
+
+  writeOpenAPI () {
+    fs.writeFileSync(
+      './compiled/openapi30.json',
+      JSON.stringify(this.openapi, null, 2)
+    )
   }
 
   /**
