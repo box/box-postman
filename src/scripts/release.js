@@ -73,7 +73,7 @@ function logAxiosError (error) {
     // Something happened in setting up the request that triggered an Error
     console.log('ERROR MESSAGE', error.message)
   }
-  console.log('ERROR CONFIG', error.config)
+  // console.log('ERROR CONFIG', error.config)
   process.exit(1)
 }
 
