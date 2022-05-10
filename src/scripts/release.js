@@ -27,7 +27,7 @@ const release = async (locale = process.argv[1]) => {
       }
     }
   ).then(function () {
-    console.log('EMPTY COLLECTION PUT OK')
+    console.log('EMPTY COLLECTION PUT OK', locale)
     // then publish the new collection
     axios.put(
       `https://api.getpostman.com/collections/${collectionId}`,
@@ -40,17 +40,19 @@ const release = async (locale = process.argv[1]) => {
         }
       }
     ).then(function () {
-      console.log('FULL COLLECTION PUT OK')
+      console.log('FULL COLLECTION PUT OK', locale)
     }
     ).catch(function (error) {
       // console.dir(error.response, { depth: 100 })
       logAxiosError(error)
+      // throw error
     }
     )
   }
   ).catch(function (error) {
     // console.dir(error.response, { depth: 100 })
     logAxiosError(error)
+    // throw error
   }
   )
 }
@@ -72,6 +74,7 @@ function logAxiosError (error) {
     console.log('ERROR MESSAGE', error.message)
   }
   console.log('ERROR CONFIG', error.config)
+  process.exit(1)
 }
 
 const releaseAll = async () => {
