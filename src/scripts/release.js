@@ -13,29 +13,65 @@ const release = async (locale = process.argv[1]) => {
   const emptyCollection = { ...collection }
   emptyCollection.item = []
 
+  //console.log('Empty Collection:',{ collection: emptyCollection })
+
   // first publish an empty collection to ensure all folders are removed
   await axios.put(
     `https://api.getpostman.com/collections/${collectionId}`,
-    JSON.stringify({ collection: emptyCollection }),
+    //JSON.stringify({ collection: emptyCollection}),
+    { collection: emptyCollection },
     {
       headers: {
         'Content-Type': 'application/json',
         'X-Api-Key': process.env.POSTMAN_API_KEY
       }
     }
-  ).catch(error => console.dir(error.response, { depth: 100 }))
+  ).then(function(){
+    console.log('EMPTY COLLECTION PUT OK')
+    // then publish the new collection
+    axios.put(
+      `https://api.getpostman.com/collections/${collectionId}`,
+      //JSON.stringify({ collection }),
+      { collection },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Api-Key': process.env.POSTMAN_API_KEY
+        }
+      }
+    ).then(function(){
+        console.log('FULL COLLECTION PUT OK')
+      }
+    ).catch(function (error) {
+        //console.dir(error.response, { depth: 100 })
+        logAxiosError(error)
+      }
+    )
+  }
+  ).catch(function (error){
+      //console.dir(error.response, { depth: 100 })
+      logAxiosError(error)
+    }
+  )
+}
 
-  // then publish the new collection
-  await axios.put(
-    `https://api.getpostman.com/collections/${collectionId}`,
-    JSON.stringify({ collection }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Api-Key': process.env.POSTMAN_API_KEY
-      }
-    }
-  ).catch(error => console.dir(error.response, { depth: 100 }))
+function logAxiosError(error){
+  if (error.response) {
+    // The request was made and the server responded with a status code
+    // that falls out of the range of 2xx
+    console.log('ERROR DATA',error.response.data);
+    console.log('ERROR STATUS',error.response.status);
+    console.log('ERROR HEADERS',error.response.headers);
+  } else if (error.request) {
+    // The request was made but no response was received
+    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+    // http.ClientRequest in node.js
+    console.log('ERROR REQUEST',error.request);
+  } else {
+    // Something happened in setting up the request that triggered an Error
+    console.log('ERROR MESSAGE', error.message);
+  }
+  console.log('ERROR CONFIG',error.config);
 }
 
 const releaseAll = async () => {
