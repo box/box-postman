@@ -21,12 +21,6 @@ Additionally a collection is available in Japanese.
 
 [![Run in Postman (Japanese)](https://run.pstmn.io/button.svg)][japanese]
 
-### Legacy Collection
-
-A legacy, incomplete Postman Collection is available right now.
-
-[![Run in Postman](https://run.pstmn.io/button.svg)][legacy]
-
 ## Development & Contribution
 
 Please follow the [contribution guidelines](./CONTRIBUTING.md) when contributing
@@ -53,6 +47,6 @@ specific language governing permissions and limitations under the License.
 
 [legacy]: https://app.getpostman.com/run-collection/768279fde466dffc5511
 [openapi]: https://github.com/box/box-openapi
-[english]: https://app.getpostman.com/run-collection/62d85bbca8bf7bd5a48b
+[english]: https://god.gw.postman.com/run-collection/8119550-b5ea2aeb-c82a-425d-baff-ed5dfd1d7659?action=collection%2Ffork&collection-url=entityId%3D8119550-b5ea2aeb-c82a-425d-baff-ed5dfd1d7659%26entityType%3Dcollection%26workspaceId%3D1a5945ff-a292-42c7-91c5-2cf3cdc68492
 [japanese]: https://app.getpostman.com/run-collection/71097146282762048e55
 [v8]: https://learning.postman.com/docs/administration/upgrading/#downloading-postman-v8
