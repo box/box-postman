@@ -37,7 +37,7 @@
     "prebuild:all": "yarn prebuild",
     "convert": "node -e 'require(\"./src/scripts/convert.js\").convert()'",
     "convert:all": "node -e 'require(\"./src/scripts/convert.js\").convertAll()'",
-    "prerelease": "yarn build:all",
+    "prerelease": "yarn build",
     "prerelease:all": "yarn build:all",
     "release": "node -e 'require(\"./src/scripts/release.js\").release()'",
     "release:all": "node -e 'require(\"./src/scripts/release.js\").releaseAll()'",
@@ -45,7 +45,9 @@
     "build:all": "yarn convert:all",
     "pretest": "yarn lint",
     "test": "jest",
-    "lint": "standard --env jest"
+    "lint": "standard --env jest",
+    "prerelease_multi_small": "node -e 'require(\"./src/scripts/convert.js\").convert()' multi small",
+    "release_multi_small": "node -e 'require(\"./src/scripts/release.js\").release()' multi small"
   },
   "private": true
 }

@@ -103,10 +103,11 @@ class Collection {
    *
    * @param {Object} openapi
    */
-  constructor (openapi, locale) {
+  constructor (openapi, locale, small = false) {
     this.openapi = openapi
     this.locale = locale
     this.LOCALE = locale.toUpperCase()
+    this.small = small //RB: if true returns a subset of the collection with only a few folders
   }
 
   /**
@@ -116,7 +117,7 @@ class Collection {
     return {
       info: this.getInfo(),
       item: this.getItems(),
-      event: [],
+      event: [this.collectionPreRequest()],
       variable: this.getVariables(),
       auth: this.defaultAuth()
     }
@@ -128,7 +129,7 @@ class Collection {
    * Creates the info object
    */
   getInfo () {
-    const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE})` : ''
+    const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE} stuff)` : ''
     return {
       name: `${this.openapi.info.title}${locale}`,
       _postman_id: uuid.v4(),
@@ -142,7 +143,11 @@ class Collection {
    * populates it with every endpoint
    */
   getItems () {
-    this.createFolders()
+    if ( this.small ) {
+      this.createFoldersSmall()
+    } else {
+      this.createFolders()
+    }
     this.insertEndpoints()
     this.pruneEmptyFolders()
     this.sortVerbs()
@@ -182,6 +187,21 @@ class Collection {
     })
   }
 
+  // create a subset of the folders
+  createFoldersSmall () {
+    const foldersSubSet = ['Authorization' ,'Users', 'Files', 'Folders']
+
+    this.folders = []
+
+    for (const folderName of foldersSubSet) {
+      const folder = {
+        name: folderName,
+        item: []
+      }
+      this.folders.push(folder)
+    }
+  }
+
   insertEndpoints () {
     const paths = Object.keys(this.openapi.paths)
     paths.forEach(path => {
@@ -195,7 +215,8 @@ class Collection {
     if (endpoint['x-box-postman-hidden']) { return }
 
     const item = {
-      id: uuid.v4(),
+      // id: uuid.v4(),
+      id: endpoint.operationId,
       name: endpoint.summary,
       description: this.description(endpoint),
       request: this.request(verb, path, endpoint),
@@ -203,8 +224,14 @@ class Collection {
       event: this.getItemEvents(endpoint)
     }
 
-    const parent = this.findFolder(endpoint)
-    parent.push(item)
+    // RB: only add the endpoint if the parent folder is in the subset
+    try {
+      const parent = this.findFolder(endpoint)
+      parent.push(item)
+      console.log(`${item.name} added to collection`)
+    } catch (e) {
+      
+    }
   }
 
   description (endpoint) {
@@ -230,7 +257,7 @@ class Collection {
   request (verb, path, endpoint) {
     return {
       url: this.url(path, endpoint),
-      auth: this.auth(endpoint),
+      auth: this.auth_for_endpoint(endpoint),
       method: verb.toUpperCase(),
       description: this.description(endpoint),
       header: this.header(endpoint),
@@ -327,7 +354,9 @@ class Collection {
     return headers
   }
 
-  auth (endpoint) {
+  auth_for_endpoint (endpoint) {
+    // RB: if multi then inherit security from parent collection
+    if ( this.LOCALE === 'MULTI' ) { return null }
     if (endpoint.security && endpoint.security.length === 0) {
       return {
         type: 'noauth'
@@ -338,6 +367,26 @@ class Collection {
   }
 
   defaultAuth () {
+    // RB: if multi the collection has bearer token
+    if ( this.LOCALE === 'MULTI' ) { return this.auth_bearer_token() }
+    else { return this.auth_oAuth() }
+  }
+
+ auth_bearer_token(){
+  return{
+    type: "bearer", 
+    bearer: [
+      {
+        key: 'token',
+        value:'{{access_token}}',
+        type: 'any'
+      }
+
+    ]
+  }
+ }
+
+  auth_oAuth () {
     return {
       type: 'oauth2',
       oauth2: [
@@ -484,6 +533,8 @@ class Collection {
    * Adds a pre-request script to an API call
    */
   getItemEvents (endpoint) {
+    // RB: Dont add a script for endpoints if multi collection
+    if (this.LOCALE === 'MULTI') { return [] }
     // Don't add a script for endpoints without auth
     if (endpoint.operationId === 'post_oauth2_token#refresh') {
       return [this.testUpdateAccessToken()]
@@ -491,6 +542,20 @@ class Collection {
       return []
     } else {
       return [this.prerequestRefreshAccessToken()]
+    }
+  }
+
+  /**
+   * Creates a pre-request event for collection
+   */
+  collectionPreRequest () {
+    return {
+      listen: 'prerequest',
+      script: {
+        id: uuid.v4(),
+        type: 'text/javascript',
+        exec: [String(fs.readFileSync('./src/events/collectionPreReqScript.js'))]
+      }
     }
   }
 
