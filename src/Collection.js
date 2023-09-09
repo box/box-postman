@@ -8,7 +8,7 @@ const { uniq } = require('lodash')
 const Example = require('./Example')
 
 const VERB_PRIORITY = ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
-
+const NAMESPACE = '33c4e6fc-44cb-4190-b19f-4a02821bc8c3'
 const STATUSES = {
   100: 'Continue',
   101: 'Switching Protocols',
@@ -148,9 +148,9 @@ class Collection {
     } else {
       this.createFolders()
     }
-    this.insertEndpoints()
-    this.pruneEmptyFolders()
-    this.sortVerbs()
+    // this.insertEndpoints()
+    // this.pruneEmptyFolders()
+    // this.sortVerbs()
     return this.folders
   }
 
@@ -179,6 +179,7 @@ class Collection {
     this.openapi.tags.sort(byName).sort(byPriority).forEach(tag => {
       // only append subfolders in openapi
       const folder = {
+        id: uuid.v5(tag.name,NAMESPACE), //RB: use uuid v5 to generate a deterministic uuid
         name: tag.name,
         item: []
       }
@@ -195,6 +196,7 @@ class Collection {
 
     for (const folderName of foldersSubSet) {
       const folder = {
+        id: uuid.v5(folderName,NAMESPACE), //RB: use uuid v5 to generate a deterministic uuid
         name: folderName,
         item: []
       }
@@ -216,7 +218,8 @@ class Collection {
 
     const item = {
       // id: uuid.v4(),
-      id: endpoint.operationId,
+      id: uuid.v5(endpoint.operationId,NAMESPACE), //RB: use uuid v5 to generate a deterministic uuid
+      // id: verb+'_'+path+'_'+endpoint.operationId,
       name: endpoint.summary,
       description: this.description(endpoint),
       request: this.request(verb, path, endpoint),
@@ -228,7 +231,7 @@ class Collection {
     try {
       const parent = this.findFolder(endpoint)
       parent.push(item)
-      console.log(`${item.name} added to collection`)
+      console.log(`${item.name} [${item.id}] added to collection`)
     } catch (e) {
       
     }
@@ -256,6 +259,7 @@ class Collection {
 
   request (verb, path, endpoint) {
     return {
+      id: uuid.v5(verb+'_'+path+'_'+endpoint,NAMESPACE), //RB: use uuid v5 to generate a deterministic uuid
       url: this.url(path, endpoint),
       auth: this.auth_for_endpoint(endpoint),
       method: verb.toUpperCase(),
@@ -473,7 +477,8 @@ class Collection {
       .entries(endpoint.responses)
       .filter(([code]) => code !== 'default')
       .map(([code, response]) => ({
-        id: uuid.v4(),
+        // id: uuid.v4(),
+        id: uuid.v5(endpoint.operationId+'_'+code,NAMESPACE), //RB: use uuid v5 to generate a deterministic uuid
         name: this.responseName(code, response),
         header: this.responseHeaders(response),
         body: this.responseBody(response),
