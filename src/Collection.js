@@ -107,7 +107,7 @@ class Collection {
     this.openapi = openapi
     this.locale = locale
     this.LOCALE = locale.toUpperCase()
-    this.small = small //RB: if true returns a subset of the collection with only a few folders
+    this.small = small // RB: if true returns a subset of the collection with only a few folders
   }
 
   /**
@@ -143,7 +143,7 @@ class Collection {
    * populates it with every endpoint
    */
   getItems () {
-    if ( this.small ) {
+    if (this.small) {
       this.createFoldersSmall()
     } else {
       this.createFolders()
@@ -179,7 +179,7 @@ class Collection {
     this.openapi.tags.sort(byName).sort(byPriority).forEach(tag => {
       // only append subfolders in openapi
       const folder = {
-        id: uuid.v5(tag.name,NAMESPACE), //RB: use uuid v5 to generate a deterministic uuid
+        id: uuid.v5(tag.name, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
         name: tag.name,
         item: []
       }
@@ -190,13 +190,13 @@ class Collection {
 
   // create a subset of the folders
   createFoldersSmall () {
-    const foldersSubSet = ['Authorization' ,'Users', 'Files', 'Folders']
+    const foldersSubSet = ['Authorization', 'Users', 'Files', 'Folders']
 
     this.folders = []
 
     for (const folderName of foldersSubSet) {
       const folder = {
-        id: uuid.v5(folderName,NAMESPACE), //RB: use uuid v5 to generate a deterministic uuid
+        id: uuid.v5(folderName, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
         name: folderName,
         item: []
       }
@@ -218,7 +218,7 @@ class Collection {
 
     const item = {
       // id: uuid.v4(),
-      id: uuid.v5(endpoint.operationId,NAMESPACE), //RB: use uuid v5 to generate a deterministic uuid
+      id: uuid.v5(endpoint.operationId, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
       // id: verb+'_'+path+'_'+endpoint.operationId,
       name: endpoint.summary,
       description: this.description(endpoint),
@@ -233,7 +233,7 @@ class Collection {
       parent.push(item)
       console.log(`${item.name} [${item.id}] added to collection`)
     } catch (e) {
-      
+
     }
   }
 
@@ -259,9 +259,9 @@ class Collection {
 
   request (verb, path, endpoint) {
     return {
-      id: uuid.v5(verb+'_'+path+'_'+endpoint,NAMESPACE), //RB: use uuid v5 to generate a deterministic uuid
+      id: uuid.v5(verb + '_' + path + '_' + endpoint, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
       url: this.url(path, endpoint),
-      auth: this.auth_for_endpoint(endpoint),
+      auth: this.authForEndPoint(endpoint),
       method: verb.toUpperCase(),
       description: this.description(endpoint),
       header: this.header(endpoint),
@@ -358,9 +358,9 @@ class Collection {
     return headers
   }
 
-  auth_for_endpoint (endpoint) {
+  authForEndPoint (endpoint) {
     // RB: if multi then inherit security from parent collection
-    if ( this.LOCALE === 'MULTI' ) { return null }
+    if (this.LOCALE === 'MULTI') { return null }
     if (endpoint.security && endpoint.security.length === 0) {
       return {
         type: 'noauth'
@@ -372,25 +372,24 @@ class Collection {
 
   defaultAuth () {
     // RB: if multi the collection has bearer token
-    if ( this.LOCALE === 'MULTI' ) { return this.auth_bearer_token() }
-    else { return this.auth_oAuth() }
+    if (this.LOCALE === 'MULTI') { return this.authBearerToken() } else { return this.authOAuth() }
   }
 
- auth_bearer_token(){
-  return{
-    type: "bearer", 
-    bearer: [
-      {
-        key: 'token',
-        value:'{{access_token}}',
-        type: 'any'
-      }
+  authBearerToken () {
+    return {
+      type: 'bearer',
+      bearer: [
+        {
+          key: 'token',
+          value: '{{access_token}}',
+          type: 'any'
+        }
 
-    ]
+      ]
+    }
   }
- }
 
-  auth_oAuth () {
+  authOAuth () {
     return {
       type: 'oauth2',
       oauth2: [
@@ -478,7 +477,7 @@ class Collection {
       .filter(([code]) => code !== 'default')
       .map(([code, response]) => ({
         // id: uuid.v4(),
-        id: uuid.v5(endpoint.operationId+'_'+code,NAMESPACE), //RB: use uuid v5 to generate a deterministic uuid
+        id: uuid.v5(endpoint.operationId + '_' + code, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
         name: this.responseName(code, response),
         header: this.responseHeaders(response),
         body: this.responseBody(response),

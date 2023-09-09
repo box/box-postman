@@ -10,7 +10,7 @@ class OpenAPI {
     this.filename = filename
     this.openapi = null
     this.locale = locale
-    this.small = small //RB: small sub set of endpoints
+    this.small = small // RB: small sub set of endpoints
     this.tags = {}
   }
 

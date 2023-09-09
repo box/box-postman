@@ -30,6 +30,10 @@
     "standard": "^16.0.1",
     "uuid": "^8.0.0"
   },
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "standard": "^16.0.1"
+  },
   "scripts": {
     "clean": "rm -rf ./.sources ./compiled",
     "pull": "node -e 'require(\"./src/scripts/pull.js\").pullAll()'",

@@ -14,7 +14,7 @@ const release = async (locale = process.argv[1]) => {
   // prevent old folders from remaining in place by first removing all items
   const emptyCollection = { ...collection }
   emptyCollection.item = []
-  console.log('UUID v5 AAAAA:',uuid.v5('AAAAA',NAMESPACE))
+  console.log('UUID v5 AAAAA:', uuid.v5('AAAAA', NAMESPACE))
 
   // console.log('Empty Collection:',{ collection: emptyCollection })
 
@@ -31,8 +31,8 @@ const release = async (locale = process.argv[1]) => {
   //   }
   // ).then(function () {
   //   console.log('EMPTY COLLECTION PUT OK', locale)
-    // then publish the new collection
-   await axios.put(
+  // then publish the new collection
+  await axios.put(
       `https://api.getpostman.com/collections/${collectionId}`,
       // JSON.stringify({ collection }),
       { collection },
@@ -42,17 +42,17 @@ const release = async (locale = process.argv[1]) => {
           'X-Api-Key': process.env.POSTMAN_API_KEY
         }
       }
-    ).then(function () {
-      console.log('FULL COLLECTION PUT OK', locale)
-      console.log('UUID v5 BBBBB:',uuid.v5('BBBBB',NAMESPACE))
-    }
-    ).catch(function (error) {
-      // console.dir(error.response, { depth: 100 })
-      logAxiosError(error)
-      // throw error
-    }
-    )
+  ).then(function () {
+    console.log('FULL COLLECTION PUT OK', locale)
+    console.log('UUID v5 BBBBB:', uuid.v5('BBBBB', NAMESPACE))
   }
+  ).catch(function (error) {
+    // console.dir(error.response, { depth: 100 })
+    logAxiosError(error)
+    // throw error
+  }
+  )
+}
 //   ).catch(function (error) {
 //     // console.dir(error.response, { depth: 100 })
 //     logAxiosError(error)
