@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const OpenAPI = require('../OpenAPI')
+const OpenAPI = require('../OpenAPIMulti')
 const Path = require('../Path')
 const Writer = require('../Writer')
 
@@ -17,7 +17,7 @@ const convert = async (locale = process.argv[1], small = process.argv[2]) => {
   const collection = await openapi.convert()
   const writer = new Writer(collection)
 
-  writer.dump(OUTPUT_FOLDER, `collection.${locale}.json`)
+  writer.dump(OUTPUT_FOLDER, `collection.multi.${locale}.json`)
 }
 
 const convertAll = async () => {

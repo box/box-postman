@@ -50,8 +50,12 @@
     "pretest": "yarn lint",
     "test": "jest",
     "lint": "standard --env jest",
-    "prerelease_multi_small": "node -e 'require(\"./src/scripts/convert.js\").convert()' multi small",
-    "release_multi_small": "node -e 'require(\"./src/scripts/release.js\").release()' multi small"
+    "//": "==============================",
+    "//": "multi auth collection scripts",
+    "//": "------------------------------",
+    "convert_multi": "node -e 'require(\"./src/scripts/convert_multi.js\").convert()'",
+    "release_multi": "node -e 'require(\"./src/scripts/release_multi.js\").release()'",
+    "//": "------------------------------"
   },
   "private": true
 }

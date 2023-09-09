@@ -3,9 +3,9 @@ const deepmerge = require('deepmerge')
 const { Resolver } = require('@stoplight/json-ref-resolver')
 const { JSONPath } = require('jsonpath-plus')
 
-const Collection = require('./Collection')
+const Collection = require('./CollectionMulti')
 
-class OpenAPI {
+class OpenAPIMulti {
   constructor (filename, locale, small = false) {
     this.filename = filename
     this.openapi = null
@@ -80,4 +80,4 @@ class OpenAPI {
   }
 }
 
-module.exports = OpenAPI
+module.exports = OpenAPIMulti

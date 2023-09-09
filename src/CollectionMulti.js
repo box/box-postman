@@ -97,7 +97,7 @@ const byPriority = (a, b) => {
 /**
  * Our own opinionated OpenAPI to Postman converter
  */
-class Collection {
+class CollectionMulti {
   /**
    * Accepts an OpenAPI object
    *
@@ -148,9 +148,9 @@ class Collection {
     } else {
       this.createFolders()
     }
-    // this.insertEndpoints()
-    // this.pruneEmptyFolders()
-    // this.sortVerbs()
+    this.insertEndpoints()
+    this.pruneEmptyFolders()
+    this.sortVerbs()
     return this.folders
   }
 
@@ -360,19 +360,21 @@ class Collection {
 
   authForEndPoint (endpoint) {
     // RB: if multi then inherit security from parent collection
-    if (this.LOCALE === 'MULTI') { return null }
-    if (endpoint.security && endpoint.security.length === 0) {
-      return {
-        type: 'noauth'
-      }
-    } else {
-      return this.defaultAuth()
-    }
+    return null
+    // if (this.LOCALE === 'MULTI') { return null }
+    // if (endpoint.security && endpoint.security.length === 0) {
+    //   return {
+    //     type: 'noauth'
+    //   }
+    // } else {
+    //   return this.defaultAuth()
+    // }
   }
 
   defaultAuth () {
     // RB: if multi the collection has bearer token
-    if (this.LOCALE === 'MULTI') { return this.authBearerToken() } else { return this.authOAuth() }
+    return this.authBearerToken()
+    // if (this.LOCALE === 'MULTI') { return this.authBearerToken() } else { return this.authOAuth() }
   }
 
   authBearerToken () {
@@ -538,15 +540,16 @@ class Collection {
    */
   getItemEvents (endpoint) {
     // RB: Dont add a script for endpoints if multi collection
-    if (this.LOCALE === 'MULTI') { return [] }
-    // Don't add a script for endpoints without auth
-    if (endpoint.operationId === 'post_oauth2_token#refresh') {
-      return [this.testUpdateAccessToken()]
-    } else if (endpoint.security && endpoint.security.length === 0) {
-      return []
-    } else {
-      return [this.prerequestRefreshAccessToken()]
-    }
+    return []
+    // if (this.LOCALE === 'MULTI') { return [] }
+    // // Don't add a script for endpoints without auth
+    // if (endpoint.operationId === 'post_oauth2_token#refresh') {
+    //   return [this.testUpdateAccessToken()]
+    // } else if (endpoint.security && endpoint.security.length === 0) {
+    //   return []
+    // } else {
+    //   return [this.prerequestRefreshAccessToken()]
+    // }
   }
 
   /**
@@ -592,4 +595,4 @@ class Collection {
   }
 }
 
-module.exports = Collection
+module.exports = CollectionMulti
