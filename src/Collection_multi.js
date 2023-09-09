@@ -8,7 +8,7 @@ const { uniq } = require('lodash')
 const Example = require('./Example')
 
 const VERB_PRIORITY = ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
-
+const NAMESPACE = '33c4e6fc-44cb-4190-b19f-4a02821bc8c3'
 const STATUSES = {
   100: 'Continue',
   101: 'Switching Protocols',
@@ -103,10 +103,11 @@ class Collection {
    *
    * @param {Object} openapi
    */
-  constructor (openapi, locale) {
+  constructor (openapi, locale, small = false) {
     this.openapi = openapi
     this.locale = locale
     this.LOCALE = locale.toUpperCase()
+    this.small = small // RB: if true returns a subset of the collection with only a few folders
   }
 
   /**
@@ -116,7 +117,7 @@ class Collection {
     return {
       info: this.getInfo(),
       item: this.getItems(),
-      event: [],
+      event: [this.collectionPreRequest()],
       variable: this.getVariables(),
       auth: this.defaultAuth()
     }
@@ -128,7 +129,7 @@ class Collection {
    * Creates the info object
    */
   getInfo () {
-    const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE})` : ''
+    const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE} stuff)` : ''
     return {
       name: `${this.openapi.info.title}${locale}`,
       _postman_id: uuid.v4(),
@@ -142,10 +143,14 @@ class Collection {
    * populates it with every endpoint
    */
   getItems () {
-    this.createFolders()
-    this.insertEndpoints()
-    this.pruneEmptyFolders()
-    this.sortVerbs()
+    if (this.small) {
+      this.createFoldersSmall()
+    } else {
+      this.createFolders()
+    }
+    // this.insertEndpoints()
+    // this.pruneEmptyFolders()
+    // this.sortVerbs()
     return this.folders
   }
 
@@ -174,12 +179,29 @@ class Collection {
     this.openapi.tags.sort(byName).sort(byPriority).forEach(tag => {
       // only append subfolders in openapi
       const folder = {
+        id: uuid.v5(tag.name, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
         name: tag.name,
         item: []
       }
 
       this.folders.push(folder)
     })
+  }
+
+  // create a subset of the folders
+  createFoldersSmall () {
+    const foldersSubSet = ['Authorization', 'Users', 'Files', 'Folders']
+
+    this.folders = []
+
+    for (const folderName of foldersSubSet) {
+      const folder = {
+        id: uuid.v5(folderName, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
+        name: folderName,
+        item: []
+      }
+      this.folders.push(folder)
+    }
   }
 
   insertEndpoints () {
@@ -195,7 +217,9 @@ class Collection {
     if (endpoint['x-box-postman-hidden']) { return }
 
     const item = {
-      id: uuid.v4(),
+      // id: uuid.v4(),
+      id: uuid.v5(endpoint.operationId, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
+      // id: verb+'_'+path+'_'+endpoint.operationId,
       name: endpoint.summary,
       description: this.description(endpoint),
       request: this.request(verb, path, endpoint),
@@ -203,8 +227,14 @@ class Collection {
       event: this.getItemEvents(endpoint)
     }
 
-    const parent = this.findFolder(endpoint)
-    parent.push(item)
+    // RB: only add the endpoint if the parent folder is in the subset
+    try {
+      const parent = this.findFolder(endpoint)
+      parent.push(item)
+      console.log(`${item.name} [${item.id}] added to collection`)
+    } catch (e) {
+
+    }
   }
 
   description (endpoint) {
@@ -229,8 +259,9 @@ class Collection {
 
   request (verb, path, endpoint) {
     return {
+      id: uuid.v5(verb + '_' + path + '_' + endpoint, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
       url: this.url(path, endpoint),
-      auth: this.auth(endpoint),
+      auth: this.authForEndPoint(endpoint),
       method: verb.toUpperCase(),
       description: this.description(endpoint),
       header: this.header(endpoint),
@@ -327,7 +358,9 @@ class Collection {
     return headers
   }
 
-  auth (endpoint) {
+  authForEndPoint (endpoint) {
+    // RB: if multi then inherit security from parent collection
+    if (this.LOCALE === 'MULTI') { return null }
     if (endpoint.security && endpoint.security.length === 0) {
       return {
         type: 'noauth'
@@ -338,6 +371,25 @@ class Collection {
   }
 
   defaultAuth () {
+    // RB: if multi the collection has bearer token
+    if (this.LOCALE === 'MULTI') { return this.authBearerToken() } else { return this.authOAuth() }
+  }
+
+  authBearerToken () {
+    return {
+      type: 'bearer',
+      bearer: [
+        {
+          key: 'token',
+          value: '{{access_token}}',
+          type: 'any'
+        }
+
+      ]
+    }
+  }
+
+  authOAuth () {
     return {
       type: 'oauth2',
       oauth2: [
@@ -424,7 +476,8 @@ class Collection {
       .entries(endpoint.responses)
       .filter(([code]) => code !== 'default')
       .map(([code, response]) => ({
-        id: uuid.v4(),
+        // id: uuid.v4(),
+        id: uuid.v5(endpoint.operationId + '_' + code, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
         name: this.responseName(code, response),
         header: this.responseHeaders(response),
         body: this.responseBody(response),
@@ -484,6 +537,8 @@ class Collection {
    * Adds a pre-request script to an API call
    */
   getItemEvents (endpoint) {
+    // RB: Dont add a script for endpoints if multi collection
+    if (this.LOCALE === 'MULTI') { return [] }
     // Don't add a script for endpoints without auth
     if (endpoint.operationId === 'post_oauth2_token#refresh') {
       return [this.testUpdateAccessToken()]
@@ -491,6 +546,20 @@ class Collection {
       return []
     } else {
       return [this.prerequestRefreshAccessToken()]
+    }
+  }
+
+  /**
+   * Creates a pre-request event for collection
+   */
+  collectionPreRequest () {
+    return {
+      listen: 'prerequest',
+      script: {
+        id: uuid.v4(),
+        type: 'text/javascript',
+        exec: [String(fs.readFileSync('./src/events/collectionPreReqScript.js'))]
+      }
     }
   }
 

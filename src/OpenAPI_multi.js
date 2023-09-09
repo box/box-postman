@@ -6,10 +6,11 @@ const { JSONPath } = require('jsonpath-plus')
 const Collection = require('./Collection')
 
 class OpenAPI {
-  constructor (filename, locale) {
+  constructor (filename, locale, small = false) {
     this.filename = filename
     this.openapi = null
     this.locale = locale
+    this.small = small // RB: small sub set of endpoints
     this.tags = {}
   }
 
@@ -75,7 +76,7 @@ class OpenAPI {
   }
 
   async createCollection () {
-    this.collection = new Collection(this.openapi, this.locale).process()
+    this.collection = new Collection(this.openapi, this.locale, this.small).process()
   }
 }
 
