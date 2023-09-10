@@ -1,26 +1,31 @@
+// ----------------
+// OpenAPI 3.0 parser
+// ----------------
+// Description: takes the Box OpenAPI JSON file
+// and resolves all references and allOf objects
+// to create a consistent OpenAPI 3.0 specification
+// -----------------
+
 const fs = require('fs')
 const deepmerge = require('deepmerge')
 const { Resolver } = require('@stoplight/json-ref-resolver')
 const { JSONPath } = require('jsonpath-plus')
 
-const Collection = require('./CollectionMulti')
-
 class OpenAPIMulti {
-  constructor (filename, locale, small = false) {
+  constructor (filename, locale) {
     this.filename = filename
     this.openapi = null
     this.locale = locale
-    this.small = small // RB: small sub set of endpoints
     this.tags = {}
   }
 
-  async convert () {
+  async process () {
     this.readOpenAPI()
     this.openapi = await this.resolveReferences(this.openapi)
     this.openapi = this.resolveAllOf(this.openapi)
     // this.writeOpenAPI()
-    this.createCollection()
-    return this.collection
+    // this.createCollection()
+    return this.openapi
   }
 
   // private
@@ -30,9 +35,9 @@ class OpenAPIMulti {
     this.openapi = JSON.parse(source)
   }
 
-  writeOpenAPI () {
+  writeOpenAPI (path) {
     fs.writeFileSync(
-      './compiled/openapi30.json',
+      path,
       JSON.stringify(this.openapi, null, 2)
     )
   }
@@ -73,10 +78,6 @@ class OpenAPIMulti {
     })
 
     return openapi
-  }
-
-  async createCollection () {
-    this.collection = new Collection(this.openapi, this.locale, this.small).process()
   }
 }
 

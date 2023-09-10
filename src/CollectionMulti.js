@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const uuid = require('uuid')
 const { URL } = require('url')
 const { resolve } = require('path')
@@ -9,6 +11,9 @@ const Example = require('./Example')
 
 const VERB_PRIORITY = ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
 const NAMESPACE = '33c4e6fc-44cb-4190-b19f-4a02821bc8c3'
+
+const FOLDERS_TO_PROCESS = process.env.FOLDERS_TO_PROCESS
+
 const STATUSES = {
   100: 'Continue',
   101: 'Switching Protocols',
@@ -103,11 +108,10 @@ class CollectionMulti {
    *
    * @param {Object} openapi
    */
-  constructor (openapi, locale, small = false) {
+  constructor (openapi, locale) {
     this.openapi = openapi
     this.locale = locale
     this.LOCALE = locale.toUpperCase()
-    this.small = small // RB: if true returns a subset of the collection with only a few folders
   }
 
   /**
@@ -143,10 +147,12 @@ class CollectionMulti {
    * populates it with every endpoint
    */
   getItems () {
-    if (this.small) {
-      this.createFoldersSmall()
+    // check if FOLDERS_TO_PROCESS is set or has no elements
+    if (FOLDERS_TO_PROCESS && FOLDERS_TO_PROCESS.length > 0) {
+      const foldersToProcess = FOLDERS_TO_PROCESS.split(',')
+      this.createFoldersByList(foldersToProcess)
     } else {
-      this.createFolders()
+      this.createFoldersAll()
     }
     this.insertEndpoints()
     this.pruneEmptyFolders()
@@ -172,36 +178,34 @@ class CollectionMulti {
    * Creates a folder tree based on our reference
    * tags
    */
-  createFolders () {
+  createFoldersAll () {
     this.folders = []
 
     // for every nested tag create a folder object and place it on the root folder
     this.openapi.tags.sort(byName).sort(byPriority).forEach(tag => {
       // only append subfolders in openapi
-      const folder = {
-        id: uuid.v5(tag.name, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
-        name: tag.name,
-        item: []
-      }
-
+      const folder = this.createFolder(tag.name)
       this.folders.push(folder)
     })
   }
 
   // create a subset of the folders
-  createFoldersSmall () {
-    const foldersSubSet = ['Authorization', 'Users', 'Files', 'Folders']
-
+  createFoldersByList (foldersToProcess) {
     this.folders = []
-
-    for (const folderName of foldersSubSet) {
-      const folder = {
-        id: uuid.v5(folderName, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
-        name: folderName,
-        item: []
-      }
+    for (const folderName of foldersToProcess) {
+      const folder = this.createFolder(folderName)
       this.folders.push(folder)
     }
+  }
+
+  // create a folder object
+  createFolder (folderName) {
+    const folder = {
+      id: uuid.v5(folderName, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
+      name: folderName,
+      item: []
+    }
+    return folder
   }
 
   insertEndpoints () {

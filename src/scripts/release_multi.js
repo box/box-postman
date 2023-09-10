@@ -1,6 +1,4 @@
 require('dotenv').config()
-const uuid = require('uuid')
-const NAMESPACE = '33c4e6fc-44cb-4190-b19f-4a02821bc8c3'
 
 const fs = require('fs')
 const axios = require('axios')
@@ -14,8 +12,6 @@ const release = async (locale = process.argv[1]) => {
   // prevent old folders from remaining in place by first removing all items
   const emptyCollection = { ...collection }
   emptyCollection.item = []
-  console.log('UUID v5 AAAAA:', uuid.v5('AAAAA', NAMESPACE))
-  console.log('Collectio ID: ', collectionId)
 
   // console.log('Empty Collection:',{ collection: emptyCollection })
 
@@ -45,7 +41,6 @@ const release = async (locale = process.argv[1]) => {
       }
   ).then(function () {
     console.log('FULL COLLECTION PUT OK', locale)
-    console.log('UUID v5 BBBBB:', uuid.v5('BBBBB', NAMESPACE))
   }
   ).catch(function (error) {
     // console.dir(error.response, { depth: 100 })
