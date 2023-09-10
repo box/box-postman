@@ -240,9 +240,9 @@ class CollectionMulti {
 
     const itemId = this.genID(JSON.stringify(item))
     item.id = itemId
-    item.request = this.requestCreate(verb, path, endpoint)
+    item.request = this.requestCreate(verb, path, endpoint, item.id)
     item.response = this.responseCreate(endpoint, item.request.id)
-    item.event = this.getItemEvents(endpoint)
+    item.event = this.getItemEvents(endpoint, item.id)
 
     // RB: only add the endpoint if the parent folder is in the subset
     try {
@@ -274,7 +274,7 @@ class CollectionMulti {
     })
   }
 
-  requestCreate (verb, path, endpoint) {
+  requestCreate (verb, path, endpoint, folderId) {
     const request = {
       // id: uuid.v5(verb + '_' + path + '_' + endpoint, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
       url: this.url(path, endpoint),
@@ -284,7 +284,7 @@ class CollectionMulti {
       header: this.header(endpoint),
       body: this.body(endpoint)
     }
-    const requesstId = this.genID(JSON.stringify(request))
+    const requesstId = this.genID(folderId + JSON.stringify(request))
     request.id = requesstId
     return request
   }
@@ -576,7 +576,7 @@ class CollectionMulti {
   /**
    * Adds a pre-request script to an API call
    */
-  getItemEvents (endpoint) {
+  getItemEvents (endpoint, itemId) {
     // RB: Dont add a script for endpoints if multi collection
     return []
     // if (this.LOCALE === 'MULTI') { return [] }
