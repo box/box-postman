@@ -193,6 +193,7 @@ class CollectionMulti {
   createFoldersByList (foldersToProcess) {
     this.folders = []
     for (const folderName of foldersToProcess) {
+      if (folderName === '') { continue }
       const folder = this.createFolder(folderName)
       this.folders.push(folder)
     }
