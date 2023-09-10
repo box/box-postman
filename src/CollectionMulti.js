@@ -1,15 +1,16 @@
 require('dotenv').config()
 
-const uuid = require('uuid')
 const { URL } = require('url')
 const { resolve } = require('path')
 const rmMD = require('remove-markdown')
 const fs = require('fs')
 const { uniq } = require('lodash')
+const uuid = require('uuid')
 
 const Example = require('./Example')
 
 const VERB_PRIORITY = ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
+
 const NAMESPACE = '33c4e6fc-44cb-4190-b19f-4a02821bc8c3'
 
 const FOLDERS_TO_PROCESS = process.env.FOLDERS_TO_PROCESS
@@ -129,14 +130,21 @@ class CollectionMulti {
 
   // PRIVATE
 
+  genID (objectJSON) {
+    const id = uuid.v5(JSON.stringify(objectJSON), NAMESPACE)
+    return id
+  }
+
   /**
    * Creates the info object
    */
   getInfo () {
     const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE} stuff)` : ''
+    const name = `${this.openapi.info.title}${locale}`
+    const postmanID = this.genID(name)
     return {
-      name: `${this.openapi.info.title}${locale}`,
-      _postman_id: uuid.v4(),
+      name: name,
+      _postman_id: postmanID,
       description: this.openapi.info.description,
       schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
     }
@@ -202,10 +210,11 @@ class CollectionMulti {
   // create a folder object
   createFolder (folderName) {
     const folder = {
-      id: uuid.v5(folderName, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
       name: folderName,
       item: []
     }
+    const folderId = this.genID(JSON.stringify(folder))
+    folder.id = folderId
     return folder
   }
 
@@ -222,15 +231,18 @@ class CollectionMulti {
     if (endpoint['x-box-postman-hidden']) { return }
 
     const item = {
-      // id: uuid.v4(),
-      id: uuid.v5(endpoint.operationId, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
-      // id: verb+'_'+path+'_'+endpoint.operationId,
       name: endpoint.summary,
-      description: this.description(endpoint),
-      request: this.request(verb, path, endpoint),
-      response: this.response(endpoint),
-      event: this.getItemEvents(endpoint)
+      description: this.description(endpoint)
+      // request: this.request(verb, path, endpoint),
+      // response: this.response(endpoint),
+      // event: this.getItemEvents(endpoint)
     }
+
+    const itemId = this.genID(JSON.stringify(item))
+    item.id = itemId
+    item.request = this.requestCreate(verb, path, endpoint)
+    item.response = this.responseCreate(endpoint, item.request.id)
+    item.event = this.getItemEvents(endpoint)
 
     // RB: only add the endpoint if the parent folder is in the subset
     try {
@@ -262,9 +274,9 @@ class CollectionMulti {
     })
   }
 
-  request (verb, path, endpoint) {
-    return {
-      id: uuid.v5(verb + '_' + path + '_' + endpoint, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
+  requestCreate (verb, path, endpoint) {
+    const request = {
+      // id: uuid.v5(verb + '_' + path + '_' + endpoint, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
       url: this.url(path, endpoint),
       auth: this.authForEndPoint(endpoint),
       method: verb.toUpperCase(),
@@ -272,6 +284,9 @@ class CollectionMulti {
       header: this.header(endpoint),
       body: this.body(endpoint)
     }
+    const requesstId = this.genID(JSON.stringify(request))
+    request.id = requesstId
+    return request
   }
 
   url (path, endpoint) {
@@ -478,13 +493,31 @@ class CollectionMulti {
     })
   }
 
-  response (endpoint) {
+  responseCreate (endpoint, itemRequestId) {
+    const responses = Object
+      .entries(endpoint.responses)
+      .filter(([code]) => code !== 'default')
+      .map(([code, response]) => ({
+        name: this.responseName(code, response),
+        header: this.responseHeaders(response),
+        body: this.responseBody(response),
+        code: Number(code),
+        status: STATUSES[code]
+      }))
+
+    // for each response, calculate the uuid
+    for (const response of responses) {
+      response.id = this.genID(itemRequestId + JSON.stringify(response))
+    }
+
+    return responses
+  }
+
+  responseCreateDeprecated (endpoint) {
     return Object
       .entries(endpoint.responses)
       .filter(([code]) => code !== 'default')
       .map(([code, response]) => ({
-        // id: uuid.v4(),
-        id: uuid.v5(endpoint.operationId + '_' + code, NAMESPACE), // RB: use uuid v5 to generate a deterministic uuid
         name: this.responseName(code, response),
         header: this.responseHeaders(response),
         body: this.responseBody(response),
@@ -561,35 +594,37 @@ class CollectionMulti {
    * Creates a pre-request event for collection
    */
   collectionPreRequest () {
-    return {
+    const script = {
       listen: 'prerequest',
       script: {
-        id: uuid.v4(),
         type: 'text/javascript',
         exec: [String(fs.readFileSync('./src/events/collectionPreReqScript.js'))]
       }
     }
+    script.script.id = this.genID(script)
+    return script
   }
 
   /**
    * Creates a pre-request event to check for expired access tokens
    */
   prerequestRefreshAccessToken () {
-    return {
+    const script = {
       listen: 'prerequest',
       script: {
-        id: uuid.v4(),
         type: 'text/javascript',
         exec: [String(fs.readFileSync('./src/events/refreshAccessToken.js'))]
       }
     }
+    script.script.id = this.genID(script)
+    return script
   }
 
   /**
    * Creates a test event to pick up on refreshed access tokens
    */
   testUpdateAccessToken () {
-    return {
+    const script = {
       listen: 'test',
       script: {
         id: uuid.v4(),
@@ -597,6 +632,8 @@ class CollectionMulti {
         exec: [String(fs.readFileSync('./src/events/updateAccessToken.js'))]
       }
     }
+    script.script.id = this.genID(script)
+    return script
   }
 }
 
