@@ -6,8 +6,8 @@ const axios = require('axios')
 const OUTPUT_FOLDER = './compiled'
 
 const release = async (locale = process.argv[1]) => {
-  const collection = JSON.parse(fs.readFileSync(`${OUTPUT_FOLDER}/collection.multi.${locale}.json`).toString())
-  const collectionId = process.env[`${locale.toUpperCase()}_POSTMAN_COLLECTION_MULTI_ID`]
+  const collection = JSON.parse(fs.readFileSync(`${OUTPUT_FOLDER}/collection.advanced.${locale}.json`).toString())
+  const collectionId = process.env[`${locale.toUpperCase()}_POSTMAN_COLLECTION_ADVANCED_ID`]
 
   // prevent old folders from remaining in place by first removing all items
   const emptyCollection = { ...collection }

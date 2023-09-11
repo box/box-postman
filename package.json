@@ -49,8 +49,8 @@
     "test": "jest",
     "lint": "standard --env jest",
     "//": "------------------------------",
-    "convert_multi": "node -e 'require(\"./src/scripts/convert_multi.js\").convert()'",
-    "release_multi": "node -e 'require(\"./src/scripts/release_multi.js\").release()'"
+    "convertAdvanced": "node -e 'require(\"./src/scripts/convertAdvanced.js\").convert()'",
+    "releaseAdvanced": "node -e 'require(\"./src/scripts/releaseAdvanced.js\").release()'"
   },
   "private": true
 }

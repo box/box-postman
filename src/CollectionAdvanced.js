@@ -7,7 +7,7 @@ const Collection = require('./Collection')
 
 /**
  * Our own opinionated OpenAPI to Postman converter
- * RB: This is the main class for the multi collection
+ * RB: This is the main class for the advanced collection
  * This class extends the Collection class
  * Main difference are:
  * - The collectionPreRequest() method - PreScript for the collection
@@ -15,10 +15,10 @@ const Collection = require('./Collection')
  * - The defaultAuth() method - Default auth for collection is now Baearer Token
  * - The getItemEvents() method - Items do not have events/scripts, these are inhereted from the collection
  */
-class CollectionMulti extends Collection {
+class CollectionAdvanced extends Collection {
   /**
    * Accepts an OpenAPI object
-   * @class CollectionMulti
+   * @class CollectionAdvanced
    * @extends {Collection}
    * @param {Object} openapi
    * @param {String} locale
@@ -118,4 +118,4 @@ class CollectionMulti extends Collection {
   }
 }
 
-module.exports = CollectionMulti
+module.exports = CollectionAdvanced

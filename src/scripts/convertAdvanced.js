@@ -3,7 +3,7 @@ require('dotenv').config()
 const OpenAPI = require('../OpenAPI')
 const Path = require('../Path')
 const Writer = require('../Writer')
-const Collection = require('../CollectionMulti')
+const Collection = require('../CollectionAdvanced')
 
 const OPENAPI_FILENAME = 'openapi.json'
 const OPENAPI_TYPE = 'OAS3'
@@ -24,7 +24,7 @@ const convert = async (locale = process.argv[1]) => {
 
   const writer = new Writer(collection)
 
-  writer.dump(OUTPUT_FOLDER, `collection.multi.${locale}.json`)
+  writer.dump(OUTPUT_FOLDER, `collection.advanced.${locale}.json`)
 }
 
 const convertAll = async () => {
