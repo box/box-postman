@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 require('dotenv').config()
 
 const { URL } = require('url')

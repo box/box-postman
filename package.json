@@ -22,17 +22,15 @@
     "@stoplight/json-ref-resolver": "^3.0.1",
     "axios": "^0.21.2",
     "deepmerge": "^4.0.0",
-    "dotenv": "^8.0.0",
-    "jest": "^26.6.3",
+    "dotenv": "^16.3.1",
     "jsonpath-plus": "^4.0.0",
     "lodash": "^4.17.21",
     "remove-markdown": "^0.3.0",
-    "standard": "^16.0.1",
-    "uuid": "^8.0.0"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "jest": "^26.6.3",
-    "standard": "^16.0.1"
+    "standard": "^17.1.0"
   },
   "scripts": {
     "clean": "rm -rf ./.sources ./compiled",
@@ -50,12 +48,9 @@
     "pretest": "yarn lint",
     "test": "jest",
     "lint": "standard --env jest",
-    "//": "==============================",
-    "//": "multi auth collection scripts",
     "//": "------------------------------",
     "convert_multi": "node -e 'require(\"./src/scripts/convert_multi.js\").convert()'",
-    "release_multi": "node -e 'require(\"./src/scripts/release_multi.js\").release()'",
-    "//": "------------------------------"
+    "release_multi": "node -e 'require(\"./src/scripts/release_multi.js\").release()'"
   },
   "private": true
 }

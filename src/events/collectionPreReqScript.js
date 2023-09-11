@@ -3,6 +3,7 @@
 /* global KJUR */
 
 /* eslint-disable camelcase */
+/* eslint-disable object-shorthand */
 const check_environment = () => {
   // check current environment name
   const env_name = pm.environment.name
