@@ -5,13 +5,17 @@ const { resolve } = require('path')
 const rmMD = require('remove-markdown')
 const fs = require('fs')
 const { uniq } = require('lodash')
-const uuid = require('uuid')
+// const uuid = require('uuid')
+const postmanIds = require('./DeterministicIds')
+
+const x = postmanIds.genIDRandom()
+console.log(x)
 
 const Example = require('./Example')
 
 const VERB_PRIORITY = ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
 
-const NAMESPACE = '33c4e6fc-44cb-4190-b19f-4a02821bc8c3'
+// const NAMESPACE = '33c4e6fc-44cb-4190-b19f-4a02821bc8c3'
 
 const FOLDERS_TO_PROCESS = process.env.FOLDERS_TO_PROCESS
 
@@ -130,10 +134,10 @@ class CollectionMulti {
 
   // PRIVATE
 
-  genID (objectJSON) {
-    const id = uuid.v5(JSON.stringify(objectJSON), NAMESPACE)
-    return id
-  }
+  // genID (objectJSON) {
+  //   const id = uuid.v5(JSON.stringify(objectJSON), NAMESPACE)
+  //   return id
+  // }
 
   /**
    * Creates the info object
@@ -141,7 +145,7 @@ class CollectionMulti {
   getInfo () {
     const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE} stuff)` : ''
     const name = `${this.openapi.info.title}${locale}`
-    const postmanID = this.genID(name)
+    const postmanID = postmanIds.genIDDeterm(name)
     return {
       name: name,
       _postman_id: postmanID,
@@ -175,7 +179,7 @@ class CollectionMulti {
     return uniq(Object.values(this.openapi.paths).flatMap(endpoints => (
       Object.values(endpoints).map(endpoint => this.server(endpoint).host)
     ))).map(host => ({
-      id: uuid.v4(),
+      id: postmanIds.genIDRandom(),
       key: host, // .replace(/\./g, '_'),
       value: host,
       type: 'string'
@@ -213,7 +217,7 @@ class CollectionMulti {
       name: folderName,
       item: []
     }
-    const folderId = this.genID(JSON.stringify(folder))
+    const folderId = postmanIds.genIDDeterm(JSON.stringify(folder))
     folder.id = folderId
     return folder
   }
@@ -238,7 +242,7 @@ class CollectionMulti {
       // event: this.getItemEvents(endpoint)
     }
 
-    const itemId = this.genID(JSON.stringify(item))
+    const itemId = postmanIds.genIDDeterm(JSON.stringify(item))
     item.id = itemId
     item.request = this.requestCreate(verb, path, endpoint, item.id)
     item.response = this.responseCreate(endpoint, item.request.id)
@@ -284,7 +288,7 @@ class CollectionMulti {
       header: this.header(endpoint),
       body: this.body(endpoint)
     }
-    const requesstId = this.genID(folderId + JSON.stringify(request))
+    const requesstId = postmanIds.genIDDeterm(folderId + JSON.stringify(request))
     request.id = requesstId
     return request
   }
@@ -507,7 +511,7 @@ class CollectionMulti {
 
     // for each response, calculate the uuid
     for (const response of responses) {
-      response.id = this.genID(itemRequestId + JSON.stringify(response))
+      response.id = postmanIds.genIDDeterm(itemRequestId + JSON.stringify(response))
     }
 
     return responses
@@ -601,7 +605,7 @@ class CollectionMulti {
         exec: [String(fs.readFileSync('./src/events/collectionPreReqScript.js'))]
       }
     }
-    script.script.id = this.genID(script)
+    script.script.id = postmanIds.genIDDeterm(script)
     return script
   }
 
@@ -616,7 +620,7 @@ class CollectionMulti {
         exec: [String(fs.readFileSync('./src/events/refreshAccessToken.js'))]
       }
     }
-    script.script.id = this.genID(script)
+    script.script.id = postmanIds.genIDDeterm(script)
     return script
   }
 
@@ -627,12 +631,12 @@ class CollectionMulti {
     const script = {
       listen: 'test',
       script: {
-        id: uuid.v4(),
+        id: postmanIds.genIDRandom(),
         type: 'text/javascript',
         exec: [String(fs.readFileSync('./src/events/updateAccessToken.js'))]
       }
     }
-    script.script.id = this.genID(script)
+    script.script.id = postmanIds.genIDDeterm(script)
     return script
   }
 }
