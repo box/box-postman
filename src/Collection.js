@@ -1,9 +1,11 @@
-const uuid = require('uuid')
+require('dotenv').config()
+
 const { URL } = require('url')
 const { resolve } = require('path')
 const rmMD = require('remove-markdown')
 const fs = require('fs')
 const { uniq } = require('lodash')
+const Utils = require('./Utils')
 
 const Example = require('./Example')
 
@@ -74,39 +76,31 @@ const STATUSES = {
   599: 'Network Connect Timeout Error'
 }
 
-// Sort 2 objects by name
-const byName = (a, b) => {
-  if (a.name < b.name) {
-    return -1
-  } else if (a.name > b.name) {
-    return 1
-  }
-  return 0
-}
-
-// Sort two object by priority
-const byPriority = (a, b) => {
-  if (a['x-box-priority']) {
-    return -1
-  } else if (b['x-box-priority']) {
-    return 1
-  }
-  return 0
-}
-
 /**
  * Our own opinionated OpenAPI to Postman converter
+ * RB: This is the original Collection.js
+ * RB: Added deterministic ids in object
+ * RB: Added support for FOLDERS_TO_PROCESS
+ * RB: Added support for verbose logging
+ * RB: Refactor separation of concerns
+ * RB: Added UTils.js for common functions
+ *
  */
 class Collection {
   /**
    * Accepts an OpenAPI object
    *
    * @param {Object} openapi
+   * @param {String} locale
+   * @param {Array} foldersToProcess
+   * @param {Boolean} verbose
    */
-  constructor (openapi, locale) {
+  constructor (openapi, locale, foldersToProcess = null, verbose = false) {
     this.openapi = openapi
     this.locale = locale
     this.LOCALE = locale.toUpperCase()
+    this.foldersToProcess = foldersToProcess
+    this.verbose = verbose
   }
 
   /**
@@ -128,10 +122,12 @@ class Collection {
    * Creates the info object
    */
   getInfo () {
-    const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE})` : ''
+    const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE} stuff)` : ''
+    const name = `${this.openapi.info.title}${locale}`
+    const postmanID = Utils.GenID(name)
     return {
-      name: `${this.openapi.info.title}${locale}`,
-      _postman_id: uuid.v4(),
+      name: name,
+      _postman_id: postmanID,
       description: this.openapi.info.description,
       schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
     }
@@ -142,7 +138,13 @@ class Collection {
    * populates it with every endpoint
    */
   getItems () {
-    this.createFolders()
+    // check if FOLDERS_TO_PROCESS is set or has no elements
+    if (this.foldersToProcess && this.foldersToProcess.length > 0) {
+      const foldersToProcess = this.foldersToProcess.split(',')
+      this.createFoldersByList(foldersToProcess)
+    } else {
+      this.createFoldersAll()
+    }
     this.insertEndpoints()
     this.pruneEmptyFolders()
     this.sortVerbs()
@@ -156,7 +158,7 @@ class Collection {
     return uniq(Object.values(this.openapi.paths).flatMap(endpoints => (
       Object.values(endpoints).map(endpoint => this.server(endpoint).host)
     ))).map(host => ({
-      id: uuid.v4(),
+      id: Utils.GenID(),
       key: host, // .replace(/\./g, '_'),
       value: host,
       type: 'string'
@@ -167,19 +169,36 @@ class Collection {
    * Creates a folder tree based on our reference
    * tags
    */
-  createFolders () {
+  createFoldersAll () {
     this.folders = []
 
     // for every nested tag create a folder object and place it on the root folder
-    this.openapi.tags.sort(byName).sort(byPriority).forEach(tag => {
+    this.openapi.tags.sort(Utils.ByName).sort(Utils.ByPriority).forEach(tag => {
       // only append subfolders in openapi
-      const folder = {
-        name: tag.name,
-        item: []
-      }
-
+      const folder = this.createFolder(tag.name)
       this.folders.push(folder)
     })
+  }
+
+  // create a subset of the folders
+  createFoldersByList (foldersToProcess) {
+    this.folders = []
+    for (const folderName of foldersToProcess) {
+      if (folderName === '') { continue }
+      const folder = this.createFolder(folderName)
+      this.folders.push(folder)
+    }
+  }
+
+  // create a folder object
+  createFolder (folderName) {
+    const folder = {
+      name: folderName,
+      item: []
+    }
+    const folderId = Utils.GenID(JSON.stringify(folder))
+    folder.id = folderId
+    return folder
   }
 
   insertEndpoints () {
@@ -195,16 +214,29 @@ class Collection {
     if (endpoint['x-box-postman-hidden']) { return }
 
     const item = {
-      id: uuid.v4(),
       name: endpoint.summary,
-      description: this.description(endpoint),
-      request: this.request(verb, path, endpoint),
-      response: this.response(endpoint),
-      event: this.getItemEvents(endpoint)
+      description: this.description(endpoint)
+      // request: this.request(verb, path, endpoint),
+      // response: this.response(endpoint),
+      // event: this.getItemEvents(endpoint)
     }
 
-    const parent = this.findFolder(endpoint)
-    parent.push(item)
+    const itemId = Utils.GenID(JSON.stringify(item))
+    item.id = itemId
+    item.request = this.requestCreate(verb, path, endpoint, item.id)
+    item.response = this.responseCreate(endpoint, item.request.id)
+    item.event = this.getItemEvents(endpoint, item.id)
+
+    // RB: only add the endpoint if the parent folder is in the subset
+    try {
+      const parent = this.findFolder(endpoint)
+      parent.push(item)
+      if (this.verbose) {
+        console.log(`${item.name} [${item.id}] added to collection`)
+      }
+    } catch (e) {
+
+    }
   }
 
   description (endpoint) {
@@ -227,15 +259,18 @@ class Collection {
     })
   }
 
-  request (verb, path, endpoint) {
-    return {
+  requestCreate (verb, path, endpoint, folderId) {
+    const request = {
       url: this.url(path, endpoint),
-      auth: this.auth(endpoint),
+      auth: this.authForEndPoint(endpoint),
       method: verb.toUpperCase(),
       description: this.description(endpoint),
       header: this.header(endpoint),
       body: this.body(endpoint)
     }
+    const requesstId = Utils.GenID(folderId + JSON.stringify(request))
+    request.id = requesstId
+    return request
   }
 
   url (path, endpoint) {
@@ -327,7 +362,7 @@ class Collection {
     return headers
   }
 
-  auth (endpoint) {
+  authForEndPoint (endpoint) {
     if (endpoint.security && endpoint.security.length === 0) {
       return {
         type: 'noauth'
@@ -419,18 +454,24 @@ class Collection {
     })
   }
 
-  response (endpoint) {
-    return Object
+  responseCreate (endpoint, itemRequestId) {
+    const responses = Object
       .entries(endpoint.responses)
       .filter(([code]) => code !== 'default')
       .map(([code, response]) => ({
-        id: uuid.v4(),
         name: this.responseName(code, response),
         header: this.responseHeaders(response),
         body: this.responseBody(response),
         code: Number(code),
         status: STATUSES[code]
       }))
+
+    // for each response, calculate the uuid
+    for (const response of responses) {
+      response.id = Utils.GenID(itemRequestId + JSON.stringify(response))
+    }
+
+    return responses
   }
 
   responseName (code, response) {
@@ -498,28 +539,31 @@ class Collection {
    * Creates a pre-request event to check for expired access tokens
    */
   prerequestRefreshAccessToken () {
-    return {
+    const script = {
       listen: 'prerequest',
       script: {
-        id: uuid.v4(),
         type: 'text/javascript',
         exec: [String(fs.readFileSync('./src/events/refreshAccessToken.js'))]
       }
     }
+    script.script.id = Utils.GenID(script)
+    return script
   }
 
   /**
    * Creates a test event to pick up on refreshed access tokens
    */
   testUpdateAccessToken () {
-    return {
+    const script = {
       listen: 'test',
       script: {
-        id: uuid.v4(),
+        id: Utils.GenID(),
         type: 'text/javascript',
         exec: [String(fs.readFileSync('./src/events/updateAccessToken.js'))]
       }
     }
+    script.script.id = Utils.GenID(script)
+    return script
   }
 }
 
