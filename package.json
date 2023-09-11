@@ -20,16 +20,16 @@
   "homepage": "https://developer.box.com/",
   "dependencies": {
     "@stoplight/json-ref-resolver": "^3.0.1",
-    "axios": "^0.21.2",
+    "axios": "^1.5.0",
     "deepmerge": "^4.0.0",
     "dotenv": "^16.3.1",
-    "jsonpath-plus": "^4.0.0",
+    "jsonpath-plus": "^7.2.0",
     "lodash": "^4.17.21",
-    "remove-markdown": "^0.3.0",
+    "remove-markdown": "^0.5.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "jest": "^26.6.3",
+    "jest": "^29.6.4",
     "standard": "^17.1.0"
   },
   "scripts": {
