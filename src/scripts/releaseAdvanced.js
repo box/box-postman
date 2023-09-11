@@ -1,80 +1,57 @@
 require('dotenv').config()
 
 const fs = require('fs')
-const axios = require('axios')
+const pmAPI = require('../postmanAPI')
 
 const OUTPUT_FOLDER = './compiled'
 
 const release = async (locale = process.argv[1]) => {
-  const collection = JSON.parse(fs.readFileSync(`${OUTPUT_FOLDER}/collection.advanced.${locale}.json`).toString())
-  const collectionId = process.env[`${locale.toUpperCase()}_POSTMAN_COLLECTION_ADVANCED_ID`]
+  const localCollection = JSON.parse(fs.readFileSync(`${OUTPUT_FOLDER}/collection.advanced.${locale}.json`).toString())
+  const remoteCollectionID = process.env[`${locale.toUpperCase()}_POSTMAN_COLLECTION_ADVANCED_ID`]
 
-  // prevent old folders from remaining in place by first removing all items
-  const emptyCollection = { ...collection }
-  emptyCollection.item = []
+  const remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
 
-  // console.log('Empty Collection:',{ collection: emptyCollection })
+  // console.log('remoteCollection: \n', remoteCollection)
 
-  // first publish an empty collection to ensure all folders are removed
-  // await axios.put(
-  //   `https://api.getpostman.com/collections/${collectionId}`,
-  //   // JSON.stringify({ collection: emptyCollection}),
-  //   { collection: emptyCollection },
-  //   {
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       'X-Api-Key': process.env.POSTMAN_API_KEY
-  //     }
-  //   }
-  // ).then(function () {
-  //   console.log('EMPTY COLLECTION PUT OK', locale)
-  // then publish the new collection
-  await axios.put(
-      `https://api.getpostman.com/collections/${collectionId}`,
-      // JSON.stringify({ collection }),
-      { collection },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Api-Key': process.env.POSTMAN_API_KEY
-        }
-      }
-  ).then(function () {
-    console.log('FULL COLLECTION PUT OK', locale)
-  }
-  ).catch(function (error) {
-    // console.dir(error.response, { depth: 100 })
-    logAxiosError(error)
-    // throw error
-  }
-  )
+  // console.log('localCollection: \n', localCollection)
+
+  // for (const folder of remoteCollection.collection.item) {
+  //   console.log(`${folder.id} ${folder.name}`)
+  // }
+  mergeFolders(remoteCollection, localCollection)
 }
-//   ).catch(function (error) {
-//     // console.dir(error.response, { depth: 100 })
-//     logAxiosError(error)
-//     // throw error
-//   }
-//   )
-// }
 
-function logAxiosError (error) {
-  if (error.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    console.log('ERROR DATA', error.response.data)
-    console.log('ERROR STATUS', error.response.status)
-    console.log('ERROR HEADERS', error.response.headers)
-  } else if (error.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.log('ERROR REQUEST', error.request)
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.log('ERROR MESSAGE', error.message)
+async function mergeFolders (remoteCollection, localCollection) {
+  const remoteFolders = remoteCollection.collection.item.map(folder => ({ id: folder.id, name: folder.name }))
+  const localFolders = localCollection.item.map(folder => ({ id: folder.id, name: folder.name }))
+
+  // console.log('remoteFolders: \n', remoteFolders)
+  // console.log('localFolders: \n', localFolders)
+
+  // create new folders
+  const newFolders = localFolders.filter(localFolder => !remoteFolders.find(remoteFolder => remoteFolder.id === localFolder.id))
+  // console.log('newFolders: \n', newFolders)
+
+  for (const folder of newFolders) {
+    const msg = `Creating folder ${folder.id} ${folder.name} \t`
+    const resp = await new pmAPI.Folder(remoteCollection.collection.info.uid)
+      .create(folder)
+      .then(() => 'OK')
+      .catch((error) => error)
+    console.log(msg, resp)
   }
-  // console.log('ERROR CONFIG', error.config)
-  process.exit(1)
+
+  // delete olds folders
+  const oldFolders = remoteFolders.filter(remoteFolder => !localFolders.find(localFolder => localFolder.id === remoteFolder.id))
+  // console.log('oldFolders: \n', oldFolders)
+  for (const folder of oldFolders) {
+    const msg = `Deleting old folder ${folder.id} ${folder.name} \t`
+    const resp = await new pmAPI.Folder(remoteCollection.collection.info.uid)
+      .delete(folder.id)
+      .then(() => 'OK')
+      .catch((error) => error)
+    console.log(msg, resp)
+  }
 }
 
 const releaseAll = async () => {
