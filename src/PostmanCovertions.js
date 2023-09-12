@@ -11,7 +11,6 @@
 
 const requestFromLocal = (localRequest) => {
 //   console.log('localRequest', localRequest)
-// TODO: Missing default values for path variables
   let url = localRequest.request.url.protocol + '://' + localRequest.request.url.host + localRequest.request.url.path
 
   let data = []
@@ -51,8 +50,8 @@ const requestFromLocal = (localRequest) => {
     // folder: 'dfa47710-b3d3-4a2c-bbc8-fbd25ad12244',
     // collection: 'fa89c950-c947-4061-9d13-fb18d7c6bc51',
 
-    id: localRequest.id,
-    name: localRequest.name,
+    id: localRequest.id, //
+    name: localRequest.name, //
 
     dataMode, //
     data, //
@@ -69,8 +68,9 @@ const requestFromLocal = (localRequest) => {
     //
     variables: localRequest.variables,
     method: localRequest.request.method, //
+
     // Path Variables
-    pathVariables: pathVariableData,
+    pathVariables: pathVariableData, //
     pathVariableData, //
     //
     url, //
