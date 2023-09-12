@@ -123,7 +123,7 @@ class Collection {
    * Creates the info object
    */
   getInfo () {
-    const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE} stuff)` : ''
+    const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE})` : ''
     const name = `${this.openapi.info.title}${locale}`
     const postmanID = Utils.GenID(name)
     return {
@@ -216,10 +216,10 @@ class Collection {
 
     const item = {
       name: endpoint.summary,
-      description: this.description(endpoint)
-      // request: this.request(verb, path, endpoint),
-      // response: this.response(endpoint),
-      // event: this.getItemEvents(endpoint)
+      description: this.description(endpoint),
+      request: this.requestCreate(verb, path, endpoint),
+      response: this.responseCreate(endpoint),
+      event: this.getItemEvents(endpoint)
     }
 
     const itemId = Utils.GenID(JSON.stringify(item))
@@ -547,7 +547,7 @@ class Collection {
         exec: [String(fs.readFileSync('./src/events/refreshAccessToken.js'))]
       }
     }
-    script.script.id = Utils.GenID(script)
+    script.script.id = Utils.GenID() // RB: to big for uuidv5
     return script
   }
 
@@ -563,7 +563,8 @@ class Collection {
         exec: [String(fs.readFileSync('./src/events/updateAccessToken.js'))]
       }
     }
-    script.script.id = Utils.GenID(script)
+    script.script.id = Utils.GenID() // RB: to big for uuidv5
+
     return script
   }
 }

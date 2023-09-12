@@ -22,8 +22,13 @@ const release = async (locale = process.argv[1]) => {
 }
 
 async function mergeFolders (remoteCollection, localCollection) {
-  const remoteFolders = remoteCollection.collection.item.map(folder => ({ id: folder.id, name: folder.name }))
-  const localFolders = localCollection.item.map(folder => ({ id: folder.id, name: folder.name }))
+  const remoteFolders = remoteCollection.collection.item
+    .map(folder => ({ id: folder.id, name: folder.name }))
+
+  const localFolders = localCollection.item
+    .map(folder => ({ id: folder.id, name: folder.name }))
+
+  // const localFoldersx = Object.entries(localCollection.item).filter(([key, value]) => key !== 'item')
 
   // console.log('remoteFolders: \n', remoteFolders)
   // console.log('localFolders: \n', localFolders)
@@ -49,7 +54,7 @@ async function mergeFolders (remoteCollection, localCollection) {
     const resp = await new pmAPI.Folder(remoteCollection.collection.info.uid)
       .delete(folder.id)
       .then(() => 'OK')
-      .catch((error) => error)
+      .catch((error) => 'FAIL ' + error)
     console.log(msg, resp)
   }
 }

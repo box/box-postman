@@ -2,8 +2,8 @@ const uuid = require('uuid')
 const NAMESPACE = '33c4e6fc-44cb-4190-b19f-4a02821bc8c3'
 
 const genID = (objectJSON = null) => {
-  if (!objectJSON) {
-    return uuid.v5(JSON.stringify(objectJSON), NAMESPACE)
+  if (objectJSON) {
+    return uuid.v5(objectJSON, NAMESPACE)
   } else {
     return uuid.v4()
   }

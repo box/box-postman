@@ -32,6 +32,21 @@ class CollectionAdvanced extends Collection {
   }
 
   /**
+   * Creates the info object
+   */
+  getInfo () {
+    const locale = this.LOCALE !== 'EN' ? ` (${this.LOCALE})` : ''
+    const name = `${this.openapi.info.title} Advanced ${locale}`
+    const postmanID = Utils.GenID(name)
+    return {
+      name,
+      _postman_id: postmanID,
+      description: this.openapi.info.description,
+      schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'
+    }
+  }
+
+  /**
    * Process the OpenAPI object and returns a Postman 2.1 collection
    */
   // RB: override
@@ -113,7 +128,7 @@ class CollectionAdvanced extends Collection {
         exec: [String(fs.readFileSync('./src/events/collectionPreReqScript.js'))]
       }
     }
-    script.script.id = Utils.GenID(script)
+    script.script.id = Utils.GenID() // RB: too big for UUIDV5
     return script
   }
 }
