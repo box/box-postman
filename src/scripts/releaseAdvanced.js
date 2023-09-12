@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const fs = require('fs')
 const pmAPI = require('../postmanAPI')
+const pmConvert = require('../PostmanCovertions')
 
 const OUTPUT_FOLDER = './compiled'
 
@@ -9,16 +10,13 @@ const release = async (locale = process.argv[1]) => {
   const localCollection = JSON.parse(fs.readFileSync(`${OUTPUT_FOLDER}/collection.advanced.${locale}.json`).toString())
   const remoteCollectionID = process.env[`${locale.toUpperCase()}_POSTMAN_COLLECTION_ADVANCED_ID`]
 
-  const remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
+  let remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
+  console.log('Merging folders...')
+  await mergeFolders(remoteCollection, localCollection)
 
-  // console.log('remoteCollection: \n', remoteCollection)
-
-  // console.log('localCollection: \n', localCollection)
-
-  // for (const folder of remoteCollection.collection.item) {
-  //   console.log(`${folder.id} ${folder.name}`)
-  // }
-  mergeFolders(remoteCollection, localCollection)
+  console.log('Merging requests...')
+  remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
+  await mergeRequests(remoteCollection, localCollection)
 }
 
 async function mergeFolders (remoteCollection, localCollection) {
@@ -26,7 +24,7 @@ async function mergeFolders (remoteCollection, localCollection) {
     .map(folder => ({ id: folder.id, name: folder.name }))
 
   const localFolders = localCollection.item
-    .map(folder => ({ id: folder.id, name: folder.name }))
+  // .map(folder => ({ id: folder.id, name: folder.name }))
 
   // const localFoldersx = Object.entries(localCollection.item).filter(([key, value]) => key !== 'item')
 
@@ -56,6 +54,45 @@ async function mergeFolders (remoteCollection, localCollection) {
       .then(() => 'OK')
       .catch((error) => 'FAIL ' + error)
     console.log(msg, resp)
+  }
+}
+
+async function mergeRequests (remoteCollection, localCollection) {
+  const remoteFoldersRequest = remoteCollection.collection.item
+    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
+
+  const localFoldersRequest = localCollection.item
+    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
+
+  // loop folders
+  for (const localFolder of localFoldersRequest) {
+    const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
+    const localRequests = localFolder.item
+
+    // create new rewuests
+    const newRequests = localRequests.filter(localRequest => !remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id))
+
+    for (const request of newRequests) {
+      const pmRequest = pmConvert.requestFromLocal(request)
+      const msg = `Creating request ${request.id} ${request.name} \t`
+      // console.log('request: \n', JSON.stringify(request, 2))
+      const resp = await new pmAPI.Request(remoteCollection.collection.info.uid)
+        .create(pmRequest, localFolder.id)
+        .then(() => 'OK')
+        .catch((error) => error)
+      console.log(msg, resp)
+    }
+
+    // delete olds requests
+    const oldRequests = remoteRequests.filter(remoteRequest => !localRequests.find(localRequest => localRequest.id === remoteRequest.id))
+    for (const request of oldRequests) {
+      const msg = `Deleting old request ${request.id} ${request.name} \t`
+      const resp = await new pmAPI.Request(remoteCollection.collection.info.uid)
+        .delete(request.id)
+        .then(() => 'OK')
+        .catch((error) => 'FAIL ' + error)
+      console.log(msg, resp)
+    }
   }
 }
 
