@@ -1,6 +1,5 @@
 require('dotenv').config()
 const axios = require('axios')
-const { logAxiosError } = require('./Utils')
 
 class Collection {
   constructor (collectionId) {
@@ -45,9 +44,6 @@ class Folder {
         return response.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 
   async create (folder) {
@@ -61,9 +57,6 @@ class Folder {
         return response.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 
   async update (folderId, folder) {
