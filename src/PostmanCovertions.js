@@ -91,6 +91,37 @@ const requestFromLocal = (localRequest) => {
   return request
 }
 
+const responseFromLocal = (localResponse) => {
+  // if ()
+  const response = {
+    // owner: '8119550',
+    // lastUpdatedBy: '8119550',
+    // lastRevision: 32546597265,
+    // request: '331bbc94-5425-46f3-8c02-31c353d2ced8',
+
+    id: localResponse.id, //
+    name: localResponse.name, //
+    status: localResponse.status, //
+    responseCode: {
+      code: localResponse.code, //
+      name: localResponse.status, //
+      detail: ''
+    },
+    // time: null,
+    headers: localResponse.header, //
+    cookies: [],
+    mime: null,
+    text: localResponse.body, //
+    language: 'Text', //
+    rawDataType: 'text'//
+    // requestObject: null,
+    // createdAt: '2023-09-13T14:53:05.000Z',
+    // updatedAt: '2023-09-13T14:53:05.000Z'
+  }
+
+  return response
+}
+
 const dataFromLocalURLEncode = (localFormData) => {
   const data = []
   for (const param of localFormData) {
@@ -106,5 +137,6 @@ const dataFromLocalURLEncode = (localFormData) => {
 }
 
 module.exports = {
-  requestFromLocal
+  requestFromLocal,
+  responseFromLocal
 }

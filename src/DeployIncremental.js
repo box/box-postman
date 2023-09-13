@@ -25,6 +25,9 @@ const deployIncremental = async (remoteCollectionID, localCollection) => {
   remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
   await mergeRequests(remoteCollection, localCollection)
 
+  remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
+  await mergeResponses(remoteCollection, localCollection)
+
   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed')
 }
 
@@ -96,6 +99,49 @@ async function mergeRequests (remoteCollection, localCollection) {
         .delete(request.id)
         .then(() => '[OK]')
       console.log(msg, resp)
+    }
+  }
+}
+
+async function mergeResponses (remoteCollection, localCollection) {
+  console.log('\t Requests:')
+  const remoteFoldersRequest = remoteCollection.collection.item
+    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
+
+  const localFoldersRequest = localCollection.item
+    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
+
+  // loop folders
+  for (const localFolder of localFoldersRequest) {
+    const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
+    const localRequests = localFolder.item
+    console.log('\t\t Folder: ', localFolder.name)
+    // loop requests
+    for (const localRequest of localRequests) {
+      const remoteResponses = remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id).response
+      const localResponses = localRequest.response
+      console.log('\t\t\t Request: ', localRequest.name)
+
+      // create new responses
+      const newResponses = localResponses.filter(localResponse => !remoteResponses.find(remoteResponse => remoteResponse.id === localResponse.id))
+      for (const response of newResponses) {
+        const pmResponse = pmConvert.responseFromLocal(response)
+        const msg = `\t\t\t\t Creating new response ${response.id} ${response.code} ${response.status}`
+        const resp = await new pmAPI.Response(remoteCollection.collection.info.uid)
+          .create(pmResponse, localRequest.id)
+          .then(() => '[OK]')
+        console.log(msg, resp)
+      }
+
+      // delete old responses
+      const oldResponses = remoteResponses.filter(remoteResponse => !localResponses.find(localResponse => localResponse.id === remoteResponse.id))
+      for (const response of oldResponses) {
+        const msg = `\t\t\t\t Deleting old response ${response.id} ${response.code} ${response.status}`
+        const resp = await new pmAPI.Response(remoteCollection.collection.info.uid)
+          .delete(response.id)
+          .then(() => '[OK]')
+        console.log(msg, resp)
+      }
     }
   }
 }

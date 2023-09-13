@@ -145,8 +145,68 @@ class Request {
   }
 } // class Request
 
+class Response {
+  constructor (collectionId) {
+    this.collectionId = collectionId
+    this.apiKey = process.env.POSTMAN_API_KEY
+    this.axios = axios.create({
+      timeout: 10000,
+      headers: { 'Content-Type': 'application/json', 'X-Api-Key': this.apiKey }
+    })
+  }
+
+  async get (responseId) {
+    return await this.axios.get(
+            `https://api.getpostman.com/collections/${this.collectionId}/responses/${responseId}`
+    ).then(function (axiosResp) {
+      if (axiosResp.status !== 200) {
+        throw new Error(`Error getting response ${responseId}: ${axiosResp.status} ${axiosResp.statusText}`)
+      } else {
+        return axiosResp.data
+      }
+    })
+      .catch(function (error) {
+        logAxiosError(error)
+      })
+  }
+
+  async create (response, requestId) {
+    return await this.axios.post(
+        `https://api.getpostman.com/collections/${this.collectionId}/responses`,
+        response,
+        { params: { request: requestId } }
+    ).then(function (axiosResp) {
+      if (axiosResp.status !== 200) {
+        throw new Error(`Error creating response ${response.id}: ${axiosResp.status} ${axiosResp.statusText}`)
+      } else {
+        return axiosResp.data
+      }
+    })
+      .catch(function (error) {
+        logAxiosError(error)
+      })
+  }
+
+  async delete (responseId) {
+    return await this.axios.delete(
+        `https://api.getpostman.com/collections/${this.collectionId}/responses/${responseId}`
+
+    ).then(function (axiosResp) {
+      if (axiosResp.status !== 200) {
+        throw new Error(`Error deleting response ${responseId}: ${axiosResp.status} ${axiosResp.statusText}`)
+      } else {
+        return axiosResp.data
+      }
+    })
+      .catch(function (error) {
+        logAxiosError(error)
+      })
+  }
+} // class Response
+
 module.exports = {
   Collection,
   Folder,
-  Request
+  Request,
+  Response
 }
