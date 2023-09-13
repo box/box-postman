@@ -32,103 +32,113 @@ const deployIncremental = async (remoteCollectionID, localCollection) => {
 }
 
 async function mergeFolders (remoteCollection, localCollection) {
-  console.log('\t Updating Folders:')
-
   const remoteFolders = remoteCollection.collection.item
     .map(folder => ({ id: folder.id, name: folder.name }))
-
   const localFolders = localCollection.item
-  // .map(folder => ({ id: folder.id, name: folder.name }))
+
+  const newFolders = localFolders.filter(localFolder => !remoteFolders.find(remoteFolder => remoteFolder.id === localFolder.id))
+  const oldFolders = remoteFolders.filter(remoteFolder => !localFolders.find(localFolder => localFolder.id === remoteFolder.id))
+
+  if (newFolders.length === 0 && oldFolders.length === 0) {
+    console.log(' Deploying Folders: No changes')
+    return
+  }
+  console.log(' Deploying Folders:')
 
   // create new folders
-  const newFolders = localFolders.filter(localFolder => !remoteFolders.find(remoteFolder => remoteFolder.id === localFolder.id))
-  // console.log('newFolders: \n', newFolders)
-
   for (const folder of newFolders) {
-    const msg = `\t\t Creating new folder ${folder.id} ${folder.name}`
+    const msg = `  Creating new folder [${folder.name}]`
     await new pmAPI.Folder(remoteCollection.collection.info.uid)
       .create(folder)
-      .then(() => '[OK]')
+      .then(() => { console.log(msg, '-> OK') })
       .catch((error) => {
-        console.log(msg, '[FAIL]')
+        console.log(msg, '-> FAIL')
         handlePostmanAPIError(error)
       })
   }
 
-  // delete olds folders
-  const oldFolders = remoteFolders.filter(remoteFolder => !localFolders.find(localFolder => localFolder.id === remoteFolder.id))
-  // console.log('oldFolders: \n', oldFolders)
+  // delete old folders
   for (const folder of oldFolders) {
-    const msg = `\t\t Deleting old folder ${folder.id} ${folder.name}`
+    const msg = `  Deleting old folder [${folder.name}]`
     await new pmAPI.Folder(remoteCollection.collection.info.uid)
       .delete(folder.id)
-      .then(() => '[OK]')
+      .then(() => { console.log(msg, '-> OK') })
       .catch((error) => {
-        console.log(msg, '[FAIL]')
+        console.log(msg, '-> FAIL')
         handlePostmanAPIError(error)
       })
   }
 }
 
 async function mergeRequests (remoteCollection, localCollection) {
-  console.log('\t Updating Requests:')
   const remoteFoldersRequest = remoteCollection.collection.item
     .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
-
   const localFoldersRequest = localCollection.item
     .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
+
+  console.log('\n Deploying Requests:')
 
   // loop folders
   for (const localFolder of localFoldersRequest) {
     const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
     const localRequests = localFolder.item
-    console.log('\t\t In Folder: ', localFolder.name)
 
     // create new requests
     const newRequests = localRequests.filter(localRequest => !remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id))
+    const oldRequests = remoteRequests.filter(remoteRequest => !localRequests.find(localRequest => localRequest.id === remoteRequest.id))
 
+    if (newRequests.length === 0 && oldRequests.length === 0) {
+    //   console.log('  In Folder: ', localFolder.name, '-> No changes')
+      continue
+    }
+    console.log('  In Folder: ', localFolder.name)
+
+    // create new requests
+    let hasChanges = false
     for (const request of newRequests) {
       const pmRequest = pmConvert.requestFromLocal(request)
-      const msg = `\t\t\t Creating new request ${request.id} ${request.name}`
+      const msg = `   Creating new request [${request.name}]`
       // console.log('request: \n', JSON.stringify(request, 2))
       await new pmAPI.Request(remoteCollection.collection.info.uid)
         .create(pmRequest, localFolder.id)
-        .then(() => '[OK]')
+        .then(() => { console.log(msg, '-> OK') })
         .catch((error) => {
-          console.log(msg, '[FAIL]')
+          console.log(msg, '-> FAIL')
           handlePostmanAPIError(error)
         })
+      hasChanges = true
     }
 
     // delete old requests
-    const oldRequests = remoteRequests.filter(remoteRequest => !localRequests.find(localRequest => localRequest.id === remoteRequest.id))
     for (const request of oldRequests) {
-      const msg = `\t\t\t Deleting old request ${request.id} ${request.name}`
+      const msg = `   Deleting old request [${request.name}]`
       await new pmAPI.Request(remoteCollection.collection.info.uid)
         .delete(request.id)
-        .then(() => '[OK]')
+        .then(() => { console.log(msg, '-> OK') })
         .catch((error) => {
-          console.log(msg, '[FAIL]')
+          console.log(msg, '-> FAIL')
+          handlePostmanAPIError(error)
+        })
+      hasChanges = true
+    }
+
+    if (hasChanges) {
+    // sort requests in folder
+      const order = localRequests.map(request => request.id)
+      const msg = `   Sorting requests in folder [${localFolder.name}]`
+      await new pmAPI.Folder(remoteCollection.collection.info.uid)
+        .update(localFolder.id, { order })
+        .then(() => { console.log(msg, '-> OK') })
+        .catch((error) => {
+          console.log(msg, '-> FAIL')
           handlePostmanAPIError(error)
         })
     }
-
-    // sort requests in folder
-    const order = localRequests.map(request => request.id)
-    // console.log('Local requests id: ', localRequestsId)
-    const msg = `\t\t\t Sorting requests in folder ${localFolder.name}`
-    await new pmAPI.Folder(remoteCollection.collection.info.uid)
-      .update(localFolder.id, { order })
-      .then(() => '[OK]')
-      .catch((error) => {
-        console.log(msg, '[FAIL]')
-        handlePostmanAPIError(error)
-      })
   }
 }
 
 async function mergeResponses (remoteCollection, localCollection) {
-  console.log('\t Updating Requests:')
+  console.log('\n Deploying Response:')
   const remoteFoldersRequest = remoteCollection.collection.item
     .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
 
@@ -139,36 +149,41 @@ async function mergeResponses (remoteCollection, localCollection) {
   for (const localFolder of localFoldersRequest) {
     const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
     const localRequests = localFolder.item
-    console.log('\t\t In Folder: ', localFolder.name)
+    console.log('  In Folder: ', localFolder.name)
     // loop requests
     for (const localRequest of localRequests) {
       const remoteResponses = remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id).response
       const localResponses = localRequest.response
-      console.log('\t\t\t In Request: ', localRequest.name)
+
+      const newResponses = localResponses.filter(localResponse => !remoteResponses.find(remoteResponse => remoteResponse.id === localResponse.id))
+      const oldResponses = remoteResponses.filter(remoteResponse => !localResponses.find(localResponse => localResponse.id === remoteResponse.id))
+
+      if (newResponses.length === 0 && oldResponses.length === 0) {
+        continue
+      }
+      console.log('   In Request: ', localRequest.name)
 
       // create new responses
-      const newResponses = localResponses.filter(localResponse => !remoteResponses.find(remoteResponse => remoteResponse.id === localResponse.id))
       for (const response of newResponses) {
         const pmResponse = pmConvert.responseFromLocal(response)
-        const msg = `\t\t\t\t Creating new response ${response.id} ${response.code} ${response.status}`
+        const msg = `    Creating new response [${response.code} ${response.status}]`
         await new pmAPI.Response(remoteCollection.collection.info.uid)
           .create(pmResponse, localRequest.id)
-          .then(() => '[OK]')
+          .then(() => { console.log(msg, '-> OK') })
           .catch((error) => {
-            console.log(msg, '[FAIL]')
+            console.log(msg, '-> FAIL')
             handlePostmanAPIError(error)
           })
       }
 
       // delete old responses
-      const oldResponses = remoteResponses.filter(remoteResponse => !localResponses.find(localResponse => localResponse.id === remoteResponse.id))
       for (const response of oldResponses) {
-        const msg = `\t\t\t\t Deleting old response ${response.id} ${response.code} ${response.status}`
+        const msg = `    Deleting old response [${response.code} ${response.status}]`
         await new pmAPI.Response(remoteCollection.collection.info.uid)
           .delete(response.id)
-          .then(() => '[OK]')
+          .then(() => { console.log(msg, '-> OK') })
           .catch((error) => {
-            console.log(msg, '[FAIL]')
+            console.log(msg, '-> FAIL')
             handlePostmanAPIError(error)
           })
       }
