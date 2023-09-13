@@ -192,24 +192,26 @@ async function mergeResponses (remoteCollection, localCollection) {
       }
 
       // updating the requests with the order of the responses, doesn't seem to be necessary
-
       if (hasChanges) {
         // sort responses in requests
-        // const responsesOrder = localResponses.map(response => response.id)
-        // const msg = `   Sorting responses in request [${localRequest.name}]`
-        // await new pmAPI.Request(remoteCollection.collection.info.uid)
-        //   .update(localRequest.id, { responses_order: responsesOrder })
-        //   .then(() => { console.log(msg, '-> OK') })
-        //   .catch((error) => {
-        //     console.log(msg, '-> FAIL')
-        //     handlePostmanAPIError(error)
-        //   })
+        const responsesOrder = localResponses.map(response => response.id)
+        const msg = `   Sorting responses in request [${localRequest.name}]`
+        await new pmAPI.Request(remoteCollection.collection.info._postman_id)
+          .update(localRequest.id,
+            {
+              responses_order: responsesOrder
+            })
+          .then(() => { console.log(msg, '-> OK') })
+          .catch((error) => {
+            console.log(msg, '-> FAIL')
+            handlePostmanAPIError(error)
+          })
       }
     }
   }
 }
 
-// log axios error
+// Handle axios error
 const handlePostmanAPIError = (error) => {
   if (error.response) {
     // The request was made and the server responded with a status code
