@@ -32,7 +32,7 @@ const deployIncremental = async (remoteCollectionID, localCollection) => {
 }
 
 async function mergeFolders (remoteCollection, localCollection) {
-  console.log('\t Folders:')
+  console.log('\t Updating Folders:')
 
   const remoteFolders = remoteCollection.collection.item
     .map(folder => ({ id: folder.id, name: folder.name }))
@@ -65,7 +65,7 @@ async function mergeFolders (remoteCollection, localCollection) {
 }
 
 async function mergeRequests (remoteCollection, localCollection) {
-  console.log('\t Requests:')
+  console.log('\t Updating Requests:')
   const remoteFoldersRequest = remoteCollection.collection.item
     .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
 
@@ -76,7 +76,7 @@ async function mergeRequests (remoteCollection, localCollection) {
   for (const localFolder of localFoldersRequest) {
     const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
     const localRequests = localFolder.item
-    console.log('\t\t Folder: ', localFolder.name)
+    console.log('\t\t In Folder: ', localFolder.name)
 
     // create new rewuests
     const newRequests = localRequests.filter(localRequest => !remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id))
@@ -104,7 +104,7 @@ async function mergeRequests (remoteCollection, localCollection) {
 }
 
 async function mergeResponses (remoteCollection, localCollection) {
-  console.log('\t Requests:')
+  console.log('\t Updating Requests:')
   const remoteFoldersRequest = remoteCollection.collection.item
     .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
 
@@ -115,12 +115,12 @@ async function mergeResponses (remoteCollection, localCollection) {
   for (const localFolder of localFoldersRequest) {
     const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
     const localRequests = localFolder.item
-    console.log('\t\t Folder: ', localFolder.name)
+    console.log('\t\t In Folder: ', localFolder.name)
     // loop requests
     for (const localRequest of localRequests) {
       const remoteResponses = remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id).response
       const localResponses = localRequest.response
-      console.log('\t\t\t Request: ', localRequest.name)
+      console.log('\t\t\t In Request: ', localRequest.name)
 
       // create new responses
       const newResponses = localResponses.filter(localResponse => !remoteResponses.find(remoteResponse => remoteResponse.id === localResponse.id))
