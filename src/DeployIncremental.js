@@ -123,7 +123,7 @@ async function mergeRequests (remoteCollection, localCollection) {
     }
 
     if (hasChanges) {
-    // sort requests in folder
+      // sort requests in folder
       const order = localRequests.map(request => request.id)
       const msg = `   Sorting requests in folder [${localFolder.name}]`
       await new pmAPI.Folder(remoteCollection.collection.info.uid)
@@ -162,6 +162,7 @@ async function mergeResponses (remoteCollection, localCollection) {
         continue
       }
       console.log('   In Request: ', localRequest.name)
+      let hasChanges = false
 
       // create new responses
       for (const response of newResponses) {
@@ -174,6 +175,7 @@ async function mergeResponses (remoteCollection, localCollection) {
             console.log(msg, '-> FAIL')
             handlePostmanAPIError(error)
           })
+        hasChanges = true
       }
 
       // delete old responses
@@ -181,6 +183,20 @@ async function mergeResponses (remoteCollection, localCollection) {
         const msg = `    Deleting old response [${response.code} ${response.status}]`
         await new pmAPI.Response(remoteCollection.collection.info.uid)
           .delete(response.id)
+          .then(() => { console.log(msg, '-> OK') })
+          .catch((error) => {
+            console.log(msg, '-> FAIL')
+            handlePostmanAPIError(error)
+          })
+        hasChanges = true
+      }
+
+      if (hasChanges) {
+        // sort responses in requests
+        const order = localResponses.map(response => response.id)
+        const msg = `   Sorting responses in request [${localResponses.name}]`
+        await new pmAPI.Request(remoteCollection.collection.info.uid)
+          .update(localRequest.id, { order })
           .then(() => { console.log(msg, '-> OK') })
           .catch((error) => {
             console.log(msg, '-> FAIL')
