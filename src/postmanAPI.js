@@ -22,9 +22,6 @@ class Collection {
         return response.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 }
 
@@ -80,9 +77,6 @@ class Folder {
         return response.data
       }
     })
-    // .catch(function (error) {
-    //   logAxiosError(error)
-    // })
   }
 
   async delete (folderId) {
@@ -96,9 +90,6 @@ class Folder {
         return response.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 } // class Folder
 
@@ -122,9 +113,6 @@ class Request {
         return response.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 
   async create (request, folderId) {
@@ -139,9 +127,6 @@ class Request {
         return response.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 
   async update (request, requestId) {
@@ -155,9 +140,6 @@ class Request {
         return response.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 
   async delete (requestId) {
@@ -171,9 +153,6 @@ class Request {
         return response.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 } // class Request
 
@@ -197,9 +176,6 @@ class Response {
         return axiosResp.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 
   async create (response, requestId) {
@@ -214,9 +190,6 @@ class Response {
         return axiosResp.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 
   async delete (responseId) {
@@ -230,9 +203,6 @@ class Response {
         return axiosResp.data
       }
     })
-      .catch(function (error) {
-        logAxiosError(error)
-      })
   }
 } // class Response
 
