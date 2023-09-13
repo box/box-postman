@@ -122,7 +122,7 @@ class Request {
     })
   }
 
-  async update (request, requestId) {
+  async update (requestId, request) {
     return await this.axios.put(
         `https://api.getpostman.com/collections/${this.collectionId}/requests/${requestId}`,
         request
