@@ -29,30 +29,9 @@ const byPriority = (a, b) => {
   return 0
 }
 
-// log axios error
-const logAxiosError = (error) => {
-  if (error.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    console.log('ERROR DATA', error.response.data)
-    // console.log('ERROR STATUS', error.response.status)
-    // console.log('ERROR HEADERS', error.response.headers)
-  } else if (error.request) {
-    // The request was made but no response was received
-    // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-    // http.ClientRequest in node.js
-    console.log('ERROR REQUEST', error.request)
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.log('ERROR MESSAGE', error.message)
-  }
-  console.log('ERROR CONFIG', error.config)
-  // process.exit(1)
-}
-
 module.exports = {
   GenID: genID,
   ByName: byName,
-  ByPriority: byPriority,
-  logAxiosError
+  ByPriority: byPriority
+  // logAxiosError
 }

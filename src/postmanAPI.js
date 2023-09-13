@@ -69,6 +69,22 @@ class Folder {
       })
   }
 
+  async update (folderId, folder) {
+    return await this.axios.put(
+        `https://api.getpostman.com/collections/${this.collectionId}/folders/${folderId}`,
+        folder
+    ).then(function (response) {
+      if (response.status !== 200) {
+        throw new Error(`Error updating folder ${folder.Id}: ${response.status} ${response.statusText}`)
+      } else {
+        return response.data
+      }
+    })
+    // .catch(function (error) {
+    //   logAxiosError(error)
+    // })
+  }
+
   async delete (folderId) {
     return await this.axios.delete(
         `https://api.getpostman.com/collections/${this.collectionId}/folders/${folderId}`
@@ -119,6 +135,22 @@ class Request {
     ).then(function (response) {
       if (response.status !== 200) {
         throw new Error(`Error creating request ${request.id}: ${response.status} ${response.statusText}`)
+      } else {
+        return response.data
+      }
+    })
+      .catch(function (error) {
+        logAxiosError(error)
+      })
+  }
+
+  async update (request, requestId) {
+    return await this.axios.put(
+        `https://api.getpostman.com/collections/${this.collectionId}/requests/${requestId}`,
+        request
+    ).then(function (response) {
+      if (response.status !== 200) {
+        throw new Error(`Error updating request ${request.id}: ${response.status} ${response.statusText}`)
       } else {
         return response.data
       }
