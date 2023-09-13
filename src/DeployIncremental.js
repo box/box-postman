@@ -45,6 +45,8 @@ async function mergeFolders (remoteCollection, localCollection) {
   }
   console.log(' Deploying Folders:')
 
+  let hasChanges = false
+
   // create new folders
   for (const folder of newFolders) {
     const msg = `  Creating new folder [${folder.name}]`
@@ -55,6 +57,7 @@ async function mergeFolders (remoteCollection, localCollection) {
         console.log(msg, '-> FAIL')
         handlePostmanAPIError(error)
       })
+    hasChanges = true
   }
 
   // delete old folders
@@ -67,6 +70,23 @@ async function mergeFolders (remoteCollection, localCollection) {
         console.log(msg, '-> FAIL')
         handlePostmanAPIError(error)
       })
+    hasChanges = true
+  }
+
+  // sort folders
+  if (hasChanges) {
+    const tmpRootFolder = await new pmAPI.Folder(remoteCollection.collection.info.uid).create({ name: 'tmpRootFolder' })
+    // refresh remote collection
+    remoteCollection = await new pmAPI.Collection(remoteCollection.collection.info.uid).get()
+    // for each remote folder transfer them to the tmpRootFolder
+    for (const folder of remoteCollection.collection.item) {
+      await new pmAPI.Folder(remoteCollection.collection.info.uid)
+        .update(folder.id, { folder: tmpRootFolder.data.id })
+        .catch((error) => {
+          console.log('  Moving folder', folder.name, 'to tmpRootFolder -> FAIL')
+          handlePostmanAPIError(error)
+        })
+    }
   }
 }
 

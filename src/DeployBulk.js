@@ -31,38 +31,36 @@ const deployBulk = async (collectionId, localCollection) => {
       'Content-Type': 'application/json',
       'X-Api-Key': process.env.POSTMAN_API_KEY
     }
-  }
-  ).then(function () {
-    console.log('EMPTY COLLECTION PUT OK: ', localCollection.info.name)
-    // then publish the new collection
-    axios.put(
-    `https://api.getpostman.com/collections/${collectionId}`,
-    // JSON.stringify({ collection }),
-    { collection: localCollection },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Api-Key': process.env.POSTMAN_API_KEY
-      }
-    }
-    ).then(function () {
-      console.log('FULL COLLECTION PUT OK:', localCollection.info.name)
-    }
-    ).catch(function (error) {
-    // console.dir(error.response, { depth: 100 })
+  })
+    .then(function () {
+      console.log('EMPTY COLLECTION PUT OK: ', localCollection.info.name)
+      // then publish the new collection
+      axios.put(
+      `https://api.getpostman.com/collections/${collectionId}`,
+      // JSON.stringify({ collection }),
+      { collection: localCollection },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Api-Key': process.env.POSTMAN_API_KEY
+        }
+      })
+        .then(function () {
+          console.log('FULL COLLECTION PUT OK:', localCollection.info.name)
+        }
+        )
+        .catch(function (error) {
+        // console.dir(error.response, { depth: 100 })
+          logAxiosError(error)
+        // throw error
+        })
+    })
+    .catch(function (error) {
+      // console.dir(error.response, { depth: 100 })
       logAxiosError(error)
-    // throw error
-    }
-    )
-  }
-  ).catch(function (error) {
-  // console.dir(error.response, { depth: 100 })
-    logAxiosError(error)
-  // throw error
-  }
-  )
+      // throw error
+    })
 }
-
 function logAxiosError (error) {
   if (error.response) {
   // The request was made and the server responded with a status code
