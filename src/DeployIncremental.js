@@ -32,6 +32,7 @@ const deployIncremental = async (remoteCollectionID, localCollection) => {
 }
 
 async function mergeFolders (remoteCollection, localCollection) {
+  console.log(' Deploying Folders:')
   const remoteFolders = remoteCollection.collection.item
     .map(folder => ({ id: folder.id, name: folder.name }))
   const localFolders = localCollection.item
@@ -39,13 +40,12 @@ async function mergeFolders (remoteCollection, localCollection) {
   const newFolders = localFolders.filter(localFolder => !remoteFolders.find(remoteFolder => remoteFolder.id === localFolder.id))
   const oldFolders = remoteFolders.filter(remoteFolder => !localFolders.find(localFolder => localFolder.id === remoteFolder.id))
 
-  if (newFolders.length === 0 && oldFolders.length === 0) {
-    console.log(' Deploying Folders: No changes')
+  const hasChanges = newFolders.length > 0 || oldFolders.length > 0
+
+  if (!hasChanges) {
+    console.log('  -> No changes')
     return
   }
-  console.log(' Deploying Folders:')
-
-  let hasChanges = false
 
   // create new folders
   for (const folder of newFolders) {
@@ -57,7 +57,6 @@ async function mergeFolders (remoteCollection, localCollection) {
         console.log(msg, '-> FAIL')
         handlePostmanAPIError(error)
       })
-    hasChanges = true
   }
 
   // delete old folders
@@ -70,27 +69,26 @@ async function mergeFolders (remoteCollection, localCollection) {
         console.log(msg, '-> FAIL')
         handlePostmanAPIError(error)
       })
-    hasChanges = true
   }
 
   // sort folders
   // this doesnt work, the API does not support moving folders
-  if (hasChanges) {
-    // const tmpRootFolder = await new pmAPI.Folder(remoteCollection.collection.info.uid).create({ name: 'tmpRootFolder' })
-    // refresh remote collection
-    // remoteCollection = await new pmAPI.Collection(remoteCollection.collection.info.uid).get()
-    // for each remote folder transfer them to the tmpRootFolder
+  // if (hasChanges) {
+  //   // const tmpRootFolder = await new pmAPI.Folder(remoteCollection.collection.info.uid).create({ name: 'tmpRootFolder' })
+  //   // refresh remote collection
+  //   // remoteCollection = await new pmAPI.Collection(remoteCollection.collection.info.uid).get()
+  //   // for each remote folder transfer them to the tmpRootFolder
 
-    //
-    // for (const folder of remoteCollection.collection.item) {
-    //   await new pmAPI.Folder(remoteCollection.collection.info.uid)
-    //     .update(folder.id, { folder: tmpRootFolder.data.id })
-    //     .catch((error) => {
-    //       console.log('  Moving folder', folder.name, 'to tmpRootFolder -> FAIL')
-    //       handlePostmanAPIError(error)
-    //     })
-    // }
-  }
+  //   //
+  //   // for (const folder of remoteCollection.collection.item) {
+  //   //   await new pmAPI.Folder(remoteCollection.collection.info.uid)
+  //   //     .update(folder.id, { folder: tmpRootFolder.data.id })
+  //   //     .catch((error) => {
+  //   //       console.log('  Moving folder', folder.name, 'to tmpRootFolder -> FAIL')
+  //   //       handlePostmanAPIError(error)
+  //   //     })
+  //   // }
+  // }
 }
 
 async function mergeRequests (remoteCollection, localCollection) {
@@ -110,14 +108,15 @@ async function mergeRequests (remoteCollection, localCollection) {
     const newRequests = localRequests.filter(localRequest => !remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id))
     const oldRequests = remoteRequests.filter(remoteRequest => !localRequests.find(localRequest => localRequest.id === remoteRequest.id))
 
-    if (newRequests.length === 0 && oldRequests.length === 0) {
-    //   console.log('  In Folder: ', localFolder.name, '-> No changes')
+    const hasChanges = newRequests.length > 0 || oldRequests.length > 0
+
+    if (!hasChanges) {
+      console.log('  In Folder: ', localFolder.name, '-> No changes')
       continue
     }
     console.log('  In Folder: ', localFolder.name)
 
     // create new requests
-    let hasChanges = false
     for (const request of newRequests) {
       const pmRequest = pmConvert.requestFromLocal(request)
       const msg = `   Creating new request [${request.name}]`
@@ -129,7 +128,6 @@ async function mergeRequests (remoteCollection, localCollection) {
           console.log(msg, '-> FAIL')
           handlePostmanAPIError(error)
         })
-      hasChanges = true
     }
 
     // delete old requests
@@ -142,7 +140,6 @@ async function mergeRequests (remoteCollection, localCollection) {
           console.log(msg, '-> FAIL')
           handlePostmanAPIError(error)
         })
-      hasChanges = true
     }
 
     if (hasChanges) {
@@ -181,11 +178,12 @@ async function mergeResponses (remoteCollection, localCollection) {
       const newResponses = localResponses.filter(localResponse => !remoteResponses.find(remoteResponse => remoteResponse.id === localResponse.id))
       const oldResponses = remoteResponses.filter(remoteResponse => !localResponses.find(localResponse => localResponse.id === remoteResponse.id))
 
-      if (newResponses.length === 0 && oldResponses.length === 0) {
+      const hasChanges = newResponses.length > 0 || oldResponses.length > 0
+      if (!hasChanges) {
+        console.log('   In Request: ', localRequest.name, '-> No changes')
         continue
       }
       console.log('   In Request: ', localRequest.name)
-      let hasChanges = false
 
       // create new responses
       for (const response of newResponses) {
@@ -198,7 +196,6 @@ async function mergeResponses (remoteCollection, localCollection) {
             console.log(msg, '-> FAIL')
             handlePostmanAPIError(error)
           })
-        hasChanges = true
       }
 
       // delete old responses
@@ -211,7 +208,6 @@ async function mergeResponses (remoteCollection, localCollection) {
             console.log(msg, '-> FAIL')
             handlePostmanAPIError(error)
           })
-        hasChanges = true
       }
 
       // updating the requests with the order of the responses, doesn't seem to be necessary
