@@ -74,19 +74,22 @@ async function mergeFolders (remoteCollection, localCollection) {
   }
 
   // sort folders
+  // this doesnt work, the API does not support moving folders
   if (hasChanges) {
-    const tmpRootFolder = await new pmAPI.Folder(remoteCollection.collection.info.uid).create({ name: 'tmpRootFolder' })
+    // const tmpRootFolder = await new pmAPI.Folder(remoteCollection.collection.info.uid).create({ name: 'tmpRootFolder' })
     // refresh remote collection
-    remoteCollection = await new pmAPI.Collection(remoteCollection.collection.info.uid).get()
+    // remoteCollection = await new pmAPI.Collection(remoteCollection.collection.info.uid).get()
     // for each remote folder transfer them to the tmpRootFolder
-    for (const folder of remoteCollection.collection.item) {
-      await new pmAPI.Folder(remoteCollection.collection.info.uid)
-        .update(folder.id, { folder: tmpRootFolder.data.id })
-        .catch((error) => {
-          console.log('  Moving folder', folder.name, 'to tmpRootFolder -> FAIL')
-          handlePostmanAPIError(error)
-        })
-    }
+
+    //
+    // for (const folder of remoteCollection.collection.item) {
+    //   await new pmAPI.Folder(remoteCollection.collection.info.uid)
+    //     .update(folder.id, { folder: tmpRootFolder.data.id })
+    //     .catch((error) => {
+    //       console.log('  Moving folder', folder.name, 'to tmpRootFolder -> FAIL')
+    //       handlePostmanAPIError(error)
+    //     })
+    // }
   }
 }
 
