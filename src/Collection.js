@@ -173,7 +173,7 @@ class Collection {
       id: Utils.GenID('libJSRSASign'),
       key: 'libJSRSASign',
       value: null,
-      type: 'secret'
+      type: 'string'
     }
     variables.push(libJSRSASign)
     return variables
