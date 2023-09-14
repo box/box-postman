@@ -157,14 +157,23 @@ class Collection {
    * Extracts all server URLs as variables
    */
   getVariables () {
-    return uniq(Object.values(this.openapi.paths).flatMap(endpoints => (
+    const variables = uniq(Object.values(this.openapi.paths).flatMap(endpoints => (
       Object.values(endpoints).map(endpoint => this.server(endpoint).host)
     ))).map(host => ({
-      id: Utils.GenID(),
+      id: Utils.GenID(host),
       key: host, // .replace(/\./g, '_'),
       value: host,
       type: 'string'
     }))
+    // add a variable for each of the JWT JS 3rd party libraries
+    const libJSRSASign = {
+      id: Utils.GenID('libJSRSASign'),
+      key: 'libJSRSASign',
+      value: null,
+      type: 'secret'
+    }
+    variables.push(libJSRSASign)
+    return variables
   }
 
   /**
