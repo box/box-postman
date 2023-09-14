@@ -7,6 +7,7 @@ const rmMD = require('remove-markdown')
 const fs = require('fs')
 const { uniq } = require('lodash')
 const Utils = require('./Utils')
+const crypto = require('node:crypto')
 
 const Example = require('./Example')
 
@@ -536,18 +537,24 @@ class Collection {
     }
   }
 
+  calculateHash (stringToHash) {
+    return crypto.createHash('sha256').update(stringToHash).digest('hex')
+  }
+
   /**
    * Creates a pre-request event to check for expired access tokens
    */
   prerequestRefreshAccessToken () {
+    const scriptString = String(fs.readFileSync('./src/events/refreshAccessToken.js'))
     const script = {
       listen: 'prerequest',
       script: {
         type: 'text/javascript',
-        exec: [String(fs.readFileSync('./src/events/refreshAccessToken.js'))]
+        exec: [scriptString]
       }
     }
-    script.script.id = Utils.GenID() // RB: to big for uuidv5
+    const hash = this.calculateHash(scriptString)
+    script.script.id = Utils.GenID(hash) // RB: to big for uuidv5
     return script
   }
 
@@ -555,15 +562,17 @@ class Collection {
    * Creates a test event to pick up on refreshed access tokens
    */
   testUpdateAccessToken () {
+    const scriptString = String(fs.readFileSync('./src/events/updateAccessToken.js'))
     const script = {
       listen: 'test',
       script: {
         id: Utils.GenID(),
         type: 'text/javascript',
-        exec: [String(fs.readFileSync('./src/events/updateAccessToken.js'))]
+        exec: [scriptString]
       }
     }
-    script.script.id = Utils.GenID() // RB: to big for uuidv5
+    const hash = this.calculateHash(scriptString)
+    script.script.id = Utils.GenID(hash) // RB: to big for uuidv5
 
     return script
   }

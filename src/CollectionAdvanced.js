@@ -121,14 +121,16 @@ class CollectionAdvanced extends Collection {
    * Creates a pre-request event for collection
    */
   collectionPreRequest () {
+    const scriptString = String(fs.readFileSync('./src/events/collectionPreReqScript.js'))
     const script = {
       listen: 'prerequest',
       script: {
         type: 'text/javascript',
-        exec: [String(fs.readFileSync('./src/events/collectionPreReqScript.js'))]
+        exec: [scriptString]
       }
     }
-    script.script.id = Utils.GenID() // RB: too big for UUIDV5
+    const hash = this.calculateHash(scriptString)
+    script.script.id = Utils.GenID(hash) // RB: to big for uuidv5
     return script
   }
 }
