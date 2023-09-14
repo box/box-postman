@@ -22,6 +22,19 @@ class Collection {
       }
     })
   }
+
+  async merge (destinationCollectionId, strategy = 'updateSourceWithDestination') {
+    return await this.axios.post(
+      'https://api.getpostman.com/collections/merge',
+      { source: this.collectionId, destination: destinationCollectionId, strategy }
+    ).then(function (response) {
+      if (response.status !== 200) {
+        throw new Error(`Error merging collection from ${this.collectionId} to ${destinationCollectionId}: ${response.status} ${response.statusText}`)
+      } else {
+        return response.data
+      }
+    })
+  }
 }
 
 class Folder {

@@ -30,7 +30,17 @@ const deployIncremental = async (remoteCollectionID, localCollection) => {
   remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
   report.Responses = await mergeResponses(remoteCollection, localCollection)
 
+  const publicCollectionID = '8119550-373aba62-5af5-459b-b9a4-e9db77f947a5XXXX'
+
+  const msg = 'Merging to public collection'
+  await new pmAPI.Collection(remoteCollectionID).merge(publicCollectionID)
+    .then(() => { console.log(msg, '-> OK') })
+    .catch((error) => {
+      console.log(msg, '-> FAIL')
+      handlePostmanAPIError(error)
+    })
   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed')
+
   // console.log('Report: \n', JSON.stringify(report, null, 2))
   return report
 }
