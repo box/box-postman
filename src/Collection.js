@@ -109,13 +109,16 @@ class Collection {
    * Process the OpenAPI object and returns a Postman 2.1 collection
    */
   process () {
-    return {
+    console.log('Processing collection')
+    const collection = {
       info: this.getInfo(),
       item: this.getItems(),
       event: [],
       variable: this.getVariables(),
       auth: this.defaultAuth()
     }
+    console.log('Done')
+    return collection
   }
 
   // PRIVATE
@@ -209,6 +212,9 @@ class Collection {
     }
     const folderId = Utils.GenID(JSON.stringify(folder))
     folder.id = folderId
+    if (this.verbose) {
+      console.log(`  Adding Folder [${folder.name}]`)
+    }
     return folder
   }
 
@@ -243,7 +249,7 @@ class Collection {
       const parent = this.findFolder(endpoint)
       parent.push(item)
       if (this.verbose) {
-        console.log(`${item.name} [${item.id}] added to collection`)
+        console.log(`  Adding Request [${item.name}]`)
       }
     } catch (e) {
 
