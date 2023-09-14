@@ -19,16 +19,20 @@ const pmAPI = require('./postmanAPI')
 const deployIncremental = async (remoteCollectionID, localCollection) => {
   console.log('Incremental deployment of collection ', localCollection.info.name)
 
+  const report = {}
+
   let remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
-  await mergeFolders(remoteCollection, localCollection)
+  report.folders = await mergeFolders(remoteCollection, localCollection)
 
   remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
-  await mergeRequests(remoteCollection, localCollection)
+  report.Requests = await mergeRequests(remoteCollection, localCollection)
 
   remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
-  await mergeResponses(remoteCollection, localCollection)
+  report.Responses = await mergeResponses(remoteCollection, localCollection)
 
   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed')
+  // console.log('Report: \n', JSON.stringify(report, null, 2))
+  return report
 }
 
 async function mergeFolders (remoteCollection, localCollection) {
@@ -47,12 +51,17 @@ async function mergeFolders (remoteCollection, localCollection) {
     return
   }
 
+  const foldersReport = []
+
   // create new folders
   for (const folder of newFolders) {
     const msg = `  Creating new folder [${folder.name}]`
     await new pmAPI.Folder(remoteCollection.collection.info.uid)
       .create(folder)
-      .then(() => { console.log(msg, '-> OK') })
+      .then(() => {
+        foldersReport.push({ name: folder.name, status: 'OK' })
+        console.log(msg, '-> OK')
+      })
       .catch((error) => {
         console.log(msg, '-> FAIL')
         handlePostmanAPIError(error)
@@ -89,6 +98,7 @@ async function mergeFolders (remoteCollection, localCollection) {
   //   //     })
   //   // }
   // }
+  return foldersReport
 }
 
 async function mergeRequests (remoteCollection, localCollection) {
@@ -98,6 +108,7 @@ async function mergeRequests (remoteCollection, localCollection) {
     .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
 
   console.log('\n Deploying Requests:')
+  const requestsReport = []
 
   // loop folders
   for (const localFolder of localFoldersRequest) {
@@ -123,7 +134,10 @@ async function mergeRequests (remoteCollection, localCollection) {
       // console.log('request: \n', JSON.stringify(request, 2))
       await new pmAPI.Request(remoteCollection.collection.info.uid)
         .create(pmRequest, localFolder.id)
-        .then(() => { console.log(msg, '-> OK') })
+        .then(() => {
+          requestsReport.push({ name: request.name, status: 'OK' })
+          console.log(msg, '-> OK')
+        })
         .catch((error) => {
           console.log(msg, '-> FAIL')
           handlePostmanAPIError(error)
@@ -155,6 +169,7 @@ async function mergeRequests (remoteCollection, localCollection) {
         })
     }
   }
+  return requestsReport
 }
 
 async function mergeResponses (remoteCollection, localCollection) {
@@ -165,6 +180,7 @@ async function mergeResponses (remoteCollection, localCollection) {
   const localFoldersRequest = localCollection.item
     .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
 
+  const responsesReport = []
   // loop folders
   for (const localFolder of localFoldersRequest) {
     const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
@@ -191,7 +207,10 @@ async function mergeResponses (remoteCollection, localCollection) {
         const msg = `    Creating new response [${response.code} ${response.status}]`
         await new pmAPI.Response(remoteCollection.collection.info.uid)
           .create(pmResponse, localRequest.id)
-          .then(() => { console.log(msg, '-> OK') })
+          .then(() => {
+            responsesReport.push({ name: response.name, status: 'OK' })
+            console.log(msg, '-> OK')
+          })
           .catch((error) => {
             console.log(msg, '-> FAIL')
             handlePostmanAPIError(error)
@@ -228,6 +247,7 @@ async function mergeResponses (remoteCollection, localCollection) {
       }
     }
   }
+  return responsesReport
 }
 
 // Handle axios error
