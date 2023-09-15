@@ -15,10 +15,16 @@
 
 const pmConvert = require('./PostmanCovertions')
 const pmAPI = require('./postmanAPI')
+const { GenID } = require('./Utils')
 
 const deployIncremental = async (privateRemoteCollectionId, localCollection, publicRemoteCollectionId) => {
   let remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
+
   console.log('Incremental deployment of collection ', localCollection.info.name)
+
+  const collectioHeadHasChanged = await upadteCollectionHead(remoteCollection, localCollection)
+
+  remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
   const foldersHaveChanged = await mergeFolders(remoteCollection, localCollection)
 
   remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
@@ -27,7 +33,7 @@ const deployIncremental = async (privateRemoteCollectionId, localCollection, pub
   remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
   const responsesHaveChanged = await mergeResponses(remoteCollection, localCollection)
 
-  if (foldersHaveChanged || requestsHaveChanged || responsesHaveChanged) {
+  if (collectioHeadHasChanged || foldersHaveChanged || requestsHaveChanged || responsesHaveChanged) {
     const msg = 'Merging to public collection'
     console.log('\n' + msg + '...')
     await new pmAPI.Collection(privateRemoteCollectionId).merge(publicRemoteCollectionId)
@@ -38,6 +44,69 @@ const deployIncremental = async (privateRemoteCollectionId, localCollection, pub
       })
   }
   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed\n\n')
+}
+
+async function upadteCollectionHead (remoteCollection, localCollection) {
+  // the colelction head shoul dbe updated if there are changes in
+  // Authorization
+  // Pre-request Script
+  // Tests
+  // Variables
+
+  const localEmptyCollection = { ...localCollection }
+  localEmptyCollection.item = []
+
+  // Check if there are changes in the Authorization
+  const hasChangesAuth = checkObjectChanges(remoteCollection.collection.auth, localEmptyCollection.auth)
+
+  // Check if there are changes in the Scripts (pre-request and tests)
+  const hasChangesScripts = checkScriptChanges(remoteCollection, localEmptyCollection)
+
+  // Check if there are changes in the Variables
+  const hasChangesVariables = checkVariableChanges(remoteCollection, localEmptyCollection)
+
+  const hasChanges = hasChangesAuth || hasChangesScripts || hasChangesVariables
+
+  if (hasChanges) {
+    const msg = 'Updating collection head'
+    console.log('\n' + msg + '...')
+    await new pmAPI.Collection(remoteCollection.collection.info.uid)
+      .update({ collection: localCollection })
+      .then(() => { console.log(msg, '-> OK\n') })
+      .catch((error) => {
+        console.log(msg, '-> FAIL')
+        handlePostmanAPIError(error)
+      })
+  }
+  return hasChanges
+}
+
+const checkObjectChanges = (remoteCollectionObject, localCollectionObject) => {
+  // certain object like auth do  not have an id,
+  // so we need to generate on and compare them
+  const remoteCollectionAuthID = GenID(JSON.stringify(remoteCollectionObject))
+  const localCollectionAuthID = GenID(JSON.stringify(localCollectionObject))
+  return remoteCollectionAuthID !== localCollectionAuthID
+}
+
+const checkScriptChanges = (remoteCollection, localCollection) => {
+  let remoteScript = null
+  let localScript = null
+  if (remoteCollection.collection.event) {
+    remoteScript = JSON.stringify(remoteCollection.collection.event)
+  }
+  if (localCollection.event) {
+    localScript = JSON.stringify(localCollection.event)
+  }
+
+  return GenID(remoteScript) !== GenID(localScript)
+}
+
+const checkVariableChanges = (remoteCollection, localCollection) => {
+  const remoteVariablesHash = GenID(JSON.stringify(remoteCollection.collection.variable))
+  const localVariablesHash = GenID(JSON.stringify(localCollection.variable))
+
+  return remoteVariablesHash !== localVariablesHash
 }
 
 async function mergeFolders (remoteCollection, localCollection) {

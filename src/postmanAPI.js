@@ -41,7 +41,8 @@ class Collection {
   async update (collection) {
     return await this.axios.put(
         `https://api.getpostman.com/collections/${this.collectionId}`,
-        collection
+        collection,
+        { timeout: 1000 * 60 * 3 } // 3 minutes
     ).then(function (response) {
       if (response.status !== 200) {
         throw new Error(`Error updating collection ${collection.id}: ${response.status} ${response.statusText}`)
