@@ -1,13 +1,15 @@
 require('dotenv').config()
 
 const fs = require('fs')
-const deploy = require('../DeployBulk')
+const oldDeploy = require('../OldDeployBulk')
 const OUTPUT_FOLDER = './compiled'
 
 const release = async (locale = process.argv[1]) => {
   const collection = JSON.parse(fs.readFileSync(`${OUTPUT_FOLDER}/collection.${locale}.json`).toString())
-  const collectionId = process.env[`${locale.toUpperCase()}_POSTMAN_COLLECTION_ID`]
-  deploy.deployBulk(collectionId, collection)
+  const privateRemoteCollectionID = process.env[`PRIVATE_${locale.toUpperCase()}_POSTMAN_COLLECTION_ID`]
+  const publicRemoteCollectionID = process.env[`PUBLIC_${locale.toUpperCase()}_POSTMAN_COLLECTION_ID`]
+
+  oldDeploy.oldDeployBulk(privateRemoteCollectionID, collection, publicRemoteCollectionID)
 }
 
 const releaseAll = async () => {

@@ -16,23 +16,21 @@
 const pmConvert = require('./PostmanCovertions')
 const pmAPI = require('./postmanAPI')
 
-const deployIncremental = async (remoteCollectionID, localCollection) => {
-  let remoteCollection = await refreshRemoteCollection(remoteCollectionID)
+const deployIncremental = async (privateRemoteCollectionId, localCollection, publicRemoteCollectionId) => {
+  let remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
   console.log('Incremental deployment of collection ', localCollection.info.name)
   const foldersHaveChanged = await mergeFolders(remoteCollection, localCollection)
 
-  remoteCollection = await refreshRemoteCollection(remoteCollectionID)
+  remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
   const requestsHaveChanged = await mergeRequests(remoteCollection, localCollection)
 
-  remoteCollection = await refreshRemoteCollection(remoteCollectionID)
+  remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
   const responsesHaveChanged = await mergeResponses(remoteCollection, localCollection)
-
-  const publicCollectionID = '8119550-373aba62-5af5-459b-b9a4-e9db77f947a5'
 
   if (foldersHaveChanged || requestsHaveChanged || responsesHaveChanged) {
     const msg = 'Merging to public collection'
     console.log('\n' + msg + '...')
-    await new pmAPI.Collection(remoteCollectionID).merge(publicCollectionID)
+    await new pmAPI.Collection(privateRemoteCollectionId).merge(publicRemoteCollectionId)
       .then(() => { console.log(msg, '-> OK\n') })
       .catch((error) => {
         console.log(msg, '-> FAIL')
