@@ -37,6 +37,19 @@ class Collection {
       }
     })
   }
+
+  async update (collection) {
+    return await this.axios.put(
+        `https://api.getpostman.com/collections/${this.collectionId}`,
+        collection
+    ).then(function (response) {
+      if (response.status !== 200) {
+        throw new Error(`Error updating collection ${collection.id}: ${response.status} ${response.statusText}`)
+      } else {
+        return response.data
+      }
+    })
+  }
 }
 
 class Folder {
