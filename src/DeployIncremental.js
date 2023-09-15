@@ -17,34 +17,29 @@ const pmConvert = require('./PostmanCovertions')
 const pmAPI = require('./postmanAPI')
 
 const deployIncremental = async (remoteCollectionID, localCollection) => {
-  const report = {}
-
   let remoteCollection = await refreshRemoteCollection(remoteCollectionID)
   console.log('Incremental deployment of collection ', localCollection.info.name)
-  report.folders = await mergeFolders(remoteCollection, localCollection)
+  const foldersHaveChanged = await mergeFolders(remoteCollection, localCollection)
 
   remoteCollection = await refreshRemoteCollection(remoteCollectionID)
-  report.requests = await mergeRequests(remoteCollection, localCollection)
+  const requestsHaveChanged = await mergeRequests(remoteCollection, localCollection)
 
   remoteCollection = await refreshRemoteCollection(remoteCollectionID)
-  report.responses = await mergeResponses(remoteCollection, localCollection)
+  const responsesHaveChanged = await mergeResponses(remoteCollection, localCollection)
 
   const publicCollectionID = '8119550-373aba62-5af5-459b-b9a4-e9db77f947a5'
 
-  if (report.folders.length > 0 || report.requests.length > 0 || report.responses.length > 0) {
+  if (foldersHaveChanged || requestsHaveChanged || responsesHaveChanged) {
     const msg = 'Merging to public collection'
-    console.log(msg + '...')
+    console.log('\n' + msg + '...')
     await new pmAPI.Collection(remoteCollectionID).merge(publicCollectionID)
-      .then(() => { console.log(msg, '-> OK') })
+      .then(() => { console.log(msg, '-> OK\n') })
       .catch((error) => {
         console.log(msg, '-> FAIL')
         handlePostmanAPIError(error)
       })
   }
   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed\n\n')
-
-  // console.log('Report: \n', JSON.stringify(report, null, 2))
-  return report
 }
 
 async function mergeFolders (remoteCollection, localCollection) {
@@ -56,13 +51,11 @@ async function mergeFolders (remoteCollection, localCollection) {
   const newFolders = localFolders.filter(localFolder => !remoteFolders.find(remoteFolder => remoteFolder.id === localFolder.id))
   const oldFolders = remoteFolders.filter(remoteFolder => !localFolders.find(localFolder => localFolder.id === remoteFolder.id))
 
-  const hasChanges = newFolders.length > 0 || oldFolders.length > 0
-
-  const foldersReport = []
+  let hasChanges = newFolders.length > 0 || oldFolders.length > 0
 
   if (!hasChanges) {
     console.log('  -> No changes')
-    return foldersReport
+    return hasChanges
   }
 
   // create new folders
@@ -71,7 +64,7 @@ async function mergeFolders (remoteCollection, localCollection) {
     await new pmAPI.Folder(remoteCollection.collection.info.uid)
       .create(folder)
       .then(() => {
-        foldersReport.push({ name: folder.name, status: 'OK' })
+        hasChanges = true
         console.log(msg, '-> OK')
       })
       .catch((error) => {
@@ -85,32 +78,16 @@ async function mergeFolders (remoteCollection, localCollection) {
     const msg = `  Deleting old folder [${folder.name}]`
     await new pmAPI.Folder(remoteCollection.collection.info.uid)
       .delete(folder.id)
-      .then(() => { console.log(msg, '-> OK') })
+      .then(() => {
+        hasChanges = true
+        console.log(msg, '-> OK')
+      })
       .catch((error) => {
         console.log(msg, '-> FAIL')
         handlePostmanAPIError(error)
       })
   }
-
-  // sort folders
-  // this doesnt work, the API does not support moving folders
-  // if (hasChanges) {
-  //   // const tmpRootFolder = await new pmAPI.Folder(remoteCollection.collection.info.uid).create({ name: 'tmpRootFolder' })
-  //   // refresh remote collection
-  //   // remoteCollection = await new pmAPI.Collection(remoteCollection.collection.info.uid).get()
-  //   // for each remote folder transfer them to the tmpRootFolder
-
-  //   //
-  //   // for (const folder of remoteCollection.collection.item) {
-  //   //   await new pmAPI.Folder(remoteCollection.collection.info.uid)
-  //   //     .update(folder.id, { folder: tmpRootFolder.data.id })
-  //   //     .catch((error) => {
-  //   //       console.log('  Moving folder', folder.name, 'to tmpRootFolder -> FAIL')
-  //   //       handlePostmanAPIError(error)
-  //   //     })
-  //   // }
-  // }
-  return foldersReport
+  return hasChanges
 }
 
 async function mergeRequests (remoteCollection, localCollection) {
@@ -120,7 +97,7 @@ async function mergeRequests (remoteCollection, localCollection) {
     .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
 
   console.log('\n Deploying Requests:')
-  const requestsReport = []
+  let anyRequestHasChanged = false
 
   // loop folders
   for (const localFolder of localFoldersRequest) {
@@ -131,9 +108,9 @@ async function mergeRequests (remoteCollection, localCollection) {
     const newRequests = localRequests.filter(localRequest => !remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id))
     const oldRequests = remoteRequests.filter(remoteRequest => !localRequests.find(localRequest => localRequest.id === remoteRequest.id))
 
-    const hasChanges = newRequests.length > 0 || oldRequests.length > 0
+    const requestsInFolderHaveChanges = newRequests.length > 0 || oldRequests.length > 0
 
-    if (!hasChanges) {
+    if (!requestsInFolderHaveChanges) {
       console.log('  In Folder: ', localFolder.name, '-> No changes')
       continue
     }
@@ -147,7 +124,6 @@ async function mergeRequests (remoteCollection, localCollection) {
       await new pmAPI.Request(remoteCollection.collection.info.uid)
         .create(pmRequest, localFolder.id)
         .then(() => {
-          requestsReport.push({ name: request.name, status: 'OK' })
           console.log(msg, '-> OK')
         })
         .catch((error) => {
@@ -161,14 +137,16 @@ async function mergeRequests (remoteCollection, localCollection) {
       const msg = `   Deleting old request [${request.name}]`
       await new pmAPI.Request(remoteCollection.collection.info.uid)
         .delete(request.id)
-        .then(() => { console.log(msg, '-> OK') })
+        .then(() => {
+          console.log(msg, '-> OK')
+        })
         .catch((error) => {
           console.log(msg, '-> FAIL')
           handlePostmanAPIError(error)
         })
     }
 
-    if (hasChanges) {
+    if (requestsInFolderHaveChanges) {
       // sort requests in folder
       const order = localRequests.map(request => request.id)
       const msg = `   Sorting requests in folder [${localFolder.name}]`
@@ -180,8 +158,9 @@ async function mergeRequests (remoteCollection, localCollection) {
           handlePostmanAPIError(error)
         })
     }
+    anyRequestHasChanged = anyRequestHasChanged || requestsInFolderHaveChanges
   }
-  return requestsReport
+  return anyRequestHasChanged
 }
 
 async function mergeResponses (remoteCollection, localCollection) {
@@ -192,7 +171,7 @@ async function mergeResponses (remoteCollection, localCollection) {
   const localFoldersRequest = localCollection.item
     .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
 
-  const responsesReport = []
+  let anyResponseHasChanged = false
   // loop folders
   for (const localFolder of localFoldersRequest) {
     const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
@@ -206,8 +185,8 @@ async function mergeResponses (remoteCollection, localCollection) {
       const newResponses = localResponses.filter(localResponse => !remoteResponses.find(remoteResponse => remoteResponse.id === localResponse.id))
       const oldResponses = remoteResponses.filter(remoteResponse => !localResponses.find(localResponse => localResponse.id === remoteResponse.id))
 
-      const hasChanges = newResponses.length > 0 || oldResponses.length > 0
-      if (!hasChanges) {
+      const ResponsesInReqquestHaveChanges = newResponses.length > 0 || oldResponses.length > 0
+      if (!ResponsesInReqquestHaveChanges) {
         console.log('   In Request: ', localRequest.name, '-> No changes')
         continue
       }
@@ -220,7 +199,6 @@ async function mergeResponses (remoteCollection, localCollection) {
         await new pmAPI.Response(remoteCollection.collection.info.uid)
           .create(pmResponse, localRequest.id)
           .then(() => {
-            responsesReport.push({ name: response.name, status: 'OK' })
             console.log(msg, '-> OK')
           })
           .catch((error) => {
@@ -234,7 +212,9 @@ async function mergeResponses (remoteCollection, localCollection) {
         const msg = `    Deleting old response [${response.code} ${response.status}]`
         await new pmAPI.Response(remoteCollection.collection.info.uid)
           .delete(response.id)
-          .then(() => { console.log(msg, '-> OK') })
+          .then(() => {
+            console.log(msg, '-> OK')
+          })
           .catch((error) => {
             console.log(msg, '-> FAIL')
             handlePostmanAPIError(error)
@@ -242,7 +222,7 @@ async function mergeResponses (remoteCollection, localCollection) {
       }
 
       // updating the requests with the order of the responses, doesn't seem to be necessary
-      if (hasChanges) {
+      if (ResponsesInReqquestHaveChanges) {
         // sort responses in requests
         const responsesOrder = localResponses.map(response => response.id)
         const msg = `   Sorting responses in request [${localRequest.name}]`
@@ -257,9 +237,10 @@ async function mergeResponses (remoteCollection, localCollection) {
             handlePostmanAPIError(error)
           })
       }
+      anyResponseHasChanged = anyResponseHasChanged || ResponsesInReqquestHaveChanges
     }
   }
-  return responsesReport
+  return anyResponseHasChanged
 }
 
 async function refreshRemoteCollection (remoteCollectionID) {
