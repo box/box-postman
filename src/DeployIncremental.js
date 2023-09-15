@@ -17,29 +17,31 @@ const pmConvert = require('./PostmanCovertions')
 const pmAPI = require('./postmanAPI')
 
 const deployIncremental = async (remoteCollectionID, localCollection) => {
-  console.log('Incremental deployment of collection ', localCollection.info.name)
-
   const report = {}
 
-  let remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
+  let remoteCollection = await refreshRemoteCollection(remoteCollectionID)
+  console.log('Incremental deployment of collection ', localCollection.info.name)
   report.folders = await mergeFolders(remoteCollection, localCollection)
 
-  remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
-  report.Requests = await mergeRequests(remoteCollection, localCollection)
+  remoteCollection = await refreshRemoteCollection(remoteCollectionID)
+  report.requests = await mergeRequests(remoteCollection, localCollection)
 
-  remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
-  report.Responses = await mergeResponses(remoteCollection, localCollection)
+  remoteCollection = await refreshRemoteCollection(remoteCollectionID)
+  report.responses = await mergeResponses(remoteCollection, localCollection)
 
-  const publicCollectionID = '8119550-373aba62-5af5-459b-b9a4-e9db77f947a5XXXX'
+  const publicCollectionID = '8119550-373aba62-5af5-459b-b9a4-e9db77f947a5'
 
-  const msg = 'Merging to public collection'
-  await new pmAPI.Collection(remoteCollectionID).merge(publicCollectionID)
-    .then(() => { console.log(msg, '-> OK') })
-    .catch((error) => {
-      console.log(msg, '-> FAIL')
-      handlePostmanAPIError(error)
-    })
-  console.log('Incremental deployment of collection ', localCollection.info.name, ' completed')
+  if (report.folders.length > 0 || report.requests.length > 0 || report.responses.length > 0) {
+    const msg = 'Merging to public collection'
+    console.log(msg + '...')
+    await new pmAPI.Collection(remoteCollectionID).merge(publicCollectionID)
+      .then(() => { console.log(msg, '-> OK') })
+      .catch((error) => {
+        console.log(msg, '-> FAIL')
+        handlePostmanAPIError(error)
+      })
+  }
+  console.log('Incremental deployment of collection ', localCollection.info.name, ' completed\n\n')
 
   // console.log('Report: \n', JSON.stringify(report, null, 2))
   return report
@@ -56,12 +58,12 @@ async function mergeFolders (remoteCollection, localCollection) {
 
   const hasChanges = newFolders.length > 0 || oldFolders.length > 0
 
+  const foldersReport = []
+
   if (!hasChanges) {
     console.log('  -> No changes')
-    return
+    return foldersReport
   }
-
-  const foldersReport = []
 
   // create new folders
   for (const folder of newFolders) {
@@ -260,6 +262,16 @@ async function mergeResponses (remoteCollection, localCollection) {
   return responsesReport
 }
 
+async function refreshRemoteCollection (remoteCollectionID) {
+  const msg = 'Refreshing remote collection'
+  console.log('\n' + msg + '...\n')
+  const remoteCollection = await new pmAPI.Collection(remoteCollectionID).get()
+    .catch((error) => {
+      console.log(msg, '-> FAIL')
+      handlePostmanAPIError(error)
+    })
+  return remoteCollection
+}
 // Handle axios error
 const handlePostmanAPIError = (error) => {
   if (error.response) {
@@ -270,7 +282,10 @@ const handlePostmanAPIError = (error) => {
     // The request was made but no response was received
     // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
     // http.ClientRequest in node.js
-    console.log('NO RESPONSE:', error.cause)
+    console.log('NO RESPONSE:', error.message)
+    if (error.cause) {
+      console.log('CAUSE:', error.cause)
+    }
   }
   const { method, url, data } = error.config
   console.log('REQUEST DETAILS', { method, url, data })
