@@ -14,7 +14,7 @@ class Collection {
   async get () {
     return await this.axios.get(
             `https://api.getpostman.com/collections/${this.collectionId}`
-            , { timeout: 1000 * 60 } // 60 seconds
+            , { timeout: 1000 * 60 * 5 } // 5 minutes
     ).then(function (response) {
       if (response.status !== 200) {
         throw new Error(`Error getting collection ${this.collectionId}: ${response.status} ${response.statusText}`)
@@ -28,7 +28,7 @@ class Collection {
     return await this.axios.post(
       'https://api.getpostman.com/collections/merge',
       { source: this.collectionId, destination: destinationCollectionId, strategy },
-      { timeout: 1000 * 60 * 3 } // 3 minutes
+      { timeout: 1000 * 60 * 5 } // 5 minutes
     ).then(function (response) {
       if (response.status !== 200) {
         throw new Error(`Error merging collection from ${this.collectionId} to ${destinationCollectionId}: ${response.status} ${response.statusText}`)
@@ -42,7 +42,7 @@ class Collection {
     return await this.axios.put(
         `https://api.getpostman.com/collections/${this.collectionId}`,
         collection,
-        { timeout: 1000 * 60 * 3 } // 3 minutes
+        { timeout: 1000 * 60 * 5 } // 5 minutes
     ).then(function (response) {
       if (response.status !== 200) {
         throw new Error(`Error updating collection ${collection.id}: ${response.status} ${response.statusText}`)
