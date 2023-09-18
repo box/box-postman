@@ -1,12 +1,13 @@
 // const pmConvert = require('./PostmanCovertions')
 const pmAPI = require('./postmanAPI')
 
-const deployColectionHead = async (localCollection, remoteCollectionID) => {
+const deployColectionHead = async (privateRemoteCollectionID, localCollection) => {
   const collectionHead = { ...localCollection }
   collectionHead.item = []
-  const msg = `\nDeploying collection head ${collectionHead.info.name} to ${remoteCollectionID}`
-  await new pmAPI.Collection(remoteCollectionID)
-    .update(collectionHead)
+  const msg = `\nDeploying collection head ${collectionHead.info.name} to ${privateRemoteCollectionID}`
+  console.log(msg + '...')
+  await new pmAPI.Collection(privateRemoteCollectionID)
+    .update({ collection: collectionHead })
     .then(() => { console.log(msg, '-> OK\n') })
     .catch((error) => {
       console.log(msg, '-> FAIL')
@@ -14,10 +15,20 @@ const deployColectionHead = async (localCollection, remoteCollectionID) => {
     })
 }
 
-const deployColectionFull = async (localCollection, remoteCollectionID) => {
-  const msg = `\nDeploying full collection ${localCollection.info.name} to ${remoteCollectionID}`
-  await new pmAPI.Collection(remoteCollectionID)
-    .update(localCollection)
+const deployColectionFull = async (privateRemoteCollectionId, localCollection, publicRemoteCollectionId) => {
+  let msg = `\nDeploying full collection ${localCollection.info.name} to ${privateRemoteCollectionId}`
+  console.log(msg + '...')
+  await new pmAPI.Collection(privateRemoteCollectionId)
+    .update({ collection: localCollection })
+    .then(() => { console.log(msg, '-> OK\n') })
+    .catch((error) => {
+      console.log(msg, '-> FAIL')
+      handlePostmanAPIError(error)
+    })
+
+  msg = 'Merging to public collection'
+  console.log('\n' + msg + '...')
+  await new pmAPI.Collection(privateRemoteCollectionId).merge(publicRemoteCollectionId)
     .then(() => { console.log(msg, '-> OK\n') })
     .catch((error) => {
       console.log(msg, '-> FAIL')
@@ -40,8 +51,8 @@ const handlePostmanAPIError = (error) => {
       console.log('CAUSE:', error.cause)
     }
   }
-  const { method, url, data } = error.config
-  console.log('REQUEST DETAILS', { method, url, data })
+  // const { method, url, data } = error.config
+  // console.log('REQUEST DETAILS', { method, url, data })
   process.exit(1)
 }
 
