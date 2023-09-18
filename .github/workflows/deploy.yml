@@ -20,7 +20,8 @@ jobs:
     env:
       LOCALES: "en"
       EN_OAS3_REPO: "https://github.com/box/box-openapi.git#en"
-      EN_POSTMAN_COLLECTION_ID: "8119550-b5ea2aeb-c82a-425d-baff-ed5dfd1d7659"
+      PRIVATE_EN_POSTMAN_COLLECTION_ID: "8119550-3e45693c-a4d7-4d77-b02c-f7035a152898"
+      PUBLIC_EN_POSTMAN_COLLECTION_ID: "8119550-b5ea2aeb-c82a-425d-baff-ed5dfd1d7659"
       POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
 
     strategy:
@@ -58,7 +59,8 @@ jobs:
     env:
       LOCALES: "jp"
       JP_OAS3_REPO: "https://github.com/box/box-openapi.git#jp"
-      JP_POSTMAN_COLLECTION_ID: "8119550-73df4d75-420a-455b-97c2-d3d33103c1a4"
+      PRIVATE_JP_POSTMAN_COLLECTION_ID: "8119550-8ab5448e-636f-44ee-ba16-97908b5bc7eb"
+      PUBLIC_JP_POSTMAN_COLLECTION_ID: "8119550-73df4d75-420a-455b-97c2-d3d33103c1a4"
       POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
 
     strategy:
