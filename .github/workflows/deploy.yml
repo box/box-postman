@@ -15,7 +15,7 @@ jobs:
   # Deploys the english version
   deploy-en:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
 
     env:
       LOCALES: "en"
@@ -54,7 +54,8 @@ jobs:
   # Deploys the japanese version
   deploy-jp:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
+    needs: deploy-en
 
     env:
       LOCALES: "jp"
