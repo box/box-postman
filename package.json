@@ -20,15 +20,17 @@
   "homepage": "https://developer.box.com/",
   "dependencies": {
     "@stoplight/json-ref-resolver": "^3.0.1",
-    "axios": "^0.21.2",
+    "axios": "^1.5.0",
     "deepmerge": "^4.0.0",
-    "dotenv": "^8.0.0",
-    "jest": "^26.6.3",
-    "jsonpath-plus": "^4.0.0",
+    "dotenv": "^16.3.1",
+    "jsonpath-plus": "^7.2.0",
     "lodash": "^4.17.21",
-    "remove-markdown": "^0.3.0",
-    "standard": "^16.0.1",
-    "uuid": "^8.0.0"
+    "remove-markdown": "^0.5.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.6.4",
+    "standard": "^17.1.0"
   },
   "scripts": {
     "clean": "rm -rf ./.sources ./compiled",
@@ -45,7 +47,10 @@
     "build:all": "yarn convert:all",
     "pretest": "yarn lint",
     "test": "jest",
-    "lint": "standard --env jest"
+    "lint": "standard --env jest",
+    "//": "------------------------------",
+    "convertAdvanced": "node -e 'require(\"./src/scripts/convertAdvanced.js\").convert()'",
+    "releaseAdvanced": "node -e 'require(\"./src/scripts/releaseAdvanced.js\").release()'"
   },
   "private": true
 }

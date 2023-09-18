@@ -1,4 +1,3 @@
-
 jest.mock('child_process')
 jest.mock('fs')
 

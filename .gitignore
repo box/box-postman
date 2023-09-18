@@ -6,3 +6,4 @@ coverage
 build/*.json
 .env
 compiled
+.DS_Store

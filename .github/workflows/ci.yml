@@ -19,15 +19,15 @@ jobs:
     # We use node 14.X
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [18.x]
 
     # The following steps are performed for each lint job 
     steps:
     - name: Check out the repo
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
 
