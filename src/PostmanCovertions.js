@@ -41,6 +41,7 @@ const requestFromLocal = (localRequest) => {
   let headerData = []
   if (localRequest.request.header) {
     headerData = dataFromLocalURLEncode(localRequest.request.header)
+      .map((header) => ({ key: header.key, value: header.value, enabled: header.enabled, description: header.description }))
   }
 
   const request = {
@@ -92,7 +93,7 @@ const requestFromLocal = (localRequest) => {
 }
 
 const responseFromLocal = (localResponse) => {
-  // if ()
+  const headers = localResponse.header.map((item) => ({ key: item.key, value: item.value }))
   const response = {
     // owner: '8119550',
     // lastUpdatedBy: '8119550',
@@ -108,7 +109,7 @@ const responseFromLocal = (localResponse) => {
       detail: ''
     },
     // time: null,
-    headers: localResponse.header, //
+    headers, //
     cookies: [],
     mime: null,
     text: localResponse.body, //

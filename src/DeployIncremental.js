@@ -22,27 +22,42 @@ const deployIncremental = async (privateRemoteCollectionId, localCollection, pub
 
   console.log('Incremental deployment of collection ', localCollection.info.name)
 
-  const collectioHeadHasChanged = await upadteCollectionHead(remoteCollection, localCollection)
+  // const collectioHeadHasChanged =
+  await upadteCollectionHead(remoteCollection, localCollection)
 
   remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
-  const foldersHaveChanged = await mergeFolders(remoteCollection, localCollection)
+
+  // const foldersHaveChanged =
+  await mergeFolders(remoteCollection, localCollection)
 
   remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
-  const requestsHaveChanged = await mergeRequests(remoteCollection, localCollection)
+
+  // const requestsHaveChanged =
+  await mergeRequests(remoteCollection, localCollection)
 
   remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
-  const responsesHaveChanged = await mergeResponses(remoteCollection, localCollection)
 
-  if (collectioHeadHasChanged || foldersHaveChanged || requestsHaveChanged || responsesHaveChanged) {
-    const msg = 'Merging to public collection'
-    console.log('\n' + msg + '...')
-    await new pmAPI.Collection(privateRemoteCollectionId).merge(publicRemoteCollectionId)
-      .then(() => { console.log(msg, '-> OK\n') })
-      .catch((error) => {
-        console.log(msg, '-> FAIL')
-        handlePostmanAPIError(error)
-      })
-  }
+  // const responsesHaveChanged =
+  await mergeResponses(remoteCollection, localCollection)
+
+  // should we always merge into the public collection?
+  // There is teh case that if an error happens in the merge phase
+  // the private collection is fully updated
+  // and in the next run the public collection will NOT be updated
+  // because there are no changes in the private collection
+
+  // if (!(collectioHeadHasChanged || foldersHaveChanged || requestsHaveChanged || responsesHaveChanged)) {
+  //   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed\n\n')
+  //   return
+  // }
+  const msg = 'Merging to public collection'
+  console.log('\n' + msg + '...')
+  await new pmAPI.Collection(privateRemoteCollectionId).merge(publicRemoteCollectionId)
+    .then(() => { console.log(msg, '-> OK\n') })
+    .catch((error) => {
+      console.log(msg, '-> FAIL')
+      handlePostmanAPIError(error)
+    })
   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed\n\n')
 }
 
@@ -70,7 +85,16 @@ async function upadteCollectionHead (remoteCollection, localCollection) {
   // Check if there are changes in the Variables
   const hasChangesVariables = checkVariableChanges(remoteCollection, localEmptyCollection)
 
-  const hasChanges = hasChangesInfo || hasChangesAuth || hasChangesPreRequestScript || hasChangesTestScript || hasChangesVariables
+  const hasFolderSortChanges = checkFolderSortChanges(remoteCollection, localCollection)
+
+  const hasChanges = (
+    hasFolderSortChanges ||
+    hasChangesInfo ||
+    hasChangesAuth ||
+    hasChangesPreRequestScript ||
+    hasChangesTestScript ||
+    hasChangesVariables
+  )
 
   if (hasChanges) {
     const msg = 'Updating collection head'
@@ -85,6 +109,19 @@ async function upadteCollectionHead (remoteCollection, localCollection) {
   }
   return hasChanges
 }
+
+const checkFolderSortChanges = (remoteCollection, localCollection) => {
+  const remoteFolders = remoteCollection.collection.item
+    .map(folder => ({ id: folder.id }))
+  const localFolders = localCollection.item
+    .map(folder => ({ id: folder.id }))
+
+  const remoteFoldersHash = GenID(JSON.stringify(remoteFolders))
+  const localFoldersHash = GenID(JSON.stringify(localFolders))
+
+  return remoteFoldersHash !== localFoldersHash
+}
+
 const checkInfoChanges = (remoteCollection, localEmptyCollection) => {
   // collection info does not have a specific id
   // so we need to generate a hash and compare them
@@ -249,16 +286,20 @@ async function mergeRequests (remoteCollection, localCollection) {
     for (const request of newRequests) {
       const pmRequest = pmConvert.requestFromLocal(request)
       const msg = `   Creating new request [${request.name}]`
-      // console.log('request: \n', JSON.stringify(request, 2))
+
       await new pmAPI.Request(remoteCollection.collection.info.uid)
         .create(pmRequest, localFolder.id)
-        .then(() => {
+        .then((req) => {
           console.log(msg, '-> OK')
+          return req
         })
         .catch((error) => {
           console.log(msg, '-> FAIL')
           handlePostmanAPIError(error)
         })
+      // console.log('\nequest', request)
+      // console.log('\npmRequest', pmRequest)
+      // console.log('\nremoteRequest', remoteRequest)
     }
 
     // delete old requests
