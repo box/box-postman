@@ -1,0 +1,57 @@
+# The name of this GH action
+name: Deploy Advanced
+
+# Defines when this action should be run
+on:
+  # Run on any push to main
+  push:
+    branches:
+      - main
+  # Run when a repository dispatch event is received
+  repository_dispatch:
+    types: [openapi-update]
+
+jobs:
+# Deploys the Advanced version
+  deploy-adv:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # needs: deploy-jp
+
+    env:
+      LOCALES: "en"
+      EN_OAS3_REPO: "https://github.com/box/box-openapi.git#en"
+      PRIVATE_EN_POSTMAN_COLLECTION_ADVANCED_ID: "8119550-1ca6cb64-7560-4f24-a2b5-89ba095b1c17"
+      PUBLIC_EN_POSTMAN_COLLECTION_ADVANCED_ID: "8119550-373aba62-5af5-459b-b9a4-e9db77f947a5"
+      CONVERT_LOG: true
+      POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Deploy the collection
+      run: |
+        yarn install
+        yarn clean
+        yarn pull
+        yarn convertAdvanced en
+        yarn releaseAdvanced en
+
+    - name: Send Slack notification
+      uses: Ilshidur/action-slack@2.0.2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_USERNAME: GitHub Actions
+        SLACK_AVATAR: "https://avatars3.githubusercontent.com/u/8659759?s=200&v=4"
+      with:
+        args: "Deployed Advanced Postman collection :rocket:"
