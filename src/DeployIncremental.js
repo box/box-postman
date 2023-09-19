@@ -56,22 +56,27 @@ async function upadteCollectionHead (remoteCollection, localCollection) {
   const localEmptyCollection = { ...localCollection }
   localEmptyCollection.item = []
 
+  // Check changes in info
+  const hasChangesInfo = checkInfoChanges(remoteCollection, localCollection)
+
   // Check if there are changes in the Authorization
   const hasChangesAuth = checkObjectChanges(remoteCollection.collection.auth, localEmptyCollection.auth)
 
   // Check if there are changes in the Scripts (pre-request and tests)
-  const hasChangesScripts = checkScriptChanges(remoteCollection, localEmptyCollection)
+  const hasChangesPreRequestScript = checkScriptChanges('prerequest', remoteCollection, localEmptyCollection)
+
+  const hasChangesTestScript = checkScriptChanges('test', remoteCollection, localEmptyCollection)
 
   // Check if there are changes in the Variables
   const hasChangesVariables = checkVariableChanges(remoteCollection, localEmptyCollection)
 
-  const hasChanges = hasChangesAuth || hasChangesScripts || hasChangesVariables
+  const hasChanges = hasChangesInfo || hasChangesAuth || hasChangesPreRequestScript || hasChangesTestScript || hasChangesVariables
 
   if (hasChanges) {
     const msg = 'Updating collection head'
     console.log('\n' + msg + '...')
     await new pmAPI.Collection(remoteCollection.collection.info.uid)
-      .update({ collection: localCollection })
+      .update({ collection: localEmptyCollection })
       .then(() => { console.log(msg, '-> OK\n') })
       .catch((error) => {
         console.log(msg, '-> FAIL')
@@ -80,8 +85,31 @@ async function upadteCollectionHead (remoteCollection, localCollection) {
   }
   return hasChanges
 }
+const checkInfoChanges = (remoteCollection, localEmptyCollection) => {
+  // collection info does not have a specific id
+  // so we need to generate a hash and compare them
+  // The hash is only beig generated for name, description and schema
+
+  const { name, description, schema } = remoteCollection.collection.info
+  const remoteInfo = { name, description, schema }
+
+  const { name: localName, description: localDescription, schema: localSchema } = localEmptyCollection.info
+  const localInfo = { name: localName, description: localDescription, schema: localSchema }
+
+  const remoteInfoHash = calculateHash(JSON.stringify(remoteInfo))
+  const localInfoHash = calculateHash(JSON.stringify(localInfo))
+
+  return remoteInfoHash !== localInfoHash
+}
 
 const checkObjectChanges = (remoteCollectionObject, localCollectionObject) => {
+  if (!remoteCollectionObject && !localCollectionObject) {
+    return false
+  }
+  if (!remoteCollectionObject || !localCollectionObject) {
+    return true
+  }
+
   // certain object like auth do  not have an id,
   // so we need to generate on and compare them
   const remoteCollectionAuthID = GenID(JSON.stringify(remoteCollectionObject))
@@ -89,22 +117,41 @@ const checkObjectChanges = (remoteCollectionObject, localCollectionObject) => {
   return remoteCollectionAuthID !== localCollectionAuthID
 }
 
-const checkScriptChanges = (remoteCollection, localCollection) => {
-  let remoteScript = null
-  let localScript = null
-  if (remoteCollection.collection.event) {
-    remoteScript = JSON.stringify(remoteCollection.collection.event)
-  }
-  if (localCollection.event) {
-    localScript = JSON.stringify(localCollection.event)
-  }
+const checkScriptChanges = (scriptType, remoteCollection, localCollection) => {
+  const remoteScript = remoteCollection.collection.event.find(event => event.listen === scriptType)
+  const localScript = localCollection.event.find(event => event.listen === scriptType)
 
-  return GenID(remoteScript) !== GenID(localScript)
+  if (!remoteScript && !localScript) {
+    return false
+  }
+  if (!remoteScript || !localScript) {
+    return true
+  }
+  // files can be big, so we hash them
+  const remoteHash = calculateHash(remoteScript.script.exec[0])
+  const localHash = calculateHash(localScript.script.exec[0])
+
+  return remoteHash !== localHash
 }
 
 const checkVariableChanges = (remoteCollection, localCollection) => {
-  const remoteVariablesHash = GenID(JSON.stringify(remoteCollection.collection.variable))
-  const localVariablesHash = GenID(JSON.stringify(localCollection.variable))
+  const remoteVariables = remoteCollection.collection.variable
+  const localVariables = localCollection.variable.map(variable => ({ key: variable.key, value: variable.value }))
+
+  // check if null
+  if (!remoteVariables && !localVariables) {
+    return false
+  }
+  if (!remoteVariables || !localVariables) {
+    return true
+  }
+
+  // although the local collection does have a deterministic id
+  // the remote variable looses that value when it is updated
+  // so we need to generate an id for the remote variable
+
+  const remoteVariablesHash = GenID(remoteVariables)
+  const localVariablesHash = GenID(localVariables)
 
   return remoteVariablesHash !== localVariablesHash
 }
@@ -320,6 +367,7 @@ async function refreshRemoteCollection (remoteCollectionID) {
     })
   return remoteCollection
 }
+
 // Handle axios error
 const handlePostmanAPIError = (error) => {
   if (error.response) {
@@ -336,8 +384,13 @@ const handlePostmanAPIError = (error) => {
     }
   }
   const { method, url, data } = error.config
-  console.log('REQUEST DETAILS', { method, url, data })
+  const smallData = data.substring(0, 1000)
+  console.log('REQUEST DETAILS', { method, url, smallData })
   process.exit(1)
+}
+
+const calculateHash = (stringToHash) => {
+  return crypto.createHash('sha256').update(stringToHash).digest('hex')
 }
 
 module.exports = {
