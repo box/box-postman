@@ -96,7 +96,7 @@ jobs:
   deploy-adv:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: deploy-en
+    # needs: deploy-jp
 
     env:
       LOCALES: "en"
