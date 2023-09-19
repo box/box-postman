@@ -121,6 +121,8 @@ jobs:
     - name: Deploy the collection
       run: |
         yarn install
+        yarn pull
+        yarn convertAdvanced en
         yarn releaseAdvanced en
 
     - name: Send Slack notification
