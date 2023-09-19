@@ -39,6 +39,7 @@
     "prebuild:all": "yarn prebuild",
     "convert": "node -e 'require(\"./src/scripts/convert.js\").convert()'",
     "convert:all": "node -e 'require(\"./src/scripts/convert.js\").convertAll()'",
+    "prereleaseAdvanced": "yarn build:all",
     "prerelease": "yarn build:all",
     "prerelease:all": "yarn build:all",
     "release": "node -e 'require(\"./src/scripts/release.js\").release()'",

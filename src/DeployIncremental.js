@@ -22,27 +22,42 @@ const deployIncremental = async (privateRemoteCollectionId, localCollection, pub
 
   console.log('Incremental deployment of collection ', localCollection.info.name)
 
-  const collectioHeadHasChanged = await upadteCollectionHead(remoteCollection, localCollection)
+  // const collectioHeadHasChanged =
+  await upadteCollectionHead(remoteCollection, localCollection)
 
   remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
-  const foldersHaveChanged = await mergeFolders(remoteCollection, localCollection)
+
+  // const foldersHaveChanged =
+  await mergeFolders(remoteCollection, localCollection)
 
   remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
-  const requestsHaveChanged = await mergeRequests(remoteCollection, localCollection)
+
+  // const requestsHaveChanged =
+  await mergeRequests(remoteCollection, localCollection)
 
   remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
-  const responsesHaveChanged = await mergeResponses(remoteCollection, localCollection)
 
-  if (collectioHeadHasChanged || foldersHaveChanged || requestsHaveChanged || responsesHaveChanged) {
-    const msg = 'Merging to public collection'
-    console.log('\n' + msg + '...')
-    await new pmAPI.Collection(privateRemoteCollectionId).merge(publicRemoteCollectionId)
-      .then(() => { console.log(msg, '-> OK\n') })
-      .catch((error) => {
-        console.log(msg, '-> FAIL')
-        handlePostmanAPIError(error)
-      })
-  }
+  // const responsesHaveChanged =
+  await mergeResponses(remoteCollection, localCollection)
+
+  // should we always merge into the public collection?
+  // There is teh case that if an error happens in the merge phase
+  // the private collection is fully updated
+  // and in the next run the public collection will NOT be updated
+  // because there are no changes in the private collection
+
+  // if (!(collectioHeadHasChanged || foldersHaveChanged || requestsHaveChanged || responsesHaveChanged)) {
+  //   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed\n\n')
+  //   return
+  // }
+  const msg = 'Merging to public collection'
+  console.log('\n' + msg + '...')
+  await new pmAPI.Collection(privateRemoteCollectionId).merge(publicRemoteCollectionId)
+    .then(() => { console.log(msg, '-> OK\n') })
+    .catch((error) => {
+      console.log(msg, '-> FAIL')
+      handlePostmanAPIError(error)
+    })
   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed\n\n')
 }
 
@@ -56,22 +71,36 @@ async function upadteCollectionHead (remoteCollection, localCollection) {
   const localEmptyCollection = { ...localCollection }
   localEmptyCollection.item = []
 
+  // Check changes in info
+  const hasChangesInfo = checkInfoChanges(remoteCollection, localCollection)
+
   // Check if there are changes in the Authorization
   const hasChangesAuth = checkObjectChanges(remoteCollection.collection.auth, localEmptyCollection.auth)
 
   // Check if there are changes in the Scripts (pre-request and tests)
-  const hasChangesScripts = checkScriptChanges(remoteCollection, localEmptyCollection)
+  const hasChangesPreRequestScript = checkScriptChanges('prerequest', remoteCollection, localEmptyCollection)
+
+  const hasChangesTestScript = checkScriptChanges('test', remoteCollection, localEmptyCollection)
 
   // Check if there are changes in the Variables
   const hasChangesVariables = checkVariableChanges(remoteCollection, localEmptyCollection)
 
-  const hasChanges = hasChangesAuth || hasChangesScripts || hasChangesVariables
+  const hasFolderSortChanges = checkFolderSortChanges(remoteCollection, localCollection)
+
+  const hasChanges = (
+    hasFolderSortChanges ||
+    hasChangesInfo ||
+    hasChangesAuth ||
+    hasChangesPreRequestScript ||
+    hasChangesTestScript ||
+    hasChangesVariables
+  )
 
   if (hasChanges) {
     const msg = 'Updating collection head'
     console.log('\n' + msg + '...')
     await new pmAPI.Collection(remoteCollection.collection.info.uid)
-      .update({ collection: localCollection })
+      .update({ collection: localEmptyCollection })
       .then(() => { console.log(msg, '-> OK\n') })
       .catch((error) => {
         console.log(msg, '-> FAIL')
@@ -81,7 +110,43 @@ async function upadteCollectionHead (remoteCollection, localCollection) {
   return hasChanges
 }
 
+const checkFolderSortChanges = (remoteCollection, localCollection) => {
+  const remoteFolders = remoteCollection.collection.item
+    .map(folder => ({ id: folder.id }))
+  const localFolders = localCollection.item
+    .map(folder => ({ id: folder.id }))
+
+  const remoteFoldersHash = GenID(JSON.stringify(remoteFolders))
+  const localFoldersHash = GenID(JSON.stringify(localFolders))
+
+  return remoteFoldersHash !== localFoldersHash
+}
+
+const checkInfoChanges = (remoteCollection, localEmptyCollection) => {
+  // collection info does not have a specific id
+  // so we need to generate a hash and compare them
+  // The hash is only beig generated for name, description and schema
+
+  const { name, description, schema } = remoteCollection.collection.info
+  const remoteInfo = { name, description, schema }
+
+  const { name: localName, description: localDescription, schema: localSchema } = localEmptyCollection.info
+  const localInfo = { name: localName, description: localDescription, schema: localSchema }
+
+  const remoteInfoHash = calculateHash(JSON.stringify(remoteInfo))
+  const localInfoHash = calculateHash(JSON.stringify(localInfo))
+
+  return remoteInfoHash !== localInfoHash
+}
+
 const checkObjectChanges = (remoteCollectionObject, localCollectionObject) => {
+  if (!remoteCollectionObject && !localCollectionObject) {
+    return false
+  }
+  if (!remoteCollectionObject || !localCollectionObject) {
+    return true
+  }
+
   // certain object like auth do  not have an id,
   // so we need to generate on and compare them
   const remoteCollectionAuthID = GenID(JSON.stringify(remoteCollectionObject))
@@ -89,22 +154,41 @@ const checkObjectChanges = (remoteCollectionObject, localCollectionObject) => {
   return remoteCollectionAuthID !== localCollectionAuthID
 }
 
-const checkScriptChanges = (remoteCollection, localCollection) => {
-  let remoteScript = null
-  let localScript = null
-  if (remoteCollection.collection.event) {
-    remoteScript = JSON.stringify(remoteCollection.collection.event)
-  }
-  if (localCollection.event) {
-    localScript = JSON.stringify(localCollection.event)
-  }
+const checkScriptChanges = (scriptType, remoteCollection, localCollection) => {
+  const remoteScript = remoteCollection.collection.event.find(event => event.listen === scriptType)
+  const localScript = localCollection.event.find(event => event.listen === scriptType)
 
-  return GenID(remoteScript) !== GenID(localScript)
+  if (!remoteScript && !localScript) {
+    return false
+  }
+  if (!remoteScript || !localScript) {
+    return true
+  }
+  // files can be big, so we hash them
+  const remoteHash = calculateHash(remoteScript.script.exec[0])
+  const localHash = calculateHash(localScript.script.exec[0])
+
+  return remoteHash !== localHash
 }
 
 const checkVariableChanges = (remoteCollection, localCollection) => {
-  const remoteVariablesHash = GenID(JSON.stringify(remoteCollection.collection.variable))
-  const localVariablesHash = GenID(JSON.stringify(localCollection.variable))
+  const remoteVariables = remoteCollection.collection.variable
+  const localVariables = localCollection.variable.map(variable => ({ key: variable.key, value: variable.value }))
+
+  // check if null
+  if (!remoteVariables && !localVariables) {
+    return false
+  }
+  if (!remoteVariables || !localVariables) {
+    return true
+  }
+
+  // although the local collection does have a deterministic id
+  // the remote variable looses that value when it is updated
+  // so we need to generate an id for the remote variable
+
+  const remoteVariablesHash = GenID(remoteVariables)
+  const localVariablesHash = GenID(localVariables)
 
   return remoteVariablesHash !== localVariablesHash
 }
@@ -154,6 +238,21 @@ async function mergeFolders (remoteCollection, localCollection) {
         handlePostmanAPIError(error)
       })
   }
+
+  // sort folders is not supported for now
+  // const order = localFolders.map(folder => folder.id)
+  // const msg = ' Sorting folders'
+
+  // // create a temporsary root folder
+  // const rootFolder = await new pmAPI.Folder(remoteCollection.collection.info.uid)
+  //   .create({ id: GenID(), name: 'root', folders: order })
+  //   .catch((error) => {
+  //     console.log(msg, '-> FAIL')
+  //     handlePostmanAPIError(error)
+  //   })
+  // console.log('root folder', rootFolder)
+  // // move all remote folders into root folder
+
   return hasChanges
 }
 
@@ -187,16 +286,20 @@ async function mergeRequests (remoteCollection, localCollection) {
     for (const request of newRequests) {
       const pmRequest = pmConvert.requestFromLocal(request)
       const msg = `   Creating new request [${request.name}]`
-      // console.log('request: \n', JSON.stringify(request, 2))
+
       await new pmAPI.Request(remoteCollection.collection.info.uid)
         .create(pmRequest, localFolder.id)
-        .then(() => {
+        .then((req) => {
           console.log(msg, '-> OK')
+          return req
         })
         .catch((error) => {
           console.log(msg, '-> FAIL')
           handlePostmanAPIError(error)
         })
+      // console.log('\nequest', request)
+      // console.log('\npmRequest', pmRequest)
+      // console.log('\nremoteRequest', remoteRequest)
     }
 
     // delete old requests
@@ -320,6 +423,7 @@ async function refreshRemoteCollection (remoteCollectionID) {
     })
   return remoteCollection
 }
+
 // Handle axios error
 const handlePostmanAPIError = (error) => {
   if (error.response) {
@@ -336,8 +440,13 @@ const handlePostmanAPIError = (error) => {
     }
   }
   const { method, url, data } = error.config
-  console.log('REQUEST DETAILS', { method, url, data })
+  const smallData = data.substring(0, 1000)
+  console.log('REQUEST DETAILS', { method, url, smallData })
   process.exit(1)
+}
+
+const calculateHash = (stringToHash) => {
+  return crypto.createHash('sha256').update(stringToHash).digest('hex')
 }
 
 module.exports = {

@@ -79,7 +79,7 @@ class CollectionAdvanced extends Collection {
         {
           key: 'token',
           value: '{{access_token}}',
-          type: 'any'
+          type: 'string'
         }
 
       ]
