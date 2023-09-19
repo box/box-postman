@@ -1,5 +1,5 @@
 # The name of this GH action
-name: Deploy
+name: Deploy Advanced
 
 # Defines when this action should be run
 on:
