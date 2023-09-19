@@ -201,6 +201,21 @@ async function mergeFolders (remoteCollection, localCollection) {
         handlePostmanAPIError(error)
       })
   }
+
+  // sort folders is not supported for now
+  // const order = localFolders.map(folder => folder.id)
+  // const msg = ' Sorting folders'
+
+  // // create a temporsary root folder
+  // const rootFolder = await new pmAPI.Folder(remoteCollection.collection.info.uid)
+  //   .create({ id: GenID(), name: 'root', folders: order })
+  //   .catch((error) => {
+  //     console.log(msg, '-> FAIL')
+  //     handlePostmanAPIError(error)
+  //   })
+  // console.log('root folder', rootFolder)
+  // // move all remote folders into root folder
+
   return hasChanges
 }
 
