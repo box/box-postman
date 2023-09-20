@@ -63,7 +63,7 @@ class CollectionAdvanced extends Collection {
   // PRIVATE
 
   authForEndPoint (endpoint) {
-    // RB: All endpoints inherit fomr the collection
+    // RB: All endpoints inherit from the collection
     return null
   }
 

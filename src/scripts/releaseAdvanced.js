@@ -9,7 +9,7 @@ const release = async (locale = process.argv[1]) => {
   const localCollection = JSON.parse(fs.readFileSync(`${OUTPUT_FOLDER}/collection.advanced.${locale}.json`).toString())
   const privateRemoteCollectionId = process.env[`PRIVATE_${locale.toUpperCase()}_POSTMAN_COLLECTION_ADVANCED_ID`]
   const publicRemoteCollectionId = process.env[`PUBLIC_${locale.toUpperCase()}_POSTMAN_COLLECTION_ADVANCED_ID`]
-  await deployIncremental(privateRemoteCollectionId, localCollection, publicRemoteCollectionId)
+  await deployIncremental(privateRemoteCollectionId, localCollection, publicRemoteCollectionId, false)
 }
 
 const releaseAll = async () => {

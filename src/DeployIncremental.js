@@ -15,9 +15,15 @@
 
 const pmConvert = require('./PostmanCovertions')
 const pmAPI = require('./postmanAPI')
+const injectUtils = require('./CollectionAdvancedUtils').injectUtils
 const { GenID } = require('./Utils')
 
-const deployIncremental = async (privateRemoteCollectionId, localCollection, publicRemoteCollectionId) => {
+const deployIncremental = async (privateRemoteCollectionId, localCollection, publicRemoteCollectionId, withUtils = true) => {
+  // inject extra Postman objects
+  if (withUtils) {
+    localCollection = injectUtils(localCollection)
+  }
+
   let remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
 
   console.log('Incremental deployment of collection ', localCollection.info.name)
