@@ -7,7 +7,6 @@
 
 const check_script_execution = () => {
   // determine if this script be executed
-  const req = pm.request
   let reqUrl = pm.request.url.protocol + '://' + pm.request.url.host
   for (const itemPath of pm.request.url.path) {
     reqUrl = reqUrl + '/' + itemPath
