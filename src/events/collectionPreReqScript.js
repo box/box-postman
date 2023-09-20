@@ -207,7 +207,7 @@ const box_postman = () => {
   if (is_expired) {
     switch (env_type) {
       case EnvType.BEARER:
-        console.info('can`t refresh developer token, sending as is...')
+        console.info('can`t refresh bearer token, sending as is...')
         break
       case EnvType.OAUTH:
         /* eslint-disable no-case-declarations */
