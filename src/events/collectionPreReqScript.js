@@ -4,6 +4,30 @@
 
 /* eslint-disable camelcase */
 /* eslint-disable object-shorthand */
+
+const check_script_execution = () => {
+  // determine if this script be executed
+  const req = pm.request
+  let reqUrl = pm.request.url.protocol + '://' + pm.request.url.host
+  for (const itemPath of pm.request.url.path) {
+    reqUrl = reqUrl + '/' + itemPath
+  }
+
+  // Reject requests where auth type exists
+  if (pm.request.auth) { return false }
+
+  // black list
+  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{api.box.com}}/oauth2')) { return false }
+
+  // white list
+  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{api.box.com}}')) { return true }
+  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{upload.box.com}}')) { return true }
+  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{dl.boxcloud.com}}')) { return true }
+
+  // reject everything else
+  return false
+}
+
 const check_environment = () => {
   // check current environment name
   const env_type = pm.environment.get('box_env_type')
@@ -157,15 +181,15 @@ function get_jwt_assertion () {
   const header = { alg: 'RS512', typ: 'JWT', kid: kid }
 
   const claims =
-    {
-      iss: iss,
-      sub: sub,
-      box_sub_type: box_sub_type,
-      aud: aud,
-      jti: jti,
-      exp: exp,
-      iat: iat
-    }
+      {
+        iss: iss,
+        sub: sub,
+        box_sub_type: box_sub_type,
+        aud: aud,
+        jti: jti,
+        exp: exp,
+        iat: iat
+      }
 
   const jwt = KJUR.jws.JWS.sign(null, header, claims, private_key)
 
@@ -194,10 +218,10 @@ async function refresh_jwt (assertion) {
 }
 
 const box_postman = () => {
-  // if authotization type is not null (not inherited) then exit the script
-  if (pm.request.auth) { return }
-
   //   console.info('Collection variables',pm.collectionVariables.toObject())
+  //   console.info('Request',pm.request)
+
+  if (!check_script_execution()) { return }
 
   const env_type = check_environment()
 
@@ -209,7 +233,7 @@ const box_postman = () => {
   if (is_expired) {
     switch (env_type) {
       case EnvType.BEARER:
-        console.info('can`t refresh bearer token, sending as is...')
+        console.info('Bearer token can not be refreshed, sending as is...')
         break
       case EnvType.OAUTH:
         /* eslint-disable no-case-declarations */
