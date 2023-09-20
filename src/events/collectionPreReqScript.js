@@ -128,13 +128,13 @@ async function refresh_oauth () {
 }
 
 function get_jwt_assertion () {
-  // jsrsasign lib
-  const jsrsasign_lib = pm.environment.get('jsrsasign')
+  // libJSRSASign lib
+  const libJSRSASign = pm.collectionVariables.get('libJSRSASign')
   /* eslint-disable no-global-assign */
   navigator = {}
   window = {}
   /* eslint-disable no-eval */
-  eval(jsrsasign_lib)
+  eval(libJSRSASign)
 
   // UUID
   const uuid = require('uuid')
@@ -169,9 +169,9 @@ function get_jwt_assertion () {
 
   const jwt = KJUR.jws.JWS.sign(null, header, claims, private_key)
 
-  console.log(`header: ${JSON.stringify(header)}`)
-  console.log(`claim set: ${JSON.stringify(claims)}`)
-  console.log('JWT Assertion: ', jwt)
+  //   console.log(`header: ${JSON.stringify(header)}`)
+  //   console.log(`claim set: ${JSON.stringify(claims)}`)
+  //   console.log('JWT Assertion: ', jwt)
 
   return jwt
 }
@@ -196,6 +196,8 @@ async function refresh_jwt (assertion) {
 const box_postman = () => {
   // if authotization type is not null (not inherited) then exit the script
   if (pm.request.auth) { return }
+
+  //   console.info('Collection variables',pm.collectionVariables.toObject())
 
   const env_type = check_environment()
 
