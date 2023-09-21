@@ -4,16 +4,39 @@
 
 /* eslint-disable camelcase */
 /* eslint-disable object-shorthand */
+
+const check_script_execution = () => {
+  // determine if this script be executed
+  let reqUrl = pm.request.url.protocol + '://' + pm.request.url.host
+  for (const itemPath of pm.request.url.path) {
+    reqUrl = reqUrl + '/' + itemPath
+  }
+
+  // Reject requests where auth type exists
+  if (pm.request.auth) { return false }
+
+  // black list
+  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{api.box.com}}/oauth2')) { return false }
+
+  // white list
+  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{api.box.com}}')) { return true }
+  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{upload.box.com}}')) { return true }
+  if (reqUrl.startsWith(pm.request.url.protocol + '://' + '{{dl.boxcloud.com}}')) { return true }
+
+  // reject everything else
+  return false
+}
+
 const check_environment = () => {
   // check current environment name
-  const env_name = pm.environment.name
+  const env_type = pm.environment.get('box_env_type')
 
-  if (!env_name) { throw new Error('No environment selected. Please select one of the supported Box environments') }
+  if (!env_type) { throw new Error('Unable to identify environment type. Please select a supported environment') }
 
   const error_msg = []
 
   // check environment variables
-  if (env_name === DEV_TOKEN) {
+  if (env_type === EnvType.BEARER) {
     const access_token = pm.environment.get('access_token')
     if (!access_token) { error_msg.push('Access Token') }
   } else {
@@ -23,13 +46,12 @@ const check_environment = () => {
     if (!client_id) { error_msg.push('Client_id') }
     if (!client_secret) { error_msg.push('Client secret') }
   }
-
-  if (env_name === OAUTH) {
+  if (env_type === EnvType.OAUTH) {
     const refresh_token = pm.environment.get('refresh_token')
     if (!refresh_token) { error_msg.push('Refresh token') }
   }
 
-  if (env_name === CCG || env_name === JWT) {
+  if (env_type === EnvType.CCG || env_type === EnvType.JWT) {
     const box_subject_type = pm.environment.get('box_subject_type')
     const box_subject_id = pm.environment.get('box_subject_id')
 
@@ -43,7 +65,7 @@ const check_environment = () => {
     if (!box_subject_id) { error_msg.push('Box subject id') }
   }
 
-  if (env_name === JWT) {
+  if (env_type === EnvType.JWT) {
     const key_id = pm.environment.get('key_id')
     const private_key_encrypted = pm.environment.get('private_key_encrypted')
     const private_key_passphrase = pm.environment.get('private_key_passphrase')
@@ -57,7 +79,7 @@ const check_environment = () => {
     // there is an error
     throw new Error('Invalid enviroment variables: ' + error_msg.join(', '))
   }
-  return env_name
+  return env_type
 }
 
 const get_token = (urlencoded) => {
@@ -129,13 +151,13 @@ async function refresh_oauth () {
 }
 
 function get_jwt_assertion () {
-  // jsrsasign lib
-  const jsrsasign_lib = pm.environment.get('jsrsasign')
+  // libJSRSASign lib
+  const libJSRSASign = pm.collectionVariables.get('libJSRSASign')
   /* eslint-disable no-global-assign */
   navigator = {}
   window = {}
   /* eslint-disable no-eval */
-  eval(jsrsasign_lib)
+  eval(libJSRSASign)
 
   // UUID
   const uuid = require('uuid')
@@ -158,21 +180,21 @@ function get_jwt_assertion () {
   const header = { alg: 'RS512', typ: 'JWT', kid: kid }
 
   const claims =
-    {
-      iss: iss,
-      sub: sub,
-      box_sub_type: box_sub_type,
-      aud: aud,
-      jti: jti,
-      exp: exp,
-      iat: iat
-    }
+      {
+        iss: iss,
+        sub: sub,
+        box_sub_type: box_sub_type,
+        aud: aud,
+        jti: jti,
+        exp: exp,
+        iat: iat
+      }
 
   const jwt = KJUR.jws.JWS.sign(null, header, claims, private_key)
 
-  console.log(`header: ${JSON.stringify(header)}`)
-  console.log(`claim set: ${JSON.stringify(claims)}`)
-  console.log('JWT Assertion: ', jwt)
+  //   console.log(`header: ${JSON.stringify(header)}`)
+  //   console.log(`claim set: ${JSON.stringify(claims)}`)
+  //   console.log('JWT Assertion: ', jwt)
 
   return jwt
 }
@@ -195,10 +217,12 @@ async function refresh_jwt (assertion) {
 }
 
 const box_postman = () => {
-  // if authotization type is not null (not inherited) then exit the script
-  if (pm.request.auth) { return }
+  //   console.info('Collection variables',pm.collectionVariables.toObject())
+  //   console.info('Request',pm.request)
 
-  const env = check_environment()
+  if (!check_script_execution()) { return }
+
+  const env_type = check_environment()
 
   // determine if the Access Token has expired
   const expiresAt = pm.environment.get('expires_at') || 0
@@ -206,21 +230,21 @@ const box_postman = () => {
 
   // refresh the access token if needed
   if (is_expired) {
-    switch (env) {
-      case DEV_TOKEN:
-        console.info('can`t refresh developer token, sending as is...')
+    switch (env_type) {
+      case EnvType.BEARER:
+        console.info('Bearer token can not be refreshed, sending as is...')
         break
-      case OAUTH:
+      case EnvType.OAUTH:
         /* eslint-disable no-case-declarations */
         const current_refresh_expiration = pm.environment.get('refresh_token_expires_at') || 0
         const is_expired = Date.now() > Number(current_refresh_expiration)
         if (is_expired) { throw new Error('Refresh token has expired') }
         refresh_oauth()
         break
-      case CCG:
+      case EnvType.CCG:
         refresh_ccg()
         break
-      case JWT:
+      case EnvType.JWT:
         const assertion = get_jwt_assertion()
         refresh_jwt(assertion)
         break
@@ -230,10 +254,12 @@ const box_postman = () => {
   }
 }
 
-// Defined environment names
-const DEV_TOKEN = 'Box DevToken'
-const OAUTH = 'Box oAuth 2.0'
-const CCG = 'Box CCG'
-const JWT = 'Box JWT'
+// Defined environment types
+const EnvType = {
+  BEARER: 'BEARER',
+  OAUTH: 'OAUTH',
+  CCG: 'CCG',
+  JWT: 'JWT'
+}
 
 box_postman()

@@ -114,6 +114,7 @@ const checkFolderSortChanges = (remoteCollection, localCollection) => {
   const remoteFolders = remoteCollection.collection.item
     .map(folder => ({ id: folder.id }))
   const localFolders = localCollection.item
+    .filter(folder => !folder.folder)
     .map(folder => ({ id: folder.id }))
 
   const remoteFoldersHash = GenID(JSON.stringify(remoteFolders))
@@ -195,9 +196,9 @@ const checkVariableChanges = (remoteCollection, localCollection) => {
 
 async function mergeFolders (remoteCollection, localCollection) {
   console.log(' Deploying Folders:')
-  const remoteFolders = remoteCollection.collection.item
-    .map(folder => ({ id: folder.id, name: folder.name }))
-  const localFolders = localCollection.item
+
+  const remoteFolders = getAllFoldersFromCollectionItem(remoteCollection.collection.item)
+  const localFolders = localCollection.item // all folders
 
   const newFolders = localFolders.filter(localFolder => !remoteFolders.find(remoteFolder => remoteFolder.id === localFolder.id))
   const oldFolders = remoteFolders.filter(remoteFolder => !localFolders.find(localFolder => localFolder.id === remoteFolder.id))
@@ -257,20 +258,27 @@ async function mergeFolders (remoteCollection, localCollection) {
 }
 
 async function mergeRequests (remoteCollection, localCollection) {
-  const remoteFoldersRequest = remoteCollection.collection.item
-    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
-  const localFoldersRequest = localCollection.item
-    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
+  const remoteFolders = getAllFoldersFromCollectionItem(remoteCollection.collection.item)
+  const localFolders = localCollection.item // all folders
 
   console.log('\n Deploying Requests:')
   let anyRequestHasChanged = false
 
   // loop folders
-  for (const localFolder of localFoldersRequest) {
-    const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
+  for (const localFolder of localFolders) {
+    const remoteRemoteFolder = remoteFolders.find(remoteFolder => ((remoteFolder.id === localFolder.id)))
+
+    // TODO: RB: get requests by folder
+    // handle undefined items
+    remoteRemoteFolder.item = remoteRemoteFolder.item || []
+
+    // filter out anything that is not a request
+    remoteRemoteFolder.item = remoteRemoteFolder.item.filter(request => request.request)
+
+    const remoteRequests = remoteRemoteFolder.item
     const localRequests = localFolder.item
 
-    // create new requests
+    // Identify old and new requests
     const newRequests = localRequests.filter(localRequest => !remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id))
     const oldRequests = remoteRequests.filter(remoteRequest => !localRequests.find(localRequest => localRequest.id === remoteRequest.id))
 
@@ -284,7 +292,13 @@ async function mergeRequests (remoteCollection, localCollection) {
 
     // create new requests
     for (const request of newRequests) {
-      const pmRequest = pmConvert.requestFromLocal(request)
+      // check request format and convert if necessary
+      let pmRequest = null
+      if (!request.request) { // => Postman Format
+        pmRequest = request
+      } else { // => OpenAPI Format
+        pmRequest = pmConvert.requestFromLocal(request)
+      }
       const msg = `   Creating new request [${request.name}]`
 
       await new pmAPI.Request(remoteCollection.collection.info.uid)
@@ -335,22 +349,33 @@ async function mergeRequests (remoteCollection, localCollection) {
 
 async function mergeResponses (remoteCollection, localCollection) {
   console.log('\n Deploying Response:')
-  const remoteFoldersRequest = remoteCollection.collection.item
-    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
-
-  const localFoldersRequest = localCollection.item
-    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
+  const remoteFolders = getAllFoldersFromCollectionItem(remoteCollection.collection.item)
+  const localFolders = localCollection.item
 
   let anyResponseHasChanged = false
   // loop folders
-  for (const localFolder of localFoldersRequest) {
-    const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
+  for (const localFolder of localFolders) {
+    const remoteRemoteFolder = remoteFolders.find(remoteFolder => ((remoteFolder.id === localFolder.id)))
+
+    // handle undefined items
+    remoteRemoteFolder.item = remoteRemoteFolder.item || []
+
+    // filter out anything that is not a request
+    remoteRemoteFolder.item = remoteRemoteFolder.item.filter(request => request.request)
+
+    const remoteRequests = remoteRemoteFolder.item
     const localRequests = localFolder.item
+
     console.log('  In Folder: ', localFolder.name)
     // loop requests
     for (const localRequest of localRequests) {
+      // Postman Request format does not have a response property
       const remoteResponses = remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id).response
       const localResponses = localRequest.response
+      // the request may not have responses
+      if (!localResponses) {
+        continue
+      }
 
       const newResponses = localResponses.filter(localResponse => !remoteResponses.find(remoteResponse => remoteResponse.id === localResponse.id))
       const oldResponses = remoteResponses.filter(remoteResponse => !localResponses.find(localResponse => localResponse.id === remoteResponse.id))
@@ -422,6 +447,22 @@ async function refreshRemoteCollection (remoteCollectionID) {
       handlePostmanAPIError(error)
     })
   return remoteCollection
+}
+
+// return all folders in the collection
+// independently of where they are
+const getAllFoldersFromCollectionItem = (collectionItem) => {
+  const folders = []
+  const processItem = (item) => {
+    if (!item.request && !item.responses) {
+      folders.push({ id: item.id, name: item.name, item: item.item })
+    }
+    if (item.item) {
+      item.item.forEach(processItem)
+    }
+  }
+  collectionItem.forEach(processItem)
+  return folders
 }
 
 // Handle axios error

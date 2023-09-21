@@ -205,10 +205,13 @@ class Collection {
   }
 
   // create a folder object
-  createFolder (folderName) {
+  createFolder (folderName, folderParentId = null, description = null) {
     const folder = {
       name: folderName,
+      folder: folderParentId,
+      description: description,
       item: []
+
     }
     const folderId = Utils.GenID(JSON.stringify(folder))
     folder.id = folderId
