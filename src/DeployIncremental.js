@@ -15,15 +15,9 @@
 
 const pmConvert = require('./PostmanCovertions')
 const pmAPI = require('./postmanAPI')
-const injectUtils = require('./CollectionAdvancedUtils').injectUtils
 const { GenID } = require('./Utils')
 
-const deployIncremental = async (privateRemoteCollectionId, localCollection, publicRemoteCollectionId, withUtils = true) => {
-  // inject extra Postman objects
-  if (withUtils) {
-    localCollection = injectUtils(localCollection)
-  }
-
+const deployIncremental = async (privateRemoteCollectionId, localCollection, publicRemoteCollectionId) => {
   let remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
 
   console.log('Incremental deployment of collection ', localCollection.info.name)
@@ -273,10 +267,34 @@ async function mergeRequests (remoteCollection, localCollection) {
 
   // loop folders
   for (const localFolder of localFoldersRequest) {
-    const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
+    // original code
+    // const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
+    // const localRequests = localFolder.item
+    //
+    // need to handle the case where the folder is empty
+    // in that case the item property is undefined
+    const remoteRemoteFolder = remoteFoldersRequest.find(remoteFolder => ((remoteFolder.id === localFolder.id)))
+
+    // subfolders exist in the local collection as root folders
+    // but in the remote collection they are in the parent folder
+    // so we need to handle the case where the subfolder
+    // exists as a root element in the local collection
+    // but not in the remote collection
+    if (!remoteRemoteFolder) {
+      continue
+    }
+
+    // handle undifined items
+    remoteRemoteFolder.item = remoteRemoteFolder.item || []
+
+    // filter out anything that is not a request
+    remoteRemoteFolder.item = remoteRemoteFolder.item.filter(request => request.request)
+
+    const remoteRequests = remoteRemoteFolder.item
+
     const localRequests = localFolder.item
 
-    // create new requests
+    // Identify old and new requests
     const newRequests = localRequests.filter(localRequest => !remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id))
     const oldRequests = remoteRequests.filter(remoteRequest => !localRequests.find(localRequest => localRequest.id === remoteRequest.id))
 
@@ -350,8 +368,30 @@ async function mergeResponses (remoteCollection, localCollection) {
   let anyResponseHasChanged = false
   // loop folders
   for (const localFolder of localFoldersRequest) {
-    const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
+    // const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
+    // need to handle the case where the folder is empty
+    // in that case the item property is undefined
+    const remoteRemoteFolder = remoteFoldersRequest.find(remoteFolder => ((remoteFolder.id === localFolder.id)))
+
+    // subfolders exist in the local collection as root folders
+    // but in the remote collection they are in the parent folder
+    // so we need to handle the case where the subfolder
+    // exists as a root element in the local collection
+    // but not in the remote collection
+    if (!remoteRemoteFolder) {
+      continue
+    }
+
+    // handle undifined items
+    remoteRemoteFolder.item = remoteRemoteFolder.item || []
+
+    // filter out anything that is not a request
+    remoteRemoteFolder.item = remoteRemoteFolder.item.filter(request => request.request)
+
+    const remoteRequests = remoteRemoteFolder.item
+
     const localRequests = localFolder.item
+
     console.log('  In Folder: ', localFolder.name)
     // loop requests
     for (const localRequest of localRequests) {

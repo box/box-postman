@@ -8,7 +8,7 @@ const Utils = require('./Utils')
 
 const injectUtils = (localCollection) => {
   // insert Utils folder at top level item
-  localCollection.item.unshift(genFolder('(Utils)', 'Utility scripts for Postman Collection'))
+  localCollection.item.unshift(genFolder('(Utilities)', 'Utility scripts for Postman Collection'))
 
   return localCollection
 }

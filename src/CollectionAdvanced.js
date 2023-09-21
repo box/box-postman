@@ -51,16 +51,41 @@ class CollectionAdvanced extends Collection {
    */
   // RB: override
   process () {
-    return {
+    const localCollection = {
       info: this.getInfo(),
       item: this.getItems(),
       event: [this.collectionPreRequest()],
       variable: this.getVariables(),
       auth: this.defaultAuth()
     }
+
+    // RB: inject utilities
+    this.injectUtilities(localCollection)
+
+    return localCollection
   }
 
   // PRIVATE
+
+  injectUtilities (localCollection) {
+    // insert Utils folder at top level item
+    const folderUtilities = this.createFolder('(Utilities)', null, 'Utility scripts for Postman Collection')
+    localCollection.item.unshift(folderUtilities)
+
+    // insert create environment into Utils folder
+    const folderCreateEnvironments = this.createFolder('Create Environments', folderUtilities.id, 'Utility scripts for Postman Collection')
+    localCollection.item.splice(1, 0, folderCreateEnvironments)
+
+    // insert test environment into Utils folder
+    const folderTestEnvironments = this.createFolder('Test Environments', folderUtilities.id, 'Utility scripts for Postman Collection')
+    localCollection.item.splice(2, 0, folderTestEnvironments)
+
+    // insert Authorixe OAuth Box App Helper into Utils folder
+    const folderAuthorizeOAuthBoxAppHelper = this.createFolder('Authorize OAuth Box App Helper', folderUtilities.id, 'Utility scripts for Postman Collection')
+    localCollection.item.splice(3, 0, folderAuthorizeOAuthBoxAppHelper)
+
+    return localCollection
+  }
 
   authForEndPoint (endpoint) {
     // RB: All endpoints inherit from the collection
