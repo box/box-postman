@@ -196,13 +196,11 @@ const checkVariableChanges = (remoteCollection, localCollection) => {
 
 async function mergeFolders (remoteCollection, localCollection) {
   console.log(' Deploying Folders:')
-  const remoteFolders = remoteCollection.collection.item
-    .map(folder => ({ id: folder.id, name: folder.name }))
-  const localFolders = localCollection.item
+
+  const remoteFolders = getAllFoldersFromCollectionItem(remoteCollection.collection.item)
+  const localFolders = localCollection.item // all folders
 
   const newFolders = localFolders.filter(localFolder => !remoteFolders.find(remoteFolder => remoteFolder.id === localFolder.id))
-
-  // TODO: RB: need a method to return all remot folders independent where they are in the collection
   const oldFolders = remoteFolders.filter(remoteFolder => !localFolders.find(localFolder => localFolder.id === remoteFolder.id))
 
   let hasChanges = newFolders.length > 0 || oldFolders.length > 0
@@ -260,46 +258,24 @@ async function mergeFolders (remoteCollection, localCollection) {
 }
 
 async function mergeRequests (remoteCollection, localCollection) {
-  const remoteFoldersRequest = remoteCollection.collection.item
-    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
-  const localFoldersRequest = localCollection.item
-    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
+  const remoteFolders = getAllFoldersFromCollectionItem(remoteCollection.collection.item)
+  const localFolders = localCollection.item // all folders
 
   console.log('\n Deploying Requests:')
   let anyRequestHasChanged = false
 
   // loop folders
-  for (const localFolder of localFoldersRequest) {
-    // original code
-    // const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
-    // const localRequests = localFolder.item
-    //
-    // need to handle the case where the folder is empty
-    // in that case the item property is undefined
-    let remoteRemoteFolder = remoteFoldersRequest.find(remoteFolder => ((remoteFolder.id === localFolder.id)))
+  for (const localFolder of localFolders) {
+    const remoteRemoteFolder = remoteFolders.find(remoteFolder => ((remoteFolder.id === localFolder.id)))
 
-    // subfolders exist in the local collection as root folders
-    // but in the remote collection they are in the parent folder
-    // so we need to handle the case where the subfolder
-    // exists as a root element in the local collection
-    // but not in the remote collection
-    if (!remoteRemoteFolder) {
-      // try locating inside the first level items
-      remoteRemoteFolder = remoteFoldersRequest.find(remoteFolder => ((remoteFolder.item.id === localFolder.item.id)))
-    }
-
-    if (!remoteRemoteFolder) {
-      continue
-    }
-
-    // handle undifined items
+    // TODO: RB: get requests by folder
+    // handle undefined items
     remoteRemoteFolder.item = remoteRemoteFolder.item || []
 
     // filter out anything that is not a request
     remoteRemoteFolder.item = remoteRemoteFolder.item.filter(request => request.request)
 
     const remoteRequests = remoteRemoteFolder.item
-
     const localRequests = localFolder.item
 
     // Identify old and new requests
@@ -373,44 +349,33 @@ async function mergeRequests (remoteCollection, localCollection) {
 
 async function mergeResponses (remoteCollection, localCollection) {
   console.log('\n Deploying Response:')
-  const remoteFoldersRequest = remoteCollection.collection.item
-    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
-
-  const localFoldersRequest = localCollection.item
-    .map(folder => ({ id: folder.id, name: folder.name, item: folder.item }))
+  const remoteFolders = getAllFoldersFromCollectionItem(remoteCollection.collection.item)
+  const localFolders = localCollection.item
 
   let anyResponseHasChanged = false
   // loop folders
-  for (const localFolder of localFoldersRequest) {
-    // const remoteRequests = remoteFoldersRequest.find(remoteFolder => remoteFolder.id === localFolder.id).item
-    // need to handle the case where the folder is empty
-    // in that case the item property is undefined
-    const remoteRemoteFolder = remoteFoldersRequest.find(remoteFolder => ((remoteFolder.id === localFolder.id)))
+  for (const localFolder of localFolders) {
+    const remoteRemoteFolder = remoteFolders.find(remoteFolder => ((remoteFolder.id === localFolder.id)))
 
-    // subfolders exist in the local collection as root folders
-    // but in the remote collection they are in the parent folder
-    // so we need to handle the case where the subfolder
-    // exists as a root element in the local collection
-    // but not in the remote collection
-    if (!remoteRemoteFolder) {
-      continue
-    }
-
-    // handle undifined items
+    // handle undefined items
     remoteRemoteFolder.item = remoteRemoteFolder.item || []
 
     // filter out anything that is not a request
     remoteRemoteFolder.item = remoteRemoteFolder.item.filter(request => request.request)
 
     const remoteRequests = remoteRemoteFolder.item
-
     const localRequests = localFolder.item
 
     console.log('  In Folder: ', localFolder.name)
     // loop requests
     for (const localRequest of localRequests) {
+      // Postman Request format does not have a response property
       const remoteResponses = remoteRequests.find(remoteRequest => remoteRequest.id === localRequest.id).response
       const localResponses = localRequest.response
+      // the request may not have responses
+      if (!localResponses) {
+        continue
+      }
 
       const newResponses = localResponses.filter(localResponse => !remoteResponses.find(remoteResponse => remoteResponse.id === localResponse.id))
       const oldResponses = remoteResponses.filter(remoteResponse => !localResponses.find(localResponse => localResponse.id === remoteResponse.id))
@@ -482,6 +447,22 @@ async function refreshRemoteCollection (remoteCollectionID) {
       handlePostmanAPIError(error)
     })
   return remoteCollection
+}
+
+// return all folders in the collection
+// independently of where they are
+const getAllFoldersFromCollectionItem = (collectionItem) => {
+  const folders = []
+  const processItem = (item) => {
+    if (!item.request && !item.responses) {
+      folders.push({ id: item.id, name: item.name, item: item.item })
+    }
+    if (item.item) {
+      item.item.forEach(processItem)
+    }
+  }
+  collectionItem.forEach(processItem)
+  return folders
 }
 
 // Handle axios error
