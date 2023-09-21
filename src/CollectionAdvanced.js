@@ -69,19 +69,25 @@ class CollectionAdvanced extends Collection {
 
   injectUtilities (localCollection) {
     // insert Utils folder at top level item
+    // TODO: Add proper description
     const folderUtilities = this.createFolder('(Utilities)', null, 'Utility scripts for Postman Collection')
     localCollection.item.unshift(folderUtilities)
 
     // insert create environment into Utils folder
+    // TODO: Add proper description
     const folderCreateEnvironments = this.createFolder('Create Environments', folderUtilities.id, 'Utility scripts for Postman Collection')
+    folderCreateEnvironments.auth = this.authAPIKey()
     localCollection.item.splice(1, 0, folderCreateEnvironments)
 
     // insert test environment into Utils folder
+    // TODO: Add proper description
     const folderTestEnvironments = this.createFolder('Test Environments', folderUtilities.id, 'Utility scripts for Postman Collection')
     localCollection.item.splice(2, 0, folderTestEnvironments)
 
-    // insert Authorixe OAuth Box App Helper into Utils folder
+    // insert Authorize OAuth Box App Helper into Utils folder
+    // TODO: Add proper description
     const folderAuthorizeOAuthBoxAppHelper = this.createFolder('Authorize OAuth Box App Helper', folderUtilities.id, 'Utility scripts for Postman Collection')
+    folderAuthorizeOAuthBoxAppHelper.auth = this.authOAuth2AutoRefresh()
     localCollection.item.splice(3, 0, folderAuthorizeOAuthBoxAppHelper)
 
     return localCollection
@@ -111,24 +117,57 @@ class CollectionAdvanced extends Collection {
     }
   }
 
-  authOAuth () {
+  authAPIKey () {
+    return {
+      type: 'apikey',
+      apikey: [
+        {
+          key: 'value',
+          value: null
+        },
+        {
+          key: 'key',
+          value: 'X-API-Key'
+        }
+      ]
+    }
+  }
+
+  authOAuth2AutoRefresh () {
     return {
       type: 'oauth2',
       oauth2: [
         {
-          key: 'accessToken',
-          value: '{{access_token}}',
-          type: 'string'
+          key: 'clientSecret',
+          value: '{{client_secret}}'
         },
         {
-          key: 'tokenType',
-          value: 'bearer',
-          type: 'string'
+          key: 'clientId',
+          value: '{{client_id}}'
+        },
+        {
+          key: 'tokenName',
+          value: 'Box OAuth Token'
+        },
+        {
+          key: 'accessTokenUrl',
+          value: 'https://{{api.box.com}}/oauth2/token'
+        },
+        {
+          key: 'authUrl',
+          value: 'https://{{account.box.com}}/api/oauth2/authorize'
+        },
+        {
+          key: 'client_authentication',
+          value: 'body'
+        },
+        {
+          key: 'useBrowser',
+          value: true
         },
         {
           key: 'addTokenTo',
-          value: 'header',
-          type: 'string'
+          value: 'header'
         }
       ]
     }
