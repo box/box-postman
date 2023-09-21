@@ -285,7 +285,7 @@ class CollectionAdvanced extends Collection {
           key: 'workspace',
           value: '',
           equals: true,
-          description: 'Optional. A workspace ID in which to create the environment.\n\nIf you do not include this query parameter, the system creates the environment in your "My Workspace" workspace.',
+          description: 'A workspace ID in which to create the environment.\n\nIf you do not include this query parameter, the system creates the environment in your "My Workspace" workspace.',
           enabled: true
         }
       ],
