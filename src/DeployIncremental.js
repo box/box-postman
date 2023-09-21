@@ -114,6 +114,7 @@ const checkFolderSortChanges = (remoteCollection, localCollection) => {
   const remoteFolders = remoteCollection.collection.item
     .map(folder => ({ id: folder.id }))
   const localFolders = localCollection.item
+    .filter(folder => !folder.folder)
     .map(folder => ({ id: folder.id }))
 
   const remoteFoldersHash = GenID(JSON.stringify(remoteFolders))
@@ -200,6 +201,8 @@ async function mergeFolders (remoteCollection, localCollection) {
   const localFolders = localCollection.item
 
   const newFolders = localFolders.filter(localFolder => !remoteFolders.find(remoteFolder => remoteFolder.id === localFolder.id))
+
+  // TODO: RB: need a method to return all remot folders independent where they are in the collection
   const oldFolders = remoteFolders.filter(remoteFolder => !localFolders.find(localFolder => localFolder.id === remoteFolder.id))
 
   let hasChanges = newFolders.length > 0 || oldFolders.length > 0
@@ -273,13 +276,18 @@ async function mergeRequests (remoteCollection, localCollection) {
     //
     // need to handle the case where the folder is empty
     // in that case the item property is undefined
-    const remoteRemoteFolder = remoteFoldersRequest.find(remoteFolder => ((remoteFolder.id === localFolder.id)))
+    let remoteRemoteFolder = remoteFoldersRequest.find(remoteFolder => ((remoteFolder.id === localFolder.id)))
 
     // subfolders exist in the local collection as root folders
     // but in the remote collection they are in the parent folder
     // so we need to handle the case where the subfolder
     // exists as a root element in the local collection
     // but not in the remote collection
+    if (!remoteRemoteFolder) {
+      // try locating inside the first level items
+      remoteRemoteFolder = remoteFoldersRequest.find(remoteFolder => ((remoteFolder.item.id === localFolder.item.id)))
+    }
+
     if (!remoteRemoteFolder) {
       continue
     }
@@ -308,7 +316,13 @@ async function mergeRequests (remoteCollection, localCollection) {
 
     // create new requests
     for (const request of newRequests) {
-      const pmRequest = pmConvert.requestFromLocal(request)
+      // check request format and convert if necessary
+      let pmRequest = null
+      if (!request.request) { // => Postman Format
+        pmRequest = request
+      } else { // => OpenAPI Format
+        pmRequest = pmConvert.requestFromLocal(request)
+      }
       const msg = `   Creating new request [${request.name}]`
 
       await new pmAPI.Request(remoteCollection.collection.info.uid)

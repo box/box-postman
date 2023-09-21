@@ -77,6 +77,7 @@ class CollectionAdvanced extends Collection {
     // TODO: Add proper description
     const folderCreateEnvironments = this.createFolder('Create Environments', folderUtilities.id, 'Utility scripts for Postman Collection')
     folderCreateEnvironments.auth = this.authAPIKey()
+    folderCreateEnvironments.item.push(this.endPointGetWorkspaces(folderCreateEnvironments.id))
     localCollection.item.splice(1, 0, folderCreateEnvironments)
 
     // insert test environment into Utils folder
@@ -196,6 +197,34 @@ class CollectionAdvanced extends Collection {
     const hash = this.calculateHash(scriptString)
     script.script.id = Utils.GenID(hash) // RB: to big for uuidv5
     return script
+  }
+
+  // utilities end points from JSON file
+
+  endPointGetWorkspaces (folderParentId) {
+    const endPoint = {
+      folder: folderParentId,
+      name: 'Get Workspaces',
+      description: "Gets all [workspaces](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/creating-workspaces/). The response includes your workspaces and any workspaces that you have access to.\n\n**Note:**\n\nThis endpoint's response contains the `visibility` field. [Visibility](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/managing-workspaces/#changing-workspace-visibility) determines who can access the workspace:\n\n- `personal` — Only you can access the workspace.\n- `team` — All team members can access the workspace.\n- `private` — Only invited team members can access the workspace ([Professional and Enterprise plans only](https://www.postman.com/pricing)).\n- `public` — Everyone can access the workspace.\n- `partner` — Only invited team members and [partners](https://learning.postman.com/docs/collaborating-in-postman/using-workspaces/partner-workspaces/) can access the workspace ([Enterprise Ultimate plans](https://www.postman.com/pricing) only).",
+      method: 'GET',
+      url: 'https://api.getpostman.com/workspaces',
+      queryParams: [
+        {
+          key: 'type',
+          value: '<string>',
+          description: 'The type of workspace to filter the response by:\n\n* `personal`\n* `team`\n* `private`\n* `public`\n* `partner`',
+          enabled: false
+        },
+        {
+          key: 'include',
+          value: '<string>',
+          description: "Include the following information in the endpoint's response:\n- `mocks:deactivated` — Include all deactivated mock servers in the response.",
+          enabled: false
+        }
+      ]
+    }
+    endPoint.id = Utils.GenID(JSON.stringify(endPoint))
+    return endPoint
   }
 }
 
