@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const fs = require('fs')
 const Utils = require('./Utils')
+const { uniq } = require('lodash')
 
 const Collection = require('./Collection')
 
@@ -66,6 +67,25 @@ class CollectionAdvanced extends Collection {
   }
 
   // PRIVATE
+
+  /**
+   * Extracts all server URLs as variables
+   */
+  getVariables () {
+    const variables = uniq(Object.values(this.openapi.paths).flatMap(endpoints => (
+      Object.values(endpoints).map(endpoint => this.server(endpoint).host)
+    ))).map(host => ({
+      id: Utils.GenID(host),
+      key: host, // .replace(/\./g, '_'),
+      value: host,
+      type: 'string'
+    }))
+    // add a variable for each of the JWT JS 3rd party libraries
+    const libJSRSASign = this.variableLibJaRsaSign()
+
+    variables.push(libJSRSASign)
+    return variables
+  }
 
   injectUtilities (localCollection) {
     // insert Utils folder at top level item
@@ -186,6 +206,19 @@ class CollectionAdvanced extends Collection {
   getItemEvents (endpoint, itemId) {
     // RB: Items do not have events/scripts, these are inhereted from the collection
     return []
+  }
+
+  variableLibJaRsaSign () {
+    const scriptString = String(fs.readFileSync('./src/events/libJsRSASign.min.js'))
+    const libJSRSASign = {
+      id: Utils.GenID('libJSRSASign'),
+      key: 'libJSRSASign',
+      value: scriptString,
+      type: 'string'
+    }
+    const hash = this.calculateHash(scriptString)
+    libJSRSASign.id = Utils.GenID(hash) // RB: to big for uuidv5
+    return libJSRSASign
   }
 
   /**
