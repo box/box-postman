@@ -168,14 +168,7 @@ class Collection {
       value: host,
       type: 'string'
     }))
-    // add a variable for each of the JWT JS 3rd party libraries
-    const libJSRSASign = {
-      id: Utils.GenID('libJSRSASign'),
-      key: 'libJSRSASign',
-      value: null,
-      type: 'string'
-    }
-    variables.push(libJSRSASign)
+
     return variables
   }
 

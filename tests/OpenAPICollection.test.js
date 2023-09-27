@@ -27,7 +27,7 @@ describe('.convert', () => {
     const openAPISpec = await openapi.process()
     const collection = new Collection(openAPISpec, locale).process()
     expect(collection.item).toHaveLength(52)
-    expect(collection.variable).toHaveLength(3 + 1)
+    expect(collection.variable).toHaveLength(3)
     expect(collection.item[0].item[0].request.url.host).toBe('{{account.box.com}}')
   })
 

@@ -157,12 +157,13 @@ function get_jwt_assertion () {
   navigator = {}
   window = {}
   /* eslint-disable no-eval */
+
   eval(libJSRSASign)
 
   // UUID
   const uuid = require('uuid')
 
-  const private_key_encrypted = pm.environment.get('private_key_encrypted')
+  const private_key_encrypted = pm.environment.get('private_key_encrypted').replace(/\\n/g, '')
   const private_key_passphrase = pm.environment.get('private_key_passphrase')
 
   const private_key = KEYUTIL.getKey(private_key_encrypted, private_key_passphrase)
@@ -178,6 +179,7 @@ function get_jwt_assertion () {
   const iat = KJUR.jws.IntDate.get('now')
 
   const header = { alg: 'RS512', typ: 'JWT', kid: kid }
+  //   console.log(`header: ${JSON.stringify(header)}`)
 
   const claims =
       {
@@ -190,11 +192,10 @@ function get_jwt_assertion () {
         iat: iat
       }
 
-  const jwt = KJUR.jws.JWS.sign(null, header, claims, private_key)
+  // console.log(`claim set: ${JSON.stringify(claims)}`)
 
-  //   console.log(`header: ${JSON.stringify(header)}`)
-  //   console.log(`claim set: ${JSON.stringify(claims)}`)
-  //   console.log('JWT Assertion: ', jwt)
+  const jwt = KJUR.jws.JWS.sign(null, header, claims, private_key)
+  // console.log('JWT Assertion: ', jwt)
 
   return jwt
 }
