@@ -355,7 +355,7 @@ class CollectionAdvanced extends Collection {
       headers: 'Content-Type: application/json',
       method: 'POST',
       pathVariables: {},
-      url: 'https://api.getpostman.com/environments?workspace=',
+      url: 'https://api.getpostman.com/environments?workspace={{wokspaceid}}',
       queryParams: [
         {
           key: 'workspace',
@@ -391,7 +391,7 @@ class CollectionAdvanced extends Collection {
       headers: 'Content-Type: application/json',
       method: 'POST',
       pathVariables: {},
-      url: 'https://api.getpostman.com/environments?workspace=',
+      url: 'https://api.getpostman.com/environments?workspace={{wokspaceid}}',
       queryParams: [
         {
           key: 'workspace',
@@ -426,15 +426,7 @@ class CollectionAdvanced extends Collection {
       method: 'GET',
       pathVariables: {},
       url: 'https://{{api.box.com}}/2.0/users/me?fields=id,type,name,login',
-      queryParams: [
-        {
-          key: 'workspace',
-          value: '{{wokspaceid}}',
-          equals: true,
-          description: 'A workspace ID in which to create the environment.\n\nIf you do not include this query parameter, the system creates the environment in your "My Workspace" workspace.',
-          enabled: true
-        }
-      ],
+      queryParams: [],
       headerData: [],
       pathVariableData: [],
       dataDisabled: false
