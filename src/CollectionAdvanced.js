@@ -94,9 +94,12 @@ class CollectionAdvanced extends Collection {
     localCollection.item.unshift(folderUtilities)
 
     // insert create environment into Utils folder
-    let description = "These requests will help you to create an enviroment that will support the automatic token request or refresh.\n\nFor this you'll need:\n\n- A Postman API key that you can configure in your account settings\n- The ID of your workspace (you can use the \"Get Workspaces\" request to list them all)\n    \n\nEach request will create the environment with the specific variables necessary for the token request or refresh.\n\nYou can fill in the required data on the request body, or alternatively, fill in the data in the environment.\n\nEither way this data will end up in your postman account.\n\nYou can create multiple environments for multiple Box Applications, and quickly switch betwene them."
+    let description = "These requests will help you to create an enviroment that will support the automatic token request or refresh.\n\nFor this you'll need:\n\n- A Postman API key that you can configure in your account settings\n- The ID of your workspace (you can use the \"Get Workspaces\" request to list them all)\n    \n\nEach request will create the environment with the specific variables necessary for the token request or refresh.\n\nYou can fill in the required data on the request body, or alternatively, fill in the data in the environment.\n\nEither way this data will end up in your postman account.\n\nYou can create multiple environments for multiple Box Applications, and quickly switch betwene them.\n\n**Steps**:\n\n- Goto your account and under API keys generate a new api key\n- In Postman, under environments, global, create a varibale named personal-pm-pmak as a secret and paste the PMAK you created in the previous step. Remember to save.\n- In this collection, under the create environments, use the get workspaces to identify the current workspace, and copy its id.\n- In. Postman, under environments, global, create a variable named wokspaceid and paste the id you copied from the previous step. Remember to save.\n    \n\nYou're all set."
     const folderCreateEnvironments = this.createFolder('Create Environments', folderUtilities.id, description)
     folderCreateEnvironments.auth = this.authAPIKey()
+    folderCreateEnvironments.id = null
+    folderCreateEnvironments.id = Utils.GenID(folderUtilities.id + JSON.stringify(folderCreateEnvironments))
+
     folderCreateEnvironments.item.push(this.endPointGetWorkspaces(folderCreateEnvironments.id))
     folderCreateEnvironments.item.push(this.endPointCreateBaererEnvironment(folderCreateEnvironments.id))
     folderCreateEnvironments.item.push(this.endPointCreateOAuthEnvironment(folderCreateEnvironments.id))
@@ -109,12 +112,16 @@ class CollectionAdvanced extends Collection {
     description = 'Using the Box API /users/me is a good way to test if you can connect to the API.\n\nTo test the connectivity of the environment:\n\n- Select an environment\n- Execute the request\n    \n\nYou should get back details on the user who is logged in.'
     const folderTestEnvironments = this.createFolder('Test Environments', folderUtilities.id, description)
     folderTestEnvironments.item.push(this.endPointTestEnvironment(folderTestEnvironments.id))
+
     localCollection.item.splice(2, 0, folderTestEnvironments)
 
     // insert Authorize OAuth Box App Helper into Utils folder
     description = "I order to use OAuth 2.0, you must first authorize the application.\n\nYou also need to re-authorize the application if the refresh token has expired, which in case of Box is 60 days.\n\nTo use this you will need the following from your Box application:\n\n- Client ID\n- Cleint Secret\n- Redirect URI configured as: [https://oauth.pstmn.io/v1/callback](https://oauth.pstmn.io/v1/callback)\n    \n\nTo start the process:\n\n- Select an OAuth environment that has at least the cliend and secret id's\n- Open the authorization tab in Postman, scroll all the way down and press \"Get New Access Token\"\n    \n\nTo view the token retreived using this helper:\n\n- Open this Authorization tab\n- Under. Current Token, Token\n    \n\nUpdate your OAuth enviroment settings with the information from this token:\n\n- Copy the access token to access token\n- Copy refresh token to refresh token\n- You can ignore the expire at\n- But you must set the refresh token expires at\n- Add 4,000,000 to the time stamp you got back\n    \n\nAs you use the api, new access and refresh tokens will be fetch automatically."
     const folderAuthorizeOAuthBoxAppHelper = this.createFolder('Authorize OAuth Box App Helper', folderUtilities.id, description)
     folderAuthorizeOAuthBoxAppHelper.auth = this.authOAuth2AutoRefresh()
+    folderAuthorizeOAuthBoxAppHelper.id = null
+    folderAuthorizeOAuthBoxAppHelper.id = Utils.GenID(folderUtilities.id + JSON.stringify(folderAuthorizeOAuthBoxAppHelper))
+
     localCollection.item.splice(3, 0, folderAuthorizeOAuthBoxAppHelper)
 
     return localCollection
@@ -150,7 +157,7 @@ class CollectionAdvanced extends Collection {
       apikey: [
         {
           key: 'value',
-          value: null
+          value: '{{personal-pm-pmak}}'
         },
         {
           key: 'key',
@@ -268,7 +275,7 @@ class CollectionAdvanced extends Collection {
 
   endPointCreateBaererEnvironment (folderParentId) {
     const endPoint = {
-      name: 'Create Bearer Environment',
+      name: 'Create Bearer Token Environment',
       dataMode: 'raw',
       rawModeData: '{\n    "environment": {\n        "name": "Box Bearer",\n        "values": [\n            {\n                "type": "secret",\n                "value": "",\n                "key": "access_token"\n            },\n            {\n                "type": "default",\n                "value": "BEARER",\n                "key": "box_env_type"\n            }\n        ]\n    }\n}',
       descriptionFormat: null,
@@ -276,11 +283,11 @@ class CollectionAdvanced extends Collection {
       headers: 'Content-Type: application/json',
       method: 'POST',
       pathVariables: {},
-      url: 'https://api.getpostman.com/environments?workspace=',
+      url: 'https://api.getpostman.com/environments?workspace={{wokspaceid}}',
       queryParams: [
         {
           key: 'workspace',
-          value: '',
+          value: '{{wokspaceid}}',
           equals: true,
           description: 'A workspace ID in which to create the environment.\n\nIf you do not include this query parameter, the system creates the environment in your "My Workspace" workspace.',
           enabled: true
@@ -306,17 +313,17 @@ class CollectionAdvanced extends Collection {
     const endPoint = {
       name: 'Create OAuth Environment',
       dataMode: 'raw',
-      rawModeData: '{\n    "environment": {\n        "name": "Box OAuth",\n        "values": [\n            {\n                "type": "default",\n                "value": "",\n                "key": "client_id"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "client_secret"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "access_token"\n            },\n            {\n                "type": "default",\n                "value": "0",\n                "key": "expires_at"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "refresh_token"\n            },\n            {\n                "type": "default",\n                "value": "0",\n                "key": "refresh_token_expires_at"\n            },\n            {\n                "type": "default",\n                "value": "OAUTH",\n                "key": "box_env_type"\n            }\n        ]\n    }\n}',
+      rawModeData: '{\n    "environment": {\n        "name": "Box OAuth",\n        "values": [\n            {\n                "type": "default",\n                "value": "YOU CLIENT ID GOES HERE",\n                "key": "client_id"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "client_secret"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "access_token"\n            },\n            {\n                "type": "default",\n                "value": "0",\n                "key": "expires_at"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "refresh_token"\n            },\n            {\n                "type": "default",\n                "value": "0",\n                "key": "refresh_token_expires_at"\n            },\n            {\n                "type": "default",\n                "value": "OAUTH",\n                "key": "box_env_type"\n            }\n        ]\n    }\n}',
       descriptionFormat: null,
       description: "Creates an environment. Include the following properties in the request body:\n\n* `name` — A **string** that contains the environment's name.\n\nYou can also include the following properties:\n\n* `values` — An array of objects that contains the following:\n    * `key` — The variable's name.\n    * `value` — The variable's value.\n    * `enabled` — If true, enable the variable.\n    * `type` — The variable's type. One of: `secret`, `default`, or `any`.",
       headers: 'Content-Type: application/json',
       method: 'POST',
       pathVariables: {},
-      url: 'https://api.getpostman.com/environments?workspace=',
+      url: 'https://api.getpostman.com/environments?workspace={{wokspaceid}}',
       queryParams: [
         {
           key: 'workspace',
-          value: '',
+          value: '{{wokspaceid}}',
           equals: true,
           description: 'A workspace ID in which to create the environment.\n\nIf you do not include this query parameter, the system creates the environment in your "My Workspace" workspace.',
           enabled: true
@@ -342,7 +349,7 @@ class CollectionAdvanced extends Collection {
     const endPoint = {
       name: 'Create CCG Environment',
       dataMode: 'raw',
-      rawModeData: '{\n    "environment": {\n        "name": "Box CCG",\n        "values": [\n            {\n                "type": "default",\n                "value": "",\n                "key": "client_id"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "client_secret"\n            },\n            {\n                "type": "default",\n                "value": "enterprise",\n                "key": "box_subject_type"\n            },\n            {\n                "type": "default",\n                "value": "YOUR ENTERPRISE ID",\n                "key": "box_subject_id"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "access_token"\n            },\n            {\n                "type": "default",\n                "value": "0",\n                "key": "expires_at"\n            },\n            {\n                "type": "default",\n                "value": "CCG",\n                "key": "box_env_type"\n            }\n        ]\n    }\n}',
+      rawModeData: '{\n    "environment": {\n        "name": "Box CCG",\n        "values": [\n            {\n                "type": "default",\n                "value": "YOU CLIENT ID GOES HERE",\n                "key": "client_id"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "client_secret"\n            },\n            {\n                "type": "default",\n                "value": "enterprise",\n                "key": "box_subject_type"\n            },\n            {\n                "type": "default",\n                "value": "YOUR ENTERPRISE ID",\n                "key": "box_subject_id"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "access_token"\n            },\n            {\n                "type": "default",\n                "value": "0",\n                "key": "expires_at"\n            },\n            {\n                "type": "default",\n                "value": "CCG",\n                "key": "box_env_type"\n            }\n        ]\n    }\n}',
       descriptionFormat: null,
       description: "Creates an environment. Include the following properties in the request body:\n\n* `name` — A **string** that contains the environment's name.\n\nYou can also include the following properties:\n\n* `values` — An array of objects that contains the following:\n    * `key` — The variable's name.\n    * `value` — The variable's value.\n    * `enabled` — If true, enable the variable.\n    * `type` — The variable's type. One of: `secret`, `default`, or `any`.",
       headers: 'Content-Type: application/json',
@@ -352,7 +359,7 @@ class CollectionAdvanced extends Collection {
       queryParams: [
         {
           key: 'workspace',
-          value: '',
+          value: '{{wokspaceid}}',
           equals: true,
           description: 'A workspace ID in which to create the environment.\n\nIf you do not include this query parameter, the system creates the environment in your "My Workspace" workspace.',
           enabled: true
@@ -378,7 +385,7 @@ class CollectionAdvanced extends Collection {
     const endPoint = {
       name: 'Create JWT Environment',
       dataMode: 'raw',
-      rawModeData: '{\n    "environment": {\n        "name": "Box JWT",\n        "values": [\n            {\n                "type": "default",\n                "value": "",\n                "key": "client_id"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "client_secret"\n            },\n            {\n                "type": "default",\n                "value": "enterprise",\n                "key": "box_subject_type"\n            },\n            {\n                "type": "default",\n                "value": "YOUR ENTERPRISE ID",\n                "key": "box_subject_id"\n            },\n            {\n                "type": "default",\n                "value": "",\n                "key": "key_id"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "private_key_encrypted"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "private_key_passphrase"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "access_token"\n            },\n            {\n                "type": "default",\n                "value": "0",\n                "key": "expires_at"\n            },\n            {\n                "type": "default",\n                "value": "JWT",\n                "key": "box_env_type"\n            }\n        ]\n    }\n}',
+      rawModeData: '{\n    "environment": {\n        "name": "Box JWT",\n        "values": [\n            {\n                "type": "default",\n                "value": "YOU CLIENT ID GOES HERE",\n                "key": "client_id"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "client_secret"\n            },\n            {\n                "type": "default",\n                "value": "enterprise",\n                "key": "box_subject_type"\n            },\n            {\n                "type": "default",\n                "value": "YOUR ENTERPRISE ID",\n                "key": "box_subject_id"\n            },\n            {\n                "type": "default",\n                "value": "YOU KEY ID GOES HERE",\n                "key": "key_id"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "private_key_encrypted"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "private_key_passphrase"\n            },\n            {\n                "type": "secret",\n                "value": "",\n                "key": "access_token"\n            },\n            {\n                "type": "default",\n                "value": "0",\n                "key": "expires_at"\n            },\n            {\n                "type": "default",\n                "value": "JWT",\n                "key": "box_env_type"\n            }\n        ]\n    }\n}',
       descriptionFormat: null,
       description: "Creates an environment. Include the following properties in the request body:\n\n* `name` — A **string** that contains the environment's name.\n\nYou can also include the following properties:\n\n* `values` — An array of objects that contains the following:\n    * `key` — The variable's name.\n    * `value` — The variable's value.\n    * `enabled` — If true, enable the variable.\n    * `type` — The variable's type. One of: `secret`, `default`, or `any`.",
       headers: 'Content-Type: application/json',
@@ -388,6 +395,7 @@ class CollectionAdvanced extends Collection {
       queryParams: [
         {
           key: 'workspace',
+          value: '{{wokspaceid}}',
           equals: true,
           description: 'A workspace ID in which to create the environment.\n\nIf you do not include this query parameter, the system creates the environment in your "My Workspace" workspace.',
           enabled: true
@@ -420,11 +428,11 @@ class CollectionAdvanced extends Collection {
       url: 'https://{{api.box.com}}/2.0/users/me?fields=id,type,name,login',
       queryParams: [
         {
-          key: 'fields',
-          description: 'A comma-separated list of attributes to include in the\nresponse. This can be used to request fields that are\nnot normally returned in a standard response.\n\nBe aware that specifying this parameter will have the\neffect that none of the standard fields are returned in\nthe response unless explicitly specified, instead only\nfields for the mini representation are returned, additional\nto the fields requested.',
-          enabled: true,
-          value: 'id,type,name,login',
-          equals: true
+          key: 'workspace',
+          value: '{{wokspaceid}}',
+          equals: true,
+          description: 'A workspace ID in which to create the environment.\n\nIf you do not include this query parameter, the system creates the environment in your "My Workspace" workspace.',
+          enabled: true
         }
       ],
       headerData: [],
