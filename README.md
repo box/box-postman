@@ -8,18 +8,19 @@
 
 ## The Collections
 
-### Auto-generated Collection
+### Classic Collection
 
 A updated, up-to-date Postman Collection is created every few weeks based on
 the official Box [OpenAPI 3.0 Specification][openapi].
 
 [![Run in Postman](https://run.pstmn.io/button.svg)][english]
 
-### Japanese Collection.
-
-Additionally a collection is available in Japanese.
+### Classic Japanese Collection.
 
 [![Run in Postman (Japanese)](https://run.pstmn.io/button.svg)][japanese]
+
+### Advanced Collection
+[![Run in Postman Advanced](https://run.pstmn.io/button.svg)][advanced]
 
 ## Development & Contribution
 
@@ -48,5 +49,6 @@ specific language governing permissions and limitations under the License.
 [legacy]: https://app.getpostman.com/run-collection/768279fde466dffc5511
 [openapi]: https://github.com/box/box-openapi
 [english]: https://god.gw.postman.com/run-collection/8119550-b5ea2aeb-c82a-425d-baff-ed5dfd1d7659?action=collection%2Ffork&collection-url=entityId%3D8119550-b5ea2aeb-c82a-425d-baff-ed5dfd1d7659%26entityType%3Dcollection%26workspaceId%3D1a5945ff-a292-42c7-91c5-2cf3cdc68492
+[advanced]: https://god.gw.postman.com/run-collection/8119550-373aba62-5af5-459b-b9a4-e9db77f947a5?action=collection%2Ffork&collection-url=entityId%3D8119550-373aba62-5af5-459b-b9a4-e9db77f947a5%26entityType%3Dcollection%26workspaceId%3D1a5945ff-a292-42c7-91c5-2cf3cdc68492
 [japanese]: https://app.getpostman.com/run-collection/71097146282762048e55
 [v8]: https://learning.postman.com/docs/administration/upgrading/#downloading-postman-v8
