@@ -195,7 +195,7 @@ function get_jwt_assertion () {
   // console.log(`claim set: ${JSON.stringify(claims)}`)
 
   const jwt = KJUR.jws.JWS.sign(null, header, claims, private_key)
-  console.log('JWT Assertion: ', jwt)
+  // console.log('JWT Assertion: ', jwt)
 
   return jwt
 }
