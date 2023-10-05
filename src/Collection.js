@@ -110,12 +110,17 @@ class Collection {
    */
   process () {
     console.log('Processing collection')
+    const info = this.getInfo()
+    this.collectionId = info._postman_id
+    const item = this.getItems()
+    const variable = this.getVariables()
+    const auth = this.defaultAuth()
     const collection = {
-      info: this.getInfo(),
-      item: this.getItems(),
+      info: info,
+      item: item,
       event: [],
-      variable: this.getVariables(),
-      auth: this.defaultAuth()
+      variable: variable,
+      auth: auth
     }
     console.log('Done')
     return collection
@@ -206,7 +211,7 @@ class Collection {
       item: []
 
     }
-    const folderId = Utils.GenID(JSON.stringify(folder))
+    const folderId = Utils.GenID(this.collectionId + JSON.stringify(folder))
     folder.id = folderId
     if (this.verbose) {
       console.log(`  Adding Folder [${folder.name}]`)
@@ -234,7 +239,9 @@ class Collection {
       event: this.getItemEvents(endpoint)
     }
 
-    const itemId = Utils.GenID(JSON.stringify(item))
+    // RB: This should pickup a different object id
+    // unexpected object id collision
+    const itemId = Utils.GenID(this.collectionId + JSON.stringify(item))
     item.id = itemId
     item.request = this.requestCreate(verb, path, endpoint, item.id)
     item.response = this.responseCreate(endpoint, item.request.id)
