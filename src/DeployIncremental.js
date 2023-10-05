@@ -156,8 +156,19 @@ const checkObjectChanges = (remoteCollectionObject, localCollectionObject) => {
 }
 
 const checkScriptChanges = (scriptType, remoteCollection, localCollection) => {
-  const remoteScript = remoteCollection.collection.event.find(event => event.listen === scriptType)
-  const localScript = localCollection.event.find(event => event.listen === scriptType)
+  // RB 2020-10-20: The collection may be empty or have no events at all
+  let remoteScript = null
+  let localScript = null
+  if (remoteCollection.collection.event) {
+    remoteScript = remoteCollection.collection.event.find(event => event.listen === scriptType)
+  }
+
+  if (localCollection.event) {
+    localScript = localCollection.event.find(event => event.listen === scriptType)
+  }
+
+  // const remoteScript = remoteCollection.collection.event.find(event => event.listen === scriptType)
+  // const localScript = localCollection.event.find(event => event.listen === scriptType)
 
   if (!remoteScript && !localScript) {
     return false

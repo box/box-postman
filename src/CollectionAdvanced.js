@@ -52,12 +52,19 @@ class CollectionAdvanced extends Collection {
    */
   // RB: override
   process () {
+    console.log('Processing collection')
+    const info = this.getInfo()
+    this.collectionId = info._postman_id
+    const item = this.getItems()
+    const event = [this.collectionPreRequest()]
+    const variable = this.getVariables()
+    const auth = this.defaultAuth()
     const localCollection = {
-      info: this.getInfo(),
-      item: this.getItems(),
-      event: [this.collectionPreRequest()],
-      variable: this.getVariables(),
-      auth: this.defaultAuth()
+      info,
+      item,
+      event,
+      variable,
+      auth
     }
 
     // RB: inject utilities
