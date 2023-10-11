@@ -13,17 +13,16 @@ on:
 
 jobs:
 # Deploys the Advanced version
-  deploy-adv:
+  deploy-adv-en:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # needs: deploy-jp
 
     env:
       LOCALES: "en"
       EN_OAS3_REPO: "https://github.com/box/box-openapi.git#en"
       PRIVATE_EN_POSTMAN_COLLECTION_ADVANCED_ID: "8119550-1ca6cb64-7560-4f24-a2b5-89ba095b1c17"
       PUBLIC_EN_POSTMAN_COLLECTION_ADVANCED_ID: "8119550-373aba62-5af5-459b-b9a4-e9db77f947a5"
-      CONVERT_LOG: true
+      # CONVERT_LOG: true
       POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
 
     strategy:
@@ -54,4 +53,48 @@ jobs:
         SLACK_USERNAME: GitHub Actions
         SLACK_AVATAR: "https://avatars3.githubusercontent.com/u/8659759?s=200&v=4"
       with:
-        args: "Deployed Advanced Postman collection :rocket:"
+        args: "Deployed Advanced Postman English collection :rocket:"
+
+  # Deploys the japanese version
+  deploy-adv-jp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: deploy-adv-en
+
+    env:
+      LOCALES: "jp"
+      JP_OAS3_REPO: "https://github.com/box/box-openapi.git#jp"
+      PRIVATE_JP_POSTMAN_COLLECTION_ADVANCED_ID: "8119550-45cd808e-0844-4e46-ada0-5d0cb4b602d2"
+      PUBLIC_JP_POSTMAN_COLLECTION_ADVANCED_ID: "8119550-9899c10b-11bb-4f53-9938-fced213a14d0"
+      # CONVERT_LOG: true
+      POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v3
+
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: Deploy the collection
+      run: |
+        yarn install
+        yarn clean
+        yarn pull
+        yarn convertAdvanced jp
+        yarn releaseAdvanced jp
+
+    - name: Send Slack notification
+      uses: Ilshidur/action-slack@2.0.2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_USERNAME: GitHub Actions
+        SLACK_AVATAR: "https://avatars3.githubusercontent.com/u/8659759?s=200&v=4"
+      with:
+        args: "Deployed Advanced Postman Japanese collection :rocket:"
