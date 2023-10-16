@@ -6,7 +6,7 @@ class Collection {
     this.collectionId = collectionId
     this.apiKey = process.env.POSTMAN_API_KEY
     this.axios = axios.create({
-      timeout: 10000,
+      timeout: 1000 * 60, // 60 seconds
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': this.apiKey }
     })
   }
@@ -58,7 +58,7 @@ class Folder {
     this.collectionId = collectionId
     this.apiKey = process.env.POSTMAN_API_KEY
     this.axios = axios.create({
-      timeout: 10000,
+      timeout: 1000 * 60, // 60 seconds
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': this.apiKey }
     })
   }
@@ -120,7 +120,7 @@ class Request {
     this.collectionId = collectionId
     this.apiKey = process.env.POSTMAN_API_KEY
     this.axios = axios.create({
-      timeout: 10000,
+      timeout: 1000 * 60, // 60 seconds
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': this.apiKey }
     })
   }
@@ -183,7 +183,7 @@ class Response {
     this.collectionId = collectionId
     this.apiKey = process.env.POSTMAN_API_KEY
     this.axios = axios.create({
-      timeout: 10000,
+      timeout: 1000 * 60, // 60 seconds
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': this.apiKey }
     })
   }
