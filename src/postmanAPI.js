@@ -6,7 +6,7 @@ class Collection {
     this.collectionId = collectionId
     this.apiKey = process.env.POSTMAN_API_KEY
     this.axios = axios.create({
-      timeout: 1000 * 60 ,// 5 minutes
+      timeout: 1000 * 60, // 5 minutes
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': this.apiKey }
     })
   }

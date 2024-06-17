@@ -57,6 +57,6 @@ const handlePostmanAPIError = (error) => {
 }
 
 module.exports = {
-  deployCollectionHead: deployCollectionHead,
-  deployCollectionFull: deployCollectionFull
+  deployCollectionHead,
+  deployCollectionFull
 }
