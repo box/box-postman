@@ -1,3 +1,14 @@
 {
-    "standard.enable": false
+    "standard.enable": false,
+    "cSpell.words": [
+        "apikey",
+        "formdata",
+        "JSRSA",
+        "noauth",
+        "OPENAPI",
+        "pmak",
+        "prerequest",
+        "uuidv",
+        "wokspaceid"
+    ]
 }

@@ -13,8 +13,8 @@ const Collection = require('./Collection')
  * Main difference are:
  * - The collectionPreRequest() method - PreScript for the collection
  * - The authForEndPoint() method - All endpoints inherit from the collection
- * - The defaultAuth() method - Default auth for collection is now Baearer Token
- * - The getItemEvents() method - Items do not have events/scripts, these are inhereted from the collection
+ * - The defaultAuth() method - Default auth for collection is now Bearer Token
+ * - The getItemEvents() method - Items do not have events/scripts, these are inherited from the collection
  */
 class CollectionAdvanced extends Collection {
   /**
@@ -101,14 +101,14 @@ class CollectionAdvanced extends Collection {
     localCollection.item.unshift(folderUtilities)
 
     // insert create environment into Utils folder
-    let description = "These requests will help you to create an enviroment that will support the automatic token request or refresh.\n\nFor this you'll need:\n\n- A Postman API key that you can configure in your account settings\n- The ID of your workspace (you can use the \"Get Workspaces\" request to list them all)\n    \n\nEach request will create the environment with the specific variables necessary for the token request or refresh.\n\nYou can fill in the required data on the request body, or alternatively, fill in the data in the environment.\n\nEither way this data will end up in your postman account.\n\nYou can create multiple environments for multiple Box Applications, and quickly switch betwene them.\n\n**Steps**:\n\n- Goto your account and under API keys generate a new api key\n- In Postman, under environments, global, create a varibale named personal-pm-pmak as a secret and paste the PMAK you created in the previous step. Remember to save.\n- In this collection, under the create environments, use the get workspaces to identify the current workspace, and copy its id.\n- In. Postman, under environments, global, create a variable named wokspaceid and paste the id you copied from the previous step. Remember to save.\n    \n\nYou're all set."
+    let description = "These requests will help you to create an environment that will support the automatic token request or refresh.\n\nFor this you'll need:\n\n- A Postman API key that you can configure in your account settings\n- The ID of your workspace (you can use the \"Get Workspaces\" request to list them all)\n    \n\nEach request will create the environment with the specific variables necessary for the token request or refresh.\n\nYou can fill in the required data on the request body, or alternatively, fill in the data in the environment.\n\nEither way this data will end up in your postman account.\n\nYou can create multiple environments for multiple Box Applications, and quickly switch between them.\n\n**Steps**:\n\n- Goto your account and under API keys generate a new api key\n- In Postman, under environments, global, create a variable named personal-pm-pmak as a secret and paste the PMAK you created in the previous step. Remember to save.\n- In this collection, under the create environments, use the get workspaces to identify the current workspace, and copy its id.\n- In. Postman, under environments, global, create a variable named wokspaceid and paste the id you copied from the previous step. Remember to save.\n    \n\nYou're all set."
     const folderCreateEnvironments = this.createFolder('Create Environments', folderUtilities.id, description)
     folderCreateEnvironments.auth = this.authAPIKey()
     folderCreateEnvironments.id = null
     folderCreateEnvironments.id = Utils.GenID(folderUtilities.id + JSON.stringify(folderCreateEnvironments))
 
     folderCreateEnvironments.item.push(this.endPointGetWorkspaces(folderCreateEnvironments.id))
-    folderCreateEnvironments.item.push(this.endPointCreateBaererEnvironment(folderCreateEnvironments.id))
+    folderCreateEnvironments.item.push(this.endPointCreateBearerEnvironment(folderCreateEnvironments.id))
     folderCreateEnvironments.item.push(this.endPointCreateOAuthEnvironment(folderCreateEnvironments.id))
     folderCreateEnvironments.item.push(this.endPointCreateCCGEnvironment(folderCreateEnvironments.id))
     folderCreateEnvironments.item.push(this.endPointCreateJWTEnvironment(folderCreateEnvironments.id))
@@ -123,7 +123,7 @@ class CollectionAdvanced extends Collection {
     localCollection.item.splice(2, 0, folderTestEnvironments)
 
     // insert Authorize OAuth Box App Helper into Utils folder
-    description = "I order to use OAuth 2.0, you must first authorize the application.\n\nYou also need to re-authorize the application if the refresh token has expired, which in case of Box is 60 days.\n\nTo use this you will need the following from your Box application:\n\n- Client ID\n- Cleint Secret\n- Redirect URI configured as: [https://oauth.pstmn.io/v1/callback](https://oauth.pstmn.io/v1/callback)\n    \n\nTo start the process:\n\n- Select an OAuth environment that has at least the cliend and secret id's\n- Open the authorization tab in Postman, scroll all the way down and press \"Get New Access Token\"\n    \n\nTo view the token retreived using this helper:\n\n- Open this Authorization tab\n- Under. Current Token, Token\n    \n\nUpdate your OAuth enviroment settings with the information from this token:\n\n- Copy the access token to access token\n- Copy refresh token to refresh token\n- You can ignore the expire at\n- But you must set the refresh token expires at\n- Add 4,000,000 to the time stamp you got back\n    \n\nAs you use the api, new access and refresh tokens will be fetch automatically."
+    description = "I order to use OAuth 2.0, you must first authorize the application.\n\nYou also need to re-authorize the application if the refresh token has expired, which in case of Box is 60 days.\n\nTo use this you will need the following from your Box application:\n\n- Client ID\n- Client Secret\n- Redirect URI configured as: [https://oauth.pstmn.io/v1/callback](https://oauth.pstmn.io/v1/callback)\n    \n\nTo start the process:\n\n- Select an OAuth environment that has at least the client and secret id's\n- Open the authorization tab in Postman, scroll all the way down and press \"Get New Access Token\"\n    \n\nTo view the token retrieved using this helper:\n\n- Open this Authorization tab\n- Under. Current Token, Token\n    \n\nUpdate your OAuth environment settings with the information from this token:\n\n- Copy the access token to access token\n- Copy refresh token to refresh token\n- You can ignore the expire at\n- But you must set the refresh token expires at\n- Add 4,000,000 to the time stamp you got back\n    \n\nAs you use the api, new access and refresh tokens will be fetch automatically."
     const folderAuthorizeOAuthBoxAppHelper = this.createFolder('Authorize OAuth Box App Helper', folderUtilities.id, description)
     folderAuthorizeOAuthBoxAppHelper.auth = this.authOAuth2AutoRefresh()
     folderAuthorizeOAuthBoxAppHelper.id = null
@@ -140,7 +140,7 @@ class CollectionAdvanced extends Collection {
   }
 
   defaultAuth () {
-    // RB: Default auth for collection is now Baearer Token
+    // RB: Default auth for collection is now Bearer Token
     return this.authBearerToken()
   }
 
@@ -218,7 +218,7 @@ class CollectionAdvanced extends Collection {
    * Adds a pre-request script to an API call
    */
   getItemEvents (endpoint, itemId) {
-    // RB: Items do not have events/scripts, these are inhereted from the collection
+    // RB: Items do not have events/scripts, these are inherited from the collection
     return []
   }
 
@@ -280,7 +280,7 @@ class CollectionAdvanced extends Collection {
     return endPoint
   }
 
-  endPointCreateBaererEnvironment (folderParentId) {
+  endPointCreateBearerEnvironment (folderParentId) {
     const endPoint = {
       name: 'Create Bearer Token Environment',
       dataMode: 'raw',

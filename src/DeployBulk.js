@@ -1,7 +1,7 @@
-// const pmConvert = require('./PostmanCovertions')
+// const pmConvert = require('./PostmanConversions')
 const pmAPI = require('./postmanAPI')
 
-const deployColectionHead = async (privateRemoteCollectionID, localCollection) => {
+const deployCollectionHead = async (privateRemoteCollectionID, localCollection) => {
   const collectionHead = { ...localCollection }
   collectionHead.item = []
   const msg = `\nDeploying collection head ${collectionHead.info.name} to ${privateRemoteCollectionID}`
@@ -15,7 +15,7 @@ const deployColectionHead = async (privateRemoteCollectionID, localCollection) =
     })
 }
 
-const deployColectionFull = async (privateRemoteCollectionId, localCollection, publicRemoteCollectionId) => {
+const deployCollectionFull = async (privateRemoteCollectionId, localCollection, publicRemoteCollectionId) => {
   let msg = `\nDeploying full collection ${localCollection.info.name} to ${privateRemoteCollectionId}`
   console.log(msg + '...')
   await new pmAPI.Collection(privateRemoteCollectionId)
@@ -57,6 +57,6 @@ const handlePostmanAPIError = (error) => {
 }
 
 module.exports = {
-  deployColectionHead,
-  deployColectionFull
+  deployCollectionHead: deployCollectionHead,
+  deployCollectionFull: deployCollectionFull
 }

@@ -11,8 +11,8 @@ const release = async (locale = process.argv[1]) => {
   const publicRemoteCollectionId = process.env[`PUBLIC_${locale.toUpperCase()}_POSTMAN_COLLECTION_ID`]
 
   // oldDeploy.oldDeployBulk(publicRemoteCollectionID, collection, publicRemoteCollectionID)
-  await deployBulk.deployColectionHead(privateRemoteCollectionId, collection)
-  await deployBulk.deployColectionFull(privateRemoteCollectionId, collection, publicRemoteCollectionId)
+  await deployBulk.deployCollectionHead(privateRemoteCollectionId, collection)
+  await deployBulk.deployCollectionFull(privateRemoteCollectionId, collection, publicRemoteCollectionId)
 }
 
 const releaseAll = async () => {

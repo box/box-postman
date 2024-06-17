@@ -1,4 +1,4 @@
-// Deploy collection inncrementally
+// Deploy collection incrementally
 // ---------------------------------------------------------------
 // Cycle through the collection objects and deploy them one by one
 // ---------------------------------------------------------------
@@ -13,7 +13,7 @@
 // Except for folders which would force the update of the entire collection.
 // ---------------------------------------------------------------
 
-const pmConvert = require('./PostmanCovertions')
+const pmConvert = require('./PostmanConversions')
 const pmAPI = require('./postmanAPI')
 const { GenID } = require('./Utils')
 
@@ -22,8 +22,8 @@ const deployIncremental = async (privateRemoteCollectionId, localCollection, pub
 
   console.log('Incremental deployment of collection ', localCollection.info.name)
 
-  // const collectioHeadHasChanged =
-  await upadteCollectionHead(remoteCollection, localCollection)
+  // const collectionHeadHasChanged =
+  await updateCollectionHead(remoteCollection, localCollection)
 
   remoteCollection = await refreshRemoteCollection(privateRemoteCollectionId)
 
@@ -46,7 +46,7 @@ const deployIncremental = async (privateRemoteCollectionId, localCollection, pub
   // and in the next run the public collection will NOT be updated
   // because there are no changes in the private collection
 
-  // if (!(collectioHeadHasChanged || foldersHaveChanged || requestsHaveChanged || responsesHaveChanged)) {
+  // if (!(collectionHeadHasChanged || foldersHaveChanged || requestsHaveChanged || responsesHaveChanged)) {
   //   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed\n\n')
   //   return
   // }
@@ -61,8 +61,8 @@ const deployIncremental = async (privateRemoteCollectionId, localCollection, pub
   console.log('Incremental deployment of collection ', localCollection.info.name, ' completed\n\n')
 }
 
-async function upadteCollectionHead (remoteCollection, localCollection) {
-  // the colelction head shoul dbe updated if there are changes in
+async function updateCollectionHead (remoteCollection, localCollection) {
+  // the collection head should be updated if there are changes in
   // Authorization
   // Pre-request Script
   // Tests
@@ -126,7 +126,7 @@ const checkFolderSortChanges = (remoteCollection, localCollection) => {
 const checkInfoChanges = (remoteCollection, localEmptyCollection) => {
   // collection info does not have a specific id
   // so we need to generate a hash and compare them
-  // The hash is only beig generated for name, description and schema
+  // The hash is only being generated for name, description and schema
 
   const { name, description, schema } = remoteCollection.collection.info
   const remoteInfo = { name, description, schema }
@@ -255,7 +255,7 @@ async function mergeFolders (remoteCollection, localCollection) {
   // const order = localFolders.map(folder => folder.id)
   // const msg = ' Sorting folders'
 
-  // // create a temporsary root folder
+  // // create a temporary root folder
   // const rootFolder = await new pmAPI.Folder(remoteCollection.collection.info.uid)
   //   .create({ id: GenID(), name: 'root', folders: order })
   //   .catch((error) => {
@@ -322,9 +322,9 @@ async function mergeRequests (remoteCollection, localCollection) {
           console.log(msg, '-> FAIL')
           handlePostmanAPIError(error)
         })
-      // console.log('\nequest', request)
-      // console.log('\npmRequest', pmRequest)
-      // console.log('\nremoteRequest', remoteRequest)
+      // console.log('\n request', request)
+      // console.log('\n pmRequest', pmRequest)
+      // console.log('\n remoteRequest', remoteRequest)
     }
 
     // delete old requests
@@ -391,8 +391,8 @@ async function mergeResponses (remoteCollection, localCollection) {
       const newResponses = localResponses.filter(localResponse => !remoteResponses.find(remoteResponse => remoteResponse.id === localResponse.id))
       const oldResponses = remoteResponses.filter(remoteResponse => !localResponses.find(localResponse => localResponse.id === remoteResponse.id))
 
-      const ResponsesInReqquestHaveChanges = newResponses.length > 0 || oldResponses.length > 0
-      if (!ResponsesInReqquestHaveChanges) {
+      const ResponsesInRequestHaveChanges = newResponses.length > 0 || oldResponses.length > 0
+      if (!ResponsesInRequestHaveChanges) {
         console.log('   In Request: ', localRequest.name, '-> No changes')
         continue
       }
@@ -428,7 +428,7 @@ async function mergeResponses (remoteCollection, localCollection) {
       }
 
       // updating the requests with the order of the responses, doesn't seem to be necessary
-      if (ResponsesInReqquestHaveChanges) {
+      if (ResponsesInRequestHaveChanges) {
         // sort responses in requests
         const responsesOrder = localResponses.map(response => response.id)
         const msg = `   Sorting responses in request [${localRequest.name}]`
@@ -443,7 +443,7 @@ async function mergeResponses (remoteCollection, localCollection) {
             handlePostmanAPIError(error)
           })
       }
-      anyResponseHasChanged = anyResponseHasChanged || ResponsesInReqquestHaveChanges
+      anyResponseHasChanged = anyResponseHasChanged || ResponsesInRequestHaveChanges
     }
   }
   return anyResponseHasChanged
