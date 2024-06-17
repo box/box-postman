@@ -1,4 +1,4 @@
-// Postman Convertions
+// Postman Conversions
 // ------------------------------------------------------------
 // Handles the conversions from the local generated object
 // to the postman api specific objects.
