@@ -288,8 +288,8 @@ class Collection {
       header: this.header(endpoint),
       body: this.body(endpoint)
     }
-    const requesstId = Utils.GenID(folderId + JSON.stringify(request))
-    request.id = requesstId
+    const requestId = Utils.GenID(folderId + JSON.stringify(request))
+    request.id = requestId
     return request
   }
 

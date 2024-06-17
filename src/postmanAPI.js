@@ -6,12 +6,13 @@ class Collection {
     this.collectionId = collectionId
     this.apiKey = process.env.POSTMAN_API_KEY
     this.axios = axios.create({
-      timeout: 1000 * 60, // 60 seconds
+      timeout: 1000 * 60, // 5 minutes
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': this.apiKey }
     })
   }
 
   async get () {
+    // console.log(`Getting collection https://api.getpostman.com/collections/${this.collectionId}`)
     return await this.axios.get(
             `https://api.getpostman.com/collections/${this.collectionId}`
             , { timeout: 1000 * 60 * 5 } // 5 minutes
@@ -27,7 +28,7 @@ class Collection {
   async merge (destinationCollectionId, strategy = 'updateSourceWithDestination') {
     return await this.axios.post(
       'https://api.getpostman.com/collections/merge',
-      { source: this.collectionId, destination: destinationCollectionId, strategy },
+      { source: this.collectionId, destination: destinationCollectionId }, //, strategy },
       { timeout: 1000 * 60 * 5 } // 5 minutes
     ).then(function (response) {
       if (response.status !== 200) {
@@ -58,7 +59,7 @@ class Folder {
     this.collectionId = collectionId
     this.apiKey = process.env.POSTMAN_API_KEY
     this.axios = axios.create({
-      timeout: 1000 * 60, // 60 seconds
+      timeout: 1000 * 60 * 5, // 5 minutes
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': this.apiKey }
     })
   }
@@ -120,7 +121,7 @@ class Request {
     this.collectionId = collectionId
     this.apiKey = process.env.POSTMAN_API_KEY
     this.axios = axios.create({
-      timeout: 1000 * 60, // 60 seconds
+      timeout: 1000 * 60 * 5, // 5 minutes
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': this.apiKey }
     })
   }
@@ -143,6 +144,7 @@ class Request {
         request,
         { params: { folder: folderId } }
     ).then(function (response) {
+      // console.log('response', response)
       if (response.status !== 200) {
         throw new Error(`Error creating request ${request.id}: ${response.status} ${response.statusText}`)
       } else {
@@ -183,7 +185,7 @@ class Response {
     this.collectionId = collectionId
     this.apiKey = process.env.POSTMAN_API_KEY
     this.axios = axios.create({
-      timeout: 1000 * 60, // 60 seconds
+      timeout: 1000 * 60 * 5, // 5 minutes
       headers: { 'Content-Type': 'application/json', 'X-Api-Key': this.apiKey }
     })
   }

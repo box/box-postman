@@ -1,8 +1,8 @@
-// Utitlity objects specific for Postman Collection
+// Utility objects specific for Postman Collection
 // These are not related with the Box Platform API
 // Therefor they are not in the OpenAPI json
 //
-// These can be injected in using a flag in via the DeploymentIcremental.js script
+// These can be injected in using a flag in via the DeploymentIncremental.js script
 // and should be invoked in the releaseAdvanced.js script
 const Utils = require('./Utils')
 
