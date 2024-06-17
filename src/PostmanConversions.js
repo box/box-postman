@@ -17,8 +17,15 @@ const requestFromLocal = (localRequest) => {
   let dataMode = null
   let rawModeData = null
   if (localRequest.request.body && localRequest.request.body.urlencoded) {
-    data = dataFromLocalURLEncode(localRequest.request.body.urlencoded)
     dataMode = localRequest.request.body.mode
+    if (dataMode === 'formdata') {
+      dataMode = 'params'
+      data = dataFromFormData(localRequest.request.body.formdata)
+    } else if (dataMode === 'file') {
+      dataMode = 'binary'
+    } else {
+      data = dataFromLocalURLEncode(localRequest.request.body.urlencoded)
+    }
     rawModeData = localRequest.request.body.raw
   }
 
@@ -131,6 +138,21 @@ const dataFromLocalURLEncode = (localFormData) => {
       description: param.description,
       value: param.value,
       enabled: !param.disabled
+    }
+    data.push(item)
+  }
+  return data
+}
+
+const dataFromFormData = (localFormData) => {
+  const data = []
+  for (const param of localFormData) {
+    const item = {
+      key: param.key,
+      description: param.description,
+      value: param.value,
+      enabled: !param.disabled,
+      type: param.type
     }
     data.push(item)
   }

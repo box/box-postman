@@ -28,7 +28,7 @@ class Collection {
   async merge (destinationCollectionId, strategy = 'updateSourceWithDestination') {
     return await this.axios.post(
       'https://api.getpostman.com/collections/merge',
-      { source: this.collectionId, destination: destinationCollectionId, strategy },
+      { source: this.collectionId, destination: destinationCollectionId }, //, strategy },
       { timeout: 1000 * 60 * 5 } // 5 minutes
     ).then(function (response) {
       if (response.status !== 200) {
@@ -144,6 +144,7 @@ class Request {
         request,
         { params: { folder: folderId } }
     ).then(function (response) {
+      // console.log('response', response)
       if (response.status !== 200) {
         throw new Error(`Error creating request ${request.id}: ${response.status} ${response.statusText}`)
       } else {
