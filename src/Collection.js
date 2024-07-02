@@ -296,13 +296,23 @@ class Collection {
   url (path, endpoint) {
     const server = this.server(endpoint)
 
+    const strippedHost = server.host.replace(/\{|\}/g, '')
+
     return {
       protocol: 'https',
-      host: `{{${server.host}}}`,
+      host: `{{${strippedHost}}}`,
       path: this.path(server, path),
       query: this.query(endpoint),
       variable: this.variable(endpoint)
     }
+
+    // return {
+    //   protocol: 'https',
+    //   host: `{{${server.host}}}`,
+    //   path: this.path(server, path),
+    //   query: this.query(endpoint),
+    //   variable: this.variable(endpoint)
+    // }
   }
 
   path (server, path) {
