@@ -4,9 +4,9 @@ name: Deploy
 # Defines when this action should be run
 on:
   # Run on any push to main
-  # push:
-  #   branches:
-  #     - main
+  push:
+    branches:
+      - main
   # Run when a repository dispatch event is received
   repository_dispatch:
     types: [openapi-update]
