@@ -12,14 +12,15 @@ const { Resolver } = require('@stoplight/json-ref-resolver')
 const { JSONPath } = require('jsonpath-plus')
 
 class OpenAPI {
-  constructor (filename, locale) {
-    this.filename = filename
+  constructor(files, locale) {
+    this.files = files
+    // this.filename = filename
     this.openapi = null
     this.locale = locale
     this.tags = {}
   }
 
-  async process () {
+  async process() {
     this.readOpenAPI()
     this.openapi = await this.resolveReferences(this.openapi)
     this.openapi = this.resolveAllOf(this.openapi)
@@ -30,12 +31,19 @@ class OpenAPI {
 
   // private
 
-  readOpenAPI () {
-    const source = fs.readFileSync(this.filename).toString()
-    this.openapi = JSON.parse(source)
+  readOpenAPI() {
+    // for each file in this.files, read the file, parse it, adn append it to the this.openapi object
+    for (const file of this.files) {
+      const source = fs.readFileSync(file).toString()
+      const openapi = JSON.parse(source)
+      this.openapi = this.openapi ? deepmerge(this.openapi, openapi) : openapi
+    }
+
+    // const source = fs.readFileSync(this.filename).toString()
+    // this.openapi = JSON.parse(source)
   }
 
-  writeOpenAPI (path) {
+  writeOpenAPI(path) {
     fs.writeFileSync(
       path,
       JSON.stringify(this.openapi, null, 2)
@@ -45,7 +53,7 @@ class OpenAPI {
   /**
    * Resolves all references in a specification
    */
-  async resolveReferences (specification) {
+  async resolveReferences(specification) {
     const references = await new Resolver().resolve(specification).then(res => res.result)
     // make the object writable again, as somehow the resolved returns a write only object
     return JSON.parse(JSON.stringify(references))
@@ -54,7 +62,7 @@ class OpenAPI {
   /**
    * deepmerges all allOf objects
    */
-  resolveAllOf (openapi) {
+  resolveAllOf(openapi) {
     const paths = new JSONPath({
       path: '$..allOf',
       json: openapi,

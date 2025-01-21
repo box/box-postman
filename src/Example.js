@@ -1,16 +1,16 @@
 class Example {
-  constructor (schema, openapi) {
+  constructor(schema, openapi) {
     this.openapi = openapi
     this.sample = this.value(schema)
   }
 
-  stringify () {
+  stringify() {
     return JSON.stringify(this.sample, null, 2)
   }
 
   // private
 
-  generate (props) {
+  generate(props) {
     const output = {}
     Object.entries(props).forEach(([key, prop]) => {
       output[key] = this.value(prop)
@@ -18,7 +18,7 @@ class Example {
     return output
   }
 
-  value (prop) {
+  value(prop) {
     if (prop.example !== undefined) {
       return prop.example
     } else if (prop.properties && prop.type !== 'string') {
@@ -29,8 +29,11 @@ class Example {
       return [this.value(prop.items)]
     } else if (prop.oneOf) {
       return this.value(prop.oneOf[0])
+    } else if (prop.description && (prop.type === 'string' || prop.type === 'object')) {
+      return prop.description
     } else {
       console.warn('Could not parse an example for:', prop)
+      // return prop.description || 'UNKNOWN'
     }
   }
 }
