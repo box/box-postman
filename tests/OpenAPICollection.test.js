@@ -21,9 +21,10 @@ describe('#constructor', () => {
 
 describe('.convert', () => {
   test('should convert an openapi spec to a postman collection', async () => {
-    const filename = './tests/examples/box-openapi.json'
+    // const filename = './tests/examples/box-openapi.json'
+    const files = ['./tests/examples/box-openapi.json']
     const locale = 'en'
-    const openapi = new OpenAPI(filename, locale)
+    const openapi = new OpenAPI(files, locale)
     const openAPISpec = await openapi.process()
     const collection = new Collection(openAPISpec, locale).process()
     expect(collection.item).toHaveLength(52)
@@ -32,9 +33,10 @@ describe('.convert', () => {
   })
 
   test('should exclude items marked as excluded', async () => {
-    const filename = './tests/examples/box-openapi-with-exclusions.json'
+    // const filename = './tests/examples/box-openapi-with-exclusions.json'
+    const files = ['./tests/examples/box-openapi-with-exclusions.json']
     const locale = 'en'
-    const openapi = new OpenAPI(filename, locale)
+    const openapi = new OpenAPI(files, locale)
     const openAPISpec = await openapi.process()
     const collection = new Collection(openAPISpec, locale).process()
 
@@ -42,17 +44,18 @@ describe('.convert', () => {
 
     expect(tree).toEqual({
       undefined:
-      [{
-        Authorization:
-           [{ 'Request an access token': null }]
-      }]
+        [{
+          Authorization:
+            [{ 'Request an access token': null }]
+        }]
     })
   })
 
   test('should sort items by tag', async () => {
-    const filename = './tests/examples/box-openapi-with-tags.json'
+    // const filename = './tests/examples/box-openapi-with-tags.json'
+    const files = ['./tests/examples/box-openapi-with-tags.json']
     const locale = 'en'
-    const openapi = new OpenAPI(filename, locale)
+    const openapi = new OpenAPI(files, locale)
     const openAPISpec = await openapi.process()
     const collection = new Collection(openAPISpec, locale).process()
 
@@ -82,9 +85,10 @@ describe('.convert', () => {
   })
 
   test('should hard code the base URL', async () => {
-    const filename = './tests/examples/box-openapi-with-tags.json'
+    // const filename = './tests/examples/box-openapi-with-tags.json'
+    const files = ['./tests/examples/box-openapi-with-tags.json']
     const locale = 'en'
-    const openapi = new OpenAPI(filename, locale)
+    const openapi = new OpenAPI(files, locale)
     const openAPISpec = await openapi.process()
     const collection = new Collection(openAPISpec, locale).process()
 
@@ -94,9 +98,10 @@ describe('.convert', () => {
   })
 
   test('should resolve double slashes in item paths', async () => {
-    const filename = './tests/examples/box-openapi.json'
+    // const filename = './tests/examples/box-openapi.json'
+    const files = ['./tests/examples/box-openapi.json']
     const locale = 'en'
-    const openapi = new OpenAPI(filename, locale)
+    const openapi = new OpenAPI(files, locale)
     const openAPISpec = await openapi.process()
     const collection = new Collection(openAPISpec, locale).process()
     expect(collection.item[0].item[1].request.url.path).toBe('/oauth2/token')
