@@ -13,15 +13,17 @@ const treeFor = (entry) => {
 
 describe('#constructor', () => {
   test('should accept a filename', () => {
-    const filename = '/path/to/openapi.json'
-    const openapi = new OpenAPI(filename, 'en')
-    expect(openapi.filename).toBe(filename)
+    // const filename = '/path/to/openapi.json'
+    const files = ['/path/to/openapi.json']
+    const openapi = new OpenAPI(files, 'en')
+    expect(openapi.files).toBe(files)
   })
 })
 
 describe('.convert', () => {
   test('should convert an openapi spec to a postman collection', async () => {
     // const filename = './tests/examples/box-openapi.json'
+    // create a files array with the filename`
     const files = ['./tests/examples/box-openapi.json']
     const locale = 'en'
     const openapi = new OpenAPI(files, locale)
