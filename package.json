@@ -48,6 +48,7 @@
     "pretest": "yarn lint",
     "test": "jest",
     "lint": "standard --env jest",
+    "lint_fix": "standard --fix --env jest",
     "//": "------------------------------",
     "convertAdvanced": "node -e 'require(\"./src/scripts/convertAdvanced.js\").convert()'",
     "releaseAdvanced": "node -e 'require(\"./src/scripts/releaseAdvanced.js\").release()'"
