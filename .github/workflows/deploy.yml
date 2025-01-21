@@ -40,6 +40,9 @@ jobs:
     - name: Deploy the collection
       run: |
         yarn install
+        yarn clean
+        yarn pull
+        yarn convert en
         yarn release en
 
     - name: Send Slack notification
@@ -80,6 +83,9 @@ jobs:
     - name: Deploy the collection
       run: |
         yarn install
+        yarn clean
+        yarn pull
+        yarn convert jp
         yarn release jp
 
     - name: Send Slack notification
