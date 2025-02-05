@@ -20,7 +20,7 @@
   "homepage": "https://developer.box.com/",
   "dependencies": {
     "@stoplight/json-ref-resolver": "^3.0.1",
-    "axios": "^1.5.0",
+    "axios": "^1.6.0",
     "deepmerge": "^4.0.0",
     "dotenv": "^16.3.1",
     "jsonpath-plus": "^7.2.0",
